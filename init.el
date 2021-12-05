@@ -20,7 +20,7 @@
 ;; Initialize package sources
 (require 'package)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+(setq package-archives '(("melpa" ."https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
@@ -55,19 +55,23 @@
          ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
+
+;;
+(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 ;;use counsel-load-theme
 (use-package doom-themes
   :init (load-theme 'doom-horizon t))
 ;;use refresh-pakcages to get this working
 ;; requires all-the-icons-install-fonts
+(use-package all-the-icons)
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
 
-(column-number-mode)
-(global-display-line-numbers-mode t)
+;;(column-number-mode)
+;;(global-display-line-numbers-mode t)
 
 (dolist (mode'(org-mode-hook
 	       term-mode-hook
@@ -78,11 +82,13 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+;;cln/command-log-buffer
+;;If package is not found try to refresh M-x package-list-packages
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
-  :config (setq which-key-idle-delay 0.8))
- ;;cln/command-log-buffer
+  :config
+  (setq which-key-idle-delay 1))
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -97,15 +103,58 @@
   :init
   (ivy-rich-mode 1))
 
+
 ;;;;;;;;;;;;;;;;;;;inser helpful here;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; key bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; hydra lets you repeat commands in convienient manner 
+;;
+;;
+(use-package hydra)
+
+(defhydra hydra-text-scale(:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finnished" :exit t))
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom (projectile-completion-system 'ivy)
+  :bind-keymap
+  ("C-c p". projectile-command-map)
+  :init
+  (when (file-directory-p "~/programering")
+    (setq projectile-project-search '("~programering")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package  counsel-projectile
+  :config (counsel-projectile-mode))
+;;#' is like ' but for functions returns function object without evaluating it # is mainly help to byte compiler 
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Anonymous-Functions.html#Anonymous-Functions  
+
+;;.dir-locals.el
+;; can be use for directory local variables for instance
+;;((nil .((projectile-project-run-cmd ."npm start") ))) 
+;; READ up on this. It might take som trickery to load this file such as revert buffer
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-themes swiper doom-modeline ivy command-log-mode use-package)))
+   '(counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
