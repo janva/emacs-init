@@ -145,7 +145,19 @@
 
 ;;.dir-locals.el
 ;; can be use for directory local variables for instance
-;;((nil .((projectile-project-run-cmd ."npm start") ))) 
+;;((nil .((projectile-project-run-cmd ."npm start") )))
+
+(defun efs/org-mode-setup()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1))
+
+;;  :hook  (org-mode. efs/org-mode-setup)
+(use-package org
+  :config
+  (setq org-elisp ""
+	org-hide-emphasis-markers t))
 ;; READ up on this. It might take som trickery to load this file such as revert buffer
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
