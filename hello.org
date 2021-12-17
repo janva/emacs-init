@@ -1,0 +1,21 @@
+* A Header
+  just som content followed by a list
+** Lists
+*** Normal list 
+  - First
+  - Second
+
+*** A check list
+  - [ ] first item
+    # CTrl-c-x-b to toggle item
+  - [X] second item
+
+    
+*** numbered list
+    1. First
+    2. Second item
+    3. Third item
+* TODO write a long letter
+  # use-shift left right to togle
+* DONE Some other thing todo
+
