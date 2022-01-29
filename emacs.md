@@ -1,33 +1,36 @@
 
 # Table of Contents
 
-1.  [Package handeling](#org84a8046)
-2.  [UI](#orgbf12b12)
-    1.  [Basic UI config](#org8da23d3)
-    2.  [Skins](#org3933860)
-    3.  [Line numbers](#org0ffd4bc)
-3.  [Fonts configuration](#org11e928e)
-4.  [Org babel mode](#orgaedf971)
-    1.  [Babel languages config](#orgf9613c4)
-    2.  [Org-structure templates  configs](#orga5328f9)
-    3.  [Org-babel  tangle configs](#orgf33430a)
-5.  [Applications](#org668ef72)
-    1.  [Swiper](#org0cea079)
-    2.  [Ivy](#org6a45e53)
-    3.  [Counsel](#orgda5fee5)
-    4.  [Which-key](#orgf20374c)
-    5.  [Org-mode](#org659f344)
-    6.  [The helpful package](#org7682028)
-    7.  [Hydra](#orgb1ec600)
-    8.  [Projectile](#org0fd66d2)
-    9.  [Parentices rainbow delimiters](#org5b3b5a4)
-6.  [Just some random helpfull packages](#orgec5b859)
-7.  [Set by emacs customization](#orgfa56865)
+1.  [Package handeling](#org9470625)
+2.  [UI](#orgee28e81)
+    1.  [Basic UI config](#orgca3a3a9)
+    2.  [Skins](#org06f48c6)
+    3.  [Line numbers](#org27b07f2)
+3.  [Fonts configuration](#orged08fac)
+4.  [Some basic behaviours configs](#org15be707)
+    1.  [Swiper](#org91e1870)
+    2.  [Ivy](#org74d58b4)
+    3.  [Counsel](#org57d454f)
+5.  [Modes](#org24d3913)
+    1.  [Org-mode](#org5ec7c7d)
+        1.  [Org basic](#org18879c3)
+    2.  [Org babel mode](#orge414e70)
+        1.  [Babel languages config](#orgc0c8625)
+        2.  [Org-structure templates  configs](#org49448b1)
+        3.  [Org-babel  tangle configs](#org6dacb36)
+    3.  [Which-key](#org8220fe4)
+    4.  [Hydra](#org399320b)
+    5.  [The helpful package](#orged2c2f3)
+    6.  [Parentices rainbow delimiters](#org56f91f2)
+6.  [Development](#org5c246b0)
+    1.  [Projectile](#org07d94a0)
+7.  [Just some random helpfull packages](#orgaee4f6c)
+8.  [Set by emacs customization](#orgc80558d)
 
 \#+title Emacs config
 
 
-<a id="org84a8046"></a>
+<a id="org9470625"></a>
 
 # Package handeling
 
@@ -50,12 +53,12 @@
     (setq use-package-always-ensure t)
 
 
-<a id="orgbf12b12"></a>
+<a id="orgee28e81"></a>
 
 # UI
 
 
-<a id="org8da23d3"></a>
+<a id="orgca3a3a9"></a>
 
 ## Basic UI config
 
@@ -75,7 +78,7 @@
         (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 
-<a id="org3933860"></a>
+<a id="org06f48c6"></a>
 
 ## Skins
 
@@ -93,7 +96,7 @@
     ;;(global-display-line-numbers-mode t)
 
 
-<a id="org0ffd4bc"></a>
+<a id="org27b07f2"></a>
 
 ## Line numbers
 
@@ -104,7 +107,7 @@
       (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
-<a id="org11e928e"></a>
+<a id="orged08fac"></a>
 
 # Fonts configuration
 
@@ -119,57 +122,19 @@
     ;; (load-theme 'wombat)
 
 
-<a id="orgaedf971"></a>
+<a id="org15be707"></a>
 
-# Org babel mode
+# Some basic behaviours configs
 
-
-<a id="orgf9613c4"></a>
-
-## Babel languages config
-
-    (org-babel-do-load-languages
-    'org-babel-do-load-languages '(
-    (emacs-lisp . t)
-    (python . t)))
+    (setq scroll-step 1)
 
 
-<a id="orga5328f9"></a>
-
-## Org-structure templates  configs
-
-      ;; https://orgmode.org/worg/org-contrib/babel/languages/
-    (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-    (add-to-list 'org-structure-template-alist '("py" . "src python"))
-
-
-<a id="orgf33430a"></a>
-
-## Org-babel  tangle configs
-
-         ;;auto-tangle files to target on save
-    (defun efs/org-babel-tangle-config ()
-      (when (string-equal (buffer-file-name)
-    		      (expand-file-name "~/.emacs.d/emacs.org"))
-        ;; Dynamic scoping to the rescue
-        (let ((org-confirm-babel-evaluate nil))
-          (org-babel-tangle))))
-    
-    (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
-
-
-<a id="org668ef72"></a>
-
-# Applications
-
-
-<a id="org0cea079"></a>
+<a id="org91e1870"></a>
 
 ## Swiper
 
    [swiper elpa](https://elpa.gnu.org/packages/swiper.html)
+   [swiper on github](https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9)
    This package gives an overview of the current regex search
 candidates.  The search regex can be split into groups with a
 space.  Each group is highlighted with a different face.
@@ -181,12 +146,13 @@ lines will be matched.
          :ensure t)
 
 
-<a id="org6a45e53"></a>
+<a id="org74d58b4"></a>
 
 ## Ivy
 
-Taken from github page [Ivy on github](https://github.com/abo-abo/swiper) 
-Ivy is a generic completion mechanism for Emacs. While it operates similarly to other completion schemes such as icomplete-mode, Ivy aims to be more efficient, smaller, simpler,and smoother to use yet highly customizable.To try Ivy, just call M-x ivy-mode. This will enable generic Ivy completion including specific completion for file and buffer names.
+Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion
+
+[Ivy on github page](https://github.com/abo-abo/swiper) 
 
     
     (use-package ivy
@@ -207,16 +173,18 @@ Ivy is a generic completion mechanism for Emacs. While it operates similarly to 
       :config
       (ivy-mode 1))
 
-;;TODO move to keyboard setting settings
 
-    (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
-
-
-<a id="orgda5fee5"></a>
+<a id="org57d454f"></a>
 
 ## Counsel
 
-[counsel on melpa](https://melpa.org/#/counsel)
+   [counsel on melpa](https://melpa.org/#/counsel)
+ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
+
+Counsel takes this further, providing versions of common Emacs commands that are customised to make the best use of Ivy. For example, counsel-find-file has some additional keybindings. Pressing DEL will move you to the parent directory.
+
+Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements:
+
 Just call one of the interactive functions in this file to complete
 the corresponding thing using \`ivy'.
 
@@ -231,36 +199,39 @@ Currently available:
 -   System utilities: process list, rhythmbox, linux-app.
 -   Many more.
     
-        (use-package counsel
-          :bind (("M-x" . counsel-M-x)
-        	 ("C-x b" . counsel-ibuffer)
-        	 ("C-x C-f" . counsel-find-file)
-        	 :map minibuffer-local-map
-        	 ("C-r" . counsel-minibuffer-history))
-          :config
-          (setq ivy-initial-alist nil )) ; don't start search with ^
-        
-        (use-package ivy-rich
-          :init
-          (ivy-rich-mode 1))
+        (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 
-
-<a id="orgf20374c"></a>
-
-## Which-key
-
-    ;;cln/command-log-buffer
-    ;;If package is not found try to refresh M-x package-list-packages
-    (use-package which-key
-      :init (which-key-mode)
-      :diminish which-key-mode
+    (use-package counsel
+      :bind (("M-x" . counsel-M-x)
+    	 ("C-x b" . counsel-ibuffer)
+    	 ("C-x C-f" . counsel-find-file)
+    	 :map minibuffer-local-map
+    	 ("C-r" . counsel-minibuffer-history))
       :config
-      (setq which-key-idle-delay 1))
+      (setq ivy-initial-alist nil )) ; don't start search with ^
+    
+    (use-package ivy-rich
+      :init
+      (ivy-rich-mode 1))
 
 
-<a id="org659f344"></a>
+<a id="org24d3913"></a>
+
+# Modes
+
+Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor.
+Major mode provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time.
+Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
+
+
+<a id="org5ec7c7d"></a>
 
 ## Org-mode
+
+
+<a id="org18879c3"></a>
+
+### Org basic
 
     (defun efs/org-font-setup ()
       ;; Replace list hyphen with dot
@@ -268,34 +239,18 @@ Currently available:
     			  '(("^ *\\([-]\\) "
     			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
 
-    (defun efs/org-mode-setup()
-      (org-indent-mode)
-      (variable-pitch-mode 1)
-      (auto-fill-mode 0)
-      (visual-line-mode 1))
-    
-         ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    ;; part of function por own block
-         (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-         (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-         (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-         (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-         (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-         (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-         (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-         ;;)
-
     (use-package org
       :config
       (setq org-elisp " ▾" 
     	org-hide-emphasis-markers t)
       (efs/org-font-setup))
 
-    (use-package org-bullets
-      :after org
-      :hook (org-mode . org-bullets-mode)
-      :custom
-      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (defun efs/org-mode-setup()
+      (org-indent-mode)
+      (variable-pitch-mode 1)
+      (auto-fill-mode 0)
+      (visual-line-mode 1))
+    
     (dolist (face '((org-level-1 .  1.2 )
     		(org-level-2 .  1.1 )
     		(org-level-3 .  1.05 )
@@ -305,6 +260,23 @@ Currently available:
     		(org-level-7 .  1.1 )
     		(org-level-8 .  1.1 )))
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    
+    
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+    ;;)
+
+    (use-package org-bullets
+      :after org
+      :hook (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
     (defun efs/org-mode-visual-fill ()
       (setq visual-fill-column-width 100
@@ -318,7 +290,86 @@ Currently available:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-<a id="org7682028"></a>
+<a id="orge414e70"></a>
+
+## Org babel mode
+
+Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
+
+
+<a id="orgc0c8625"></a>
+
+### Babel languages config
+
+    (org-babel-do-load-languages
+    'org-babel-do-load-languages '(
+    (emacs-lisp . t)
+    (python . t)))
+
+
+<a id="org49448b1"></a>
+
+### Org-structure templates  configs
+
+      ;; https://orgmode.org/worg/org-contrib/babel/languages/
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+
+<a id="org6dacb36"></a>
+
+### Org-babel  tangle configs
+
+         ;;auto-tangle files to target on save
+    (defun efs/org-babel-tangle-config ()
+      (when (string-equal (buffer-file-name)
+    		      (expand-file-name "~/.emacs.d/emacs.org"))
+        ;; Dynamic scoping to the rescue
+        (let ((org-confirm-babel-evaluate nil))
+          (org-babel-tangle))))
+    
+    (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+
+
+<a id="org8220fe4"></a>
+
+## Which-key
+
+Emacs minor mode that displays popup with possible keybindings on prefix commands such C-c C-x M-x. I this config I popup will ony show after beeing idle for at leas 1 second. 
+
+    ;;cln/command-log-buffer
+    ;;If package is not found try to refresh M-x package-list-packages
+    (use-package which-key
+      :init (which-key-mode)
+      :diminish which-key-mode
+      :config
+      (setq which-key-idle-delay 1))
+
+
+<a id="org399320b"></a>
+
+## Hydra
+
+Lets you do repetive commands in convienient manner
+[Hydra package on github](https://github.com/abo-abo/hydra)
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; hydra lets you repeat commands in convienient manner 
+    ;;
+    ;;
+    (use-package hydra)
+    
+    
+    (defhydra hydra-text-scale(:timeout 4)
+      "scale text"
+      ("j" text-scale-increase "in")
+      ("k" text-scale-decrease "out")
+      ("f" nil "finnished" :exit t))
+
+
+<a id="orged2c2f3"></a>
 
 ## The helpful package
 
@@ -336,25 +387,20 @@ Currently available:
       ([remap describe-key] . helpful-key))
 
 
-<a id="orgb1ec600"></a>
+<a id="org56f91f2"></a>
 
-## Hydra
+## Parentices rainbow delimiters
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; hydra lets you repeat commands in convienient manner 
-    ;;
-    ;;
-    (use-package hydra)
-    
-    
-    (defhydra hydra-text-scale(:timeout 4)
-      "scale text"
-      ("j" text-scale-increase "in")
-      ("k" text-scale-decrease "out")
-      ("f" nil "finnished" :exit t))
+    (use-package rainbow-delimiters
+      :hook (prog-mode . rainbow-delimiters-mode))
 
 
-<a id="org0fd66d2"></a>
+<a id="org5c246b0"></a>
+
+# Development
+
+
+<a id="org07d94a0"></a>
 
 ## Projectile
 
@@ -382,22 +428,14 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
     ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
 
-<a id="org5b3b5a4"></a>
-
-## Parentices rainbow delimiters
-
-    (use-package rainbow-delimiters
-      :hook (prog-mode . rainbow-delimiters-mode))
-
-
-<a id="orgec5b859"></a>
+<a id="orgaee4f6c"></a>
 
 # Just some random helpfull packages
 
     (use-package command-log-mode)
 
 
-<a id="orgfa56865"></a>
+<a id="orgc80558d"></a>
 
 # Set by emacs customization
 
