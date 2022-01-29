@@ -15,6 +15,15 @@
     1. First
     2. Second item
     3. Third item
+
+** Tabells
+   | Name  | age | Uses Emacs |
+   | Janne |  32 | For sure   |
+
+   
+** Links
+   This is a link to [[https://org-mode.org][org-mode]]
+
 * TODO write a long letter
   # use-shift left right to togle
 * DONE Some other thing todo
