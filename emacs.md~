@@ -1,46 +1,38 @@
 
 # Table of Contents
 
-1.  [Package handeling](#org047e710)
-2.  [Keybindings](#org885e730)
-3.  [UI](#org73dd884)
-    1.  [Basic UI config](#org016c1f4)
-    2.  [Themes](#orgeb4092b)
-    3.  [Line numbers](#org67a40c5)
-4.  [Fonts configuration](#org5264546)
-5.  [Some basic behaviours configs](#org0f876e9)
-    1.  [Swiper](#org2f91500)
-    2.  [Ivy](#orgb8d3e08)
-    3.  [Counsel](#org4bc76d2)
-6.  [Modes](#org999e765)
-    1.  [Org-mode](#org658d5db)
-        1.  [Org basic](#orgc26a569)
-    2.  [Org babel mode](#orgcb76e87)
-        1.  [Babel languages config](#org11d96c5)
-        2.  [Org-structure templates  configs](#org88ad3ec)
-        3.  [Org-babel  tangle configs](#org1687624)
-    3.  [Which-key](#orgfb069bb)
-    4.  [Hydra](#org1f56f7d)
-    5.  [The helpful package](#orgb5ee02a)
-    6.  [Parentices rainbow delimiters](#orgacf31ad)
-7.  [Development](#org516f5d2)
-    1.  [Projectile](#orgb27c679)
-8.  [Just some random helpfull packages](#org2e43206)
-9.  [Set by emacs customization](#org925d559)
+1.  [Package handeling](#org9470625)
+2.  [UI](#orgee28e81)
+    1.  [Basic UI config](#orgca3a3a9)
+    2.  [Skins](#org06f48c6)
+    3.  [Line numbers](#org27b07f2)
+3.  [Fonts configuration](#orged08fac)
+4.  [Some basic behaviours configs](#org15be707)
+    1.  [Swiper](#org91e1870)
+    2.  [Ivy](#org74d58b4)
+    3.  [Counsel](#org57d454f)
+5.  [Modes](#org24d3913)
+    1.  [Org-mode](#org5ec7c7d)
+        1.  [Org basic](#org18879c3)
+    2.  [Org babel mode](#orge414e70)
+        1.  [Babel languages config](#orgc0c8625)
+        2.  [Org-structure templates  configs](#org49448b1)
+        3.  [Org-babel  tangle configs](#org6dacb36)
+    3.  [Which-key](#org8220fe4)
+    4.  [Hydra](#org399320b)
+    5.  [The helpful package](#orged2c2f3)
+    6.  [Parentices rainbow delimiters](#org56f91f2)
+6.  [Development](#org5c246b0)
+    1.  [Projectile](#org07d94a0)
+7.  [Just some random helpfull packages](#orgaee4f6c)
+8.  [Set by emacs customization](#orgc80558d)
 
 \#+title Emacs config
 
 
-<a id="org047e710"></a>
+<a id="org9470625"></a>
 
 # Package handeling
-
-In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax to isolate package loading in a performant way.
-
-  We set a few package repositories, load and activate packages from package-load-list  `(package-initialize)`. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
-We require use-package `(require 'package).`  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set `:ensure t` as defualt for all package `(setq use-package-always-ensure t)`. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
-
-[Use package github page](https://github.com/jwiegley/use-package)
 
     ;; Initialize package sources
     (require 'package)
@@ -50,7 +42,6 @@ We require use-package `(require 'package).`  The require function loads feature
     			 ("elpa" . "https://elpa.gnu.org/packages/")))
     
     (package-initialize)
-    
     (unless package-archive-contents
      (package-refresh-contents)) 
     
@@ -62,71 +53,61 @@ We require use-package `(require 'package).`  The require function loads feature
     (setq use-package-always-ensure t)
 
 
-<a id="org885e730"></a>
-
-# Keybindings
-
-    ;; Make ESC quit prompts
-        (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-
-<a id="org73dd884"></a>
+<a id="orgee28e81"></a>
 
 # UI
 
 
-<a id="org016c1f4"></a>
+<a id="orgca3a3a9"></a>
 
 ## Basic UI config
 
-As little distraction as possible please. No scroll-bars tool-bars and no annoying sounds instead use visible bell.
-
-    (setq inhibit-startup-message t)
+        (setq inhibit-startup-message t)
     
-    (scroll-bar-mode -1)        ; Disable visible scrollbar
-    (tool-bar-mode -1)         
-    (tooltip-mode -1)          
-    (set-fringe-mode 10)       
+        (scroll-bar-mode -1)        ; Disable visible scrollbar
+        (tool-bar-mode -1)          ; Disable the toolbar
+        (tooltip-mode -1)           ; Disable tooltips
+        (set-fringe-mode 10)        ; Give some breathing room
     
-    (menu-bar-mode -1)         
+        (menu-bar-mode -1)           ; Disable the menu bar
+    ;; TODO Move these to some ohter block 
+        ;; Set up the visible bell
+        (setq visible-bell t)
     
-    ;; Set up the visible bell
-    (setq visible-bell t)
+        ;; Make ESC quit prompts
+        (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 
-<a id="orgeb4092b"></a>
+<a id="org06f48c6"></a>
 
-## Themes
+## Skins
 
-I like the Doom-themes. These themes comes with some nice icons which for instance are used in the mode line. I had to install requires all-the-icons-install-fonts on my Ubuntu get this working. `:init` keyword will make code run before package is loaded. We use th all-the-icons to get some nice icons and the tweak the mode-line. `:ensure t` isn't stricly needed as we set this as default for all packages. The `:custom`  keyword is used here to set custom variables of doom-modeline packages.
+         (use-package doom-themes
+           :init (load-theme 'doom-horizon t))
+         ;;use refresh-pakcages to get this working
+         ;; requires all-the-icons-install-fonts
+         (use-package all-the-icons)
+         (use-package doom-modeline
+           :ensure t
+           :init (doom-modeline-mode 1)
+           :custom ((doom-modeline-height 15)))
+    
+    ;;(column-number-mode)
+    ;;(global-display-line-numbers-mode t)
 
-[Doom-themes github page](https://github.com/doomemacs/themes)
 
-    (use-package doom-themes
-      :init (load-theme 'doom-horizon t))
-    ;;use refresh-pakcages to get this working
-    (use-package all-the-icons)
-    (use-package doom-modeline
-      :ensure t
-      :init (doom-modeline-mode 1)
-      :custom ((doom-modeline-height 15)))
-
-
-<a id="org67a40c5"></a>
+<a id="org27b07f2"></a>
 
 ## Line numbers
 
-    (column-number-mode)
-    ;; (global-display-line-numbers-mode t)
-    
-         (dolist (mode'(org-mode-hook
-    		    term-mode-hook
-    		    shell-mode-hook
-    	       eshell-mode-hook))
-           (add-hook mode (lambda() (display-line-numbers-mode 0))))
+    (dolist (mode'(org-mode-hook
+    	       term-mode-hook
+    	       shell-mode-hook
+    	  eshell-mode-hook))
+      (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
-<a id="org5264546"></a>
+<a id="orged08fac"></a>
 
 # Fonts configuration
 
@@ -141,14 +122,14 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
     ;; (load-theme 'wombat)
 
 
-<a id="org0f876e9"></a>
+<a id="org15be707"></a>
 
 # Some basic behaviours configs
 
     (setq scroll-step 1)
 
 
-<a id="org2f91500"></a>
+<a id="org91e1870"></a>
 
 ## Swiper
 
@@ -165,7 +146,7 @@ lines will be matched.
          :ensure t)
 
 
-<a id="orgb8d3e08"></a>
+<a id="org74d58b4"></a>
 
 ## Ivy
 
@@ -193,7 +174,7 @@ Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures com
       (ivy-mode 1))
 
 
-<a id="org4bc76d2"></a>
+<a id="org57d454f"></a>
 
 ## Counsel
 
@@ -234,7 +215,7 @@ Currently available:
       (ivy-rich-mode 1))
 
 
-<a id="org999e765"></a>
+<a id="org24d3913"></a>
 
 # Modes
 
@@ -243,12 +224,12 @@ Major mode provides means for working with particular file type (.org, .c .pdf e
 Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
 
 
-<a id="org658d5db"></a>
+<a id="org5ec7c7d"></a>
 
 ## Org-mode
 
 
-<a id="orgc26a569"></a>
+<a id="org18879c3"></a>
 
 ### Org basic
 
@@ -309,14 +290,14 @@ Minor modes are independent modes that associates some additional behaviour (sug
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-<a id="orgcb76e87"></a>
+<a id="orge414e70"></a>
 
 ## Org babel mode
 
 Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
 
 
-<a id="org11d96c5"></a>
+<a id="orgc0c8625"></a>
 
 ### Babel languages config
 
@@ -326,7 +307,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (python . t)))
 
 
-<a id="org88ad3ec"></a>
+<a id="org49448b1"></a>
 
 ### Org-structure templates  configs
 
@@ -337,7 +318,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 
-<a id="org1687624"></a>
+<a id="org6dacb36"></a>
 
 ### Org-babel  tangle configs
 
@@ -352,7 +333,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 
-<a id="orgfb069bb"></a>
+<a id="org8220fe4"></a>
 
 ## Which-key
 
@@ -367,7 +348,7 @@ Emacs minor mode that displays popup with possible keybindings on prefix command
       (setq which-key-idle-delay 1))
 
 
-<a id="org1f56f7d"></a>
+<a id="org399320b"></a>
 
 ## Hydra
 
@@ -388,7 +369,7 @@ Lets you do repetive commands in convienient manner
       ("f" nil "finnished" :exit t))
 
 
-<a id="orgb5ee02a"></a>
+<a id="orged2c2f3"></a>
 
 ## The helpful package
 
@@ -406,7 +387,7 @@ Lets you do repetive commands in convienient manner
       ([remap describe-key] . helpful-key))
 
 
-<a id="orgacf31ad"></a>
+<a id="org56f91f2"></a>
 
 ## Parentices rainbow delimiters
 
@@ -414,12 +395,12 @@ Lets you do repetive commands in convienient manner
       :hook (prog-mode . rainbow-delimiters-mode))
 
 
-<a id="org516f5d2"></a>
+<a id="org5c246b0"></a>
 
 # Development
 
 
-<a id="orgb27c679"></a>
+<a id="org07d94a0"></a>
 
 ## Projectile
 
@@ -447,14 +428,14 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
     ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
 
-<a id="org2e43206"></a>
+<a id="orgaee4f6c"></a>
 
 # Just some random helpfull packages
 
     (use-package command-log-mode)
 
 
-<a id="org925d559"></a>
+<a id="orgc80558d"></a>
 
 # Set by emacs customization
 

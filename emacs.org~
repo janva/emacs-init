@@ -2,88 +2,70 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Package handeling
-  In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax to isolate package loading in a performant way.
-   
-  We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
-We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
-
-  [[https://github.com/jwiegley/use-package][Use package github page]]
  
   #+begin_src emacs-lisp
-    ;; Initialize package sources
-    (require 'package)
+;; Initialize package sources
+(require 'package)
 
-    (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-			     ("org" . "https://orgmode.org/elpa/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")))
+(setq package-archives '(("melpa" ."https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
-    (package-initialize)
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents)) 
 
-    (unless package-archive-contents
-     (package-refresh-contents)) 
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
 
-    ;; Initialize use-package on non-Linux platforms
-    (unless (package-installed-p 'use-package)
-       (package-install 'use-package))
-
-    (require 'use-package)
-    (setq use-package-always-ensure t)
+(require 'use-package)
+(setq use-package-always-ensure t)
 
   #+end_src
-
-* Keybindings
-  
-   #+begin_src emacs-lisp
-     ;; Make ESC quit prompts
-	 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-   #+end_src
-
 * UI
   
 **  Basic UI config
-   
-   As little distraction as possible please. No scroll-bars tool-bars and no annoying sounds instead use visible bell.
 
    #+begin_src emacs-lisp 
-	 (setq inhibit-startup-message t)
+     (setq inhibit-startup-message t)
 
-	 (scroll-bar-mode -1)        ; Disable visible scrollbar
-	 (tool-bar-mode -1)         
-	 (tooltip-mode -1)          
-	 (set-fringe-mode 10)       
+     (scroll-bar-mode -1)        ; Disable visible scrollbar
+     (tool-bar-mode -1)          ; Disable the toolbar
+     (tooltip-mode -1)           ; Disable tooltips
+     (set-fringe-mode 10)        ; Give some breathing room
 
-	 (menu-bar-mode -1)         
+     (menu-bar-mode -1)           ; Disable the menu bar
+ ;; TODO Move these to some ohter block 
+     ;; Set up the visible bell
+     (setq visible-bell t)
 
-	 ;; Set up the visible bell
-	 (setq visible-bell t)
+     ;; Make ESC quit prompts
+     (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
    #+end_src
 
-
-** Themes
-   
-   I like the Doom-themes. These themes comes with some nice icons which for instance are used in the mode line. I had to install requires all-the-icons-install-fonts on my Ubuntu get this working. ~:init~ keyword will make code run before package is loaded. We use th all-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
-
-   [[https://github.com/doomemacs/themes][Doom-themes github page]]
-   
+      
+** Skins
    #+begin_src emacs-lisp
      (use-package doom-themes
        :init (load-theme 'doom-horizon t))
      ;;use refresh-pakcages to get this working
+     ;; requires all-the-icons-install-fonts
      (use-package all-the-icons)
      (use-package doom-modeline
        :ensure t
        :init (doom-modeline-mode 1)
        :custom ((doom-modeline-height 15)))
-   #+end_src
 
+;;(column-number-mode)
+;;(global-display-line-numbers-mode t)
+
+   #+end_src
    
 ** Line numbers
    
    #+begin_src emacs-lisp
-(column-number-mode)
-;; (global-display-line-numbers-mode t)
-
      (dolist (mode'(org-mode-hook
 		    term-mode-hook
 		    shell-mode-hook
