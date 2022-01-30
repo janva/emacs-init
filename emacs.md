@@ -1,37 +1,36 @@
 
 # Table of Contents
 
-1.  [Package handeling](#org047e710)
-2.  [Keybindings](#org885e730)
-3.  [UI](#org73dd884)
-    1.  [Basic UI config](#org016c1f4)
-    2.  [Themes](#orgeb4092b)
-    3.  [Line numbers](#org67a40c5)
-4.  [Fonts configuration](#org5264546)
-5.  [Some basic behaviours configs](#org0f876e9)
-    1.  [Swiper](#org2f91500)
-    2.  [Ivy](#orgb8d3e08)
-    3.  [Counsel](#org4bc76d2)
-6.  [Modes](#org999e765)
-    1.  [Org-mode](#org658d5db)
-        1.  [Org basic](#orgc26a569)
-    2.  [Org babel mode](#orgcb76e87)
-        1.  [Babel languages config](#org11d96c5)
-        2.  [Org-structure templates  configs](#org88ad3ec)
-        3.  [Org-babel  tangle configs](#org1687624)
-    3.  [Which-key](#orgfb069bb)
-    4.  [Hydra](#org1f56f7d)
-    5.  [The helpful package](#orgb5ee02a)
-    6.  [Parentices rainbow delimiters](#orgacf31ad)
-7.  [Development](#org516f5d2)
-    1.  [Projectile](#orgb27c679)
-8.  [Just some random helpfull packages](#org2e43206)
-9.  [Set by emacs customization](#org925d559)
-
-\#+title Emacs config
+1.  [Package handeling](#org008fad9)
+2.  [Keybindings](#orga3b7a96)
+3.  [UI](#org9f02aa0)
+    1.  [Basic UI config](#org0ef7f4b)
+    2.  [Themes](#org8b77e60)
+    3.  [Line numbers](#org7c79edc)
+4.  [Fonts configuration](#orgb7e37b0)
+5.  [Some basic behaviours configs](#orgf956157)
+    1.  [Swiper](#org2afd85c)
+    2.  [Ivy](#org8e1555d)
+    3.  [Counsel](#orgf5e6e0d)
+6.  [Modes](#org4114f0e)
+    1.  [Org-mode](#orgaf492db)
+        1.  [Org basic](#orgedb452c)
+    2.  [Org babel mode](#org02bd6ff)
+        1.  [Babel languages config](#orge4b0273)
+        2.  [Org-structure templates  configs](#org73651c7)
+        3.  [Org-babel  tangle configs](#org3548b88)
+    3.  [Which-key](#orga16bb7f)
+    4.  [Hydra](#org3766834)
+    5.  [The helpful package](#org2938e88)
+    6.  [Parentices rainbow delimiters](#orgabc2da7)
+7.  [Development](#orgf9d119e)
+    1.  [Projectile](#org85f9bf1)
+8.  [Just some random helpfull packages](#orgf025533)
+9.  [Set by emacs customization](#org9d67e17)
 
 
-<a id="org047e710"></a>
+
+<a id="org008fad9"></a>
 
 # Package handeling
 
@@ -62,7 +61,7 @@ We require use-package `(require 'package).`  The require function loads feature
     (setq use-package-always-ensure t)
 
 
-<a id="org885e730"></a>
+<a id="orga3b7a96"></a>
 
 # Keybindings
 
@@ -70,12 +69,12 @@ We require use-package `(require 'package).`  The require function loads feature
         (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 
-<a id="org73dd884"></a>
+<a id="org9f02aa0"></a>
 
 # UI
 
 
-<a id="org016c1f4"></a>
+<a id="org0ef7f4b"></a>
 
 ## Basic UI config
 
@@ -94,7 +93,7 @@ As little distraction as possible please. No scroll-bars tool-bars and no annoyi
     (setq visible-bell t)
 
 
-<a id="orgeb4092b"></a>
+<a id="org8b77e60"></a>
 
 ## Themes
 
@@ -112,7 +111,7 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
       :custom ((doom-modeline-height 15)))
 
 
-<a id="org67a40c5"></a>
+<a id="org7c79edc"></a>
 
 ## Line numbers
 
@@ -126,7 +125,7 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
            (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
-<a id="org5264546"></a>
+<a id="orgb7e37b0"></a>
 
 # Fonts configuration
 
@@ -141,14 +140,14 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
     ;; (load-theme 'wombat)
 
 
-<a id="org0f876e9"></a>
+<a id="orgf956157"></a>
 
 # Some basic behaviours configs
 
     (setq scroll-step 1)
 
 
-<a id="org2f91500"></a>
+<a id="org2afd85c"></a>
 
 ## Swiper
 
@@ -165,7 +164,7 @@ lines will be matched.
          :ensure t)
 
 
-<a id="orgb8d3e08"></a>
+<a id="org8e1555d"></a>
 
 ## Ivy
 
@@ -193,7 +192,7 @@ Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures com
       (ivy-mode 1))
 
 
-<a id="org4bc76d2"></a>
+<a id="orgf5e6e0d"></a>
 
 ## Counsel
 
@@ -234,7 +233,7 @@ Currently available:
       (ivy-rich-mode 1))
 
 
-<a id="org999e765"></a>
+<a id="org4114f0e"></a>
 
 # Modes
 
@@ -243,12 +242,12 @@ Major mode provides means for working with particular file type (.org, .c .pdf e
 Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
 
 
-<a id="org658d5db"></a>
+<a id="orgaf492db"></a>
 
 ## Org-mode
 
 
-<a id="orgc26a569"></a>
+<a id="orgedb452c"></a>
 
 ### Org basic
 
@@ -309,14 +308,14 @@ Minor modes are independent modes that associates some additional behaviour (sug
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-<a id="orgcb76e87"></a>
+<a id="org02bd6ff"></a>
 
 ## Org babel mode
 
 Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
 
 
-<a id="org11d96c5"></a>
+<a id="orge4b0273"></a>
 
 ### Babel languages config
 
@@ -326,7 +325,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (python . t)))
 
 
-<a id="org88ad3ec"></a>
+<a id="org73651c7"></a>
 
 ### Org-structure templates  configs
 
@@ -337,7 +336,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 
-<a id="org1687624"></a>
+<a id="org3548b88"></a>
 
 ### Org-babel  tangle configs
 
@@ -352,7 +351,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 
-<a id="orgfb069bb"></a>
+<a id="orga16bb7f"></a>
 
 ## Which-key
 
@@ -367,7 +366,7 @@ Emacs minor mode that displays popup with possible keybindings on prefix command
       (setq which-key-idle-delay 1))
 
 
-<a id="org1f56f7d"></a>
+<a id="org3766834"></a>
 
 ## Hydra
 
@@ -388,7 +387,7 @@ Lets you do repetive commands in convienient manner
       ("f" nil "finnished" :exit t))
 
 
-<a id="orgb5ee02a"></a>
+<a id="org2938e88"></a>
 
 ## The helpful package
 
@@ -406,7 +405,7 @@ Lets you do repetive commands in convienient manner
       ([remap describe-key] . helpful-key))
 
 
-<a id="orgacf31ad"></a>
+<a id="orgabc2da7"></a>
 
 ## Parentices rainbow delimiters
 
@@ -414,12 +413,12 @@ Lets you do repetive commands in convienient manner
       :hook (prog-mode . rainbow-delimiters-mode))
 
 
-<a id="org516f5d2"></a>
+<a id="orgf9d119e"></a>
 
 # Development
 
 
-<a id="orgb27c679"></a>
+<a id="org85f9bf1"></a>
 
 ## Projectile
 
@@ -447,14 +446,14 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
     ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
 
-<a id="org2e43206"></a>
+<a id="orgf025533"></a>
 
 # Just some random helpfull packages
 
     (use-package command-log-mode)
 
 
-<a id="org925d559"></a>
+<a id="org9d67e17"></a>
 
 # Set by emacs customization
 
