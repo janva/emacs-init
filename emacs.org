@@ -1,4 +1,4 @@
-#+title Emacs config
+#+TITLE: Emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Package handeling
@@ -61,8 +61,9 @@ We require use-package ~(require 'package).~  The require function loads feature
 
 
 ** Themes
-   
-   I like the Doom-themes. These themes comes with some nice icons which for instance are used in the mode line. I had to install requires all-the-icons-install-fonts on my Ubuntu get this working. ~:init~ keyword will make code run before package is loaded. We use th all-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
+   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
+
+   ~:init~ keyword will make code run before package is loaded. We use thall-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
 
    [[https://github.com/doomemacs/themes][Doom-themes github page]]
    
@@ -79,39 +80,39 @@ We require use-package ~(require 'package).~  The require function loads feature
 
    
 ** Line numbers
+
+   Most often i don't need linenumbers. If we turn on linenumbers globaly below then bellow will ensure that certain modes turn them off. Each mode in the list gets a hook added to to it.
    
    #+begin_src emacs-lisp
-(column-number-mode)
-;; (global-display-line-numbers-mode t)
+     (column-number-mode)
+     ;; (global-display-line-numbers-mode t)
 
-     (dolist (mode'(org-mode-hook
-		    term-mode-hook
-		    shell-mode-hook
-	       eshell-mode-hook))
-       (add-hook mode (lambda() (display-line-numbers-mode 0))))
+	  (dolist (mode'(org-mode-hook
+			 term-mode-hook
+			 shell-mode-hook
+		    eshell-mode-hook))
+	    (add-hook mode (lambda() (display-line-numbers-mode 0))))
    #+end_src
 
    
-* Fonts configuration
+** Fonts configuration
   
-  #+begin_src emacs-lisp 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
+   #+begin_src emacs-lisp 
+     (set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
 
-;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 210)
+     ;; Set the fixed pitch face
+     (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 210)
 
-;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
+     ;; Set the variable pitch face
+     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
+   #+end_src  
 
-;; (load-theme 'wombat)
-
-  #+end_src  
-
-* Some basic behaviours configs
+* Some basic behaviour
   
   #+begin_src emacs-lisp
-(setq scroll-step 1)
+    (setq scroll-step 1)
   #+end_src
+
 
 ** Swiper
    [[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
