@@ -41,14 +41,19 @@
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
-(column-number-mode)
+<<<<<<< HEAD
+   (column-number-mode)
 ;; (global-display-line-numbers-mode t)
+=======
+     (column-number-mode)
+     ;; (global-display-line-numbers-mode t)
+>>>>>>> refs/remotes/origin/main
 
-     (dolist (mode'(org-mode-hook
-		    term-mode-hook
-		    shell-mode-hook
-	       eshell-mode-hook))
-       (add-hook mode (lambda() (display-line-numbers-mode 0))))
+	  (dolist (mode'(org-mode-hook
+			 term-mode-hook
+			 shell-mode-hook
+		    eshell-mode-hook))
+	    (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 (set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
 
