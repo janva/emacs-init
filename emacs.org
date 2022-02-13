@@ -31,7 +31,7 @@ We require use-package ~(require 'package).~  The require function loads feature
 
   #+end_src
 
-* Keybindings
+* Global  keybindings
   
    #+begin_src emacs-lisp
      ;; Make ESC quit prompts
@@ -83,22 +83,16 @@ We require use-package ~(require 'package).~  The require function loads feature
    Most often i don't need linenumbers. If we turn on linenumbers globaly below then bellow will ensure that certain modes turn them off. Each mode in the list gets a hook added to to it.
    
    #+begin_src emacs-lisp
-<<<<<<< HEAD
-   (column-number-mode)
-;; (global-display-line-numbers-mode t)
-=======
-     (column-number-mode)
      ;; (global-display-line-numbers-mode t)
->>>>>>> refs/remotes/origin/main
+     (column-number-mode)
 
-	  (dolist (mode'(org-mode-hook
-			 term-mode-hook
-			 shell-mode-hook
-		    eshell-mode-hook))
-	    (add-hook mode (lambda() (display-line-numbers-mode 0))))
+     (dolist (mode'(org-mode-hook
+                    term-mode-hook
+                    shell-mode-hook
+                    eshell-mode-hook))
+       (add-hook mode (lambda() (display-line-numbers-mode 0))))
    #+end_src
 
-<<<<<<< HEAD
   
 * Fonts configuration
 ** Fonts configuration
@@ -110,17 +104,15 @@ We require use-package ~(require 'package).~  The require function loads feature
      (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 210)
 
      ;; Set the variable pitch face
-     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
+     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
 
 
   #+end_src  
-
 * Some basic behaviours configs
 Turn on word wrappping on long lines using v. 
   #+begin_src emacs-lisp
   (visual-line-mode 1)
   #+end_src
-
 
 Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
 
@@ -424,7 +416,7 @@ breadcrumb
 
     #+end_src
 
-*** LSP servers ( language server protocol)
+*** LSP servers ( Language Server  Protocol)
     LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [[https://emacs-lsp.github.io/lsp-mode/][Emacs LSP-mode language support pages]]. 
 
 LSP-mode for emacs aims to provide a more IDE like experience to emacs.
@@ -455,8 +447,8 @@ There exist a =lsp-format-buffer= command but might be a better idea to us seper
 *** Better LSP UI 
     #+begin_src emacs-lisp
     (use-package lsp-ui
-    :hook (lsp-ui . lsp-ui-mode))
-    ;; :custom (lsp-ui-doc-position 'bottom))
+    :hook (lsp-ui . lsp-ui-mode)
+    :custom (lsp-ui-doc-position  'bottom))
      #+end_src
     
 ***  Treemacs for nice treestructures
@@ -469,7 +461,6 @@ There exist a =lsp-format-buffer= command but might be a better idea to us seper
     (use-package lsp-ivy)
     #+end_src
     
-
 *** TypeSript
     TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
 
@@ -486,47 +477,14 @@ npm i -g typescript-language-server; npm i -g typescript
 *** Bash scripts
     #+begin_src emacs-lisp
       (use-package sh-mode
-      :ensure nil
-      :hook (sh-mode . lsp-deferred))
+        :mode "\\.sh\\'"
+        :ensure nil
+        :hook (sh-mode . lsp-deferred))
     #+end_src
    
-** Company  
-   Complete anything is an text completion framework. Used to get better 
-   #+begin_src emacs-lisp
-(use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1))
-
-   #+end_src
+***  elisp mode
 
 
-*** Company box mode
-   #+begin_src emacs-lisp
- ;; (use-package company-box
- ;; ;; :init (setq company-box-backend 'company-lsp)
- ;; :hook (company-mode . company-box-mode)
- ;; :config  (setq company-box-doc t)
- ;; )
-   #+end_src
-   
-**  Git tools ie magit
-
-   #+begin_src emacs-lisp
-   (use-package magit
-   ;; :custom 
-   ;; (magit-display-buffer-function #'magit-display-same-except-diff-v1)
-   )
-
-   #+end_src
-
-   
 ** Projectile
    # TODO should be under dev tools
    Project managing package. [[https://github.com/bbatsov/projectile][Projectile github-page]]
