@@ -58,9 +58,9 @@
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
 
-;; (load-theme 'wombat)
+(visual-line-mode 1)
 
-(setq scroll-step 1)
+(setq scroll-conservatively 99)
 
 (use-package swiper
      :ensure t)
@@ -99,43 +99,46 @@
   (ivy-rich-mode 1))
 
 (defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
+;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
+			  '(("^ *\\([-]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+		  (org-level-2 . 1.1)
+		  (org-level-3 . 1.05)
+		  (org-level-4 . 1.0)
+		  (org-level-5 . 1.1)
+		  (org-level-6 . 1.1)
+		  (org-level-7 . 1.1)
+		  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
 (use-package org
+  :hook (org-mode . efs/org-mode-setup)
   :config
-  (setq org-elisp " ▾" 
-	org-hide-emphasis-markers t)
-  (efs/org-font-setup))
+  (setq org-ellipsis " ▾" 
+	org-hide-emphasis-markers t
+	org-src-tab-acts-natively t))
 
 (defun efs/org-mode-setup()
   (org-indent-mode)
   (variable-pitch-mode 1)
-  (auto-fill-mode 0)
   (visual-line-mode 1))
-
-(dolist (face '((org-level-1 .  1.2 )
-		(org-level-2 .  1.1 )
-		(org-level-3 .  1.05 )
-		(org-level-4 .  1.0 )
-		(org-level-5 .  1.1 )
-		(org-level-6 .  1.1 )
-		(org-level-7 .  1.1 )
-		(org-level-8 .  1.1 )))
-  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
-(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-;;)
 
 (use-package org-bullets
   :after org
@@ -151,9 +154,6 @@
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
-;; READ up on this. It might take som trickery to load this file such as revert buffer
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (org-babel-do-load-languages
 'org-babel-do-load-languages '(
 (emacs-lisp . t)
@@ -168,10 +168,10 @@
 ;;auto-tangle files to target on save
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
-		      (expand-file-name "~/.emacs.d/emacs.org"))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
+(expand-file-name "~/.config/emacs/emacs.org"))
+;; Dynamic scoping to the rescue
+(let ((org-confirm-babel-evaluate nil))
+(org-babel-tangle))))
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
@@ -208,6 +208,71 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(electric-pair-mode 1)  
+(show-paren-mode t)
+
+(use-package yasnippet
+;; :init
+;; (setq lsp-completion-provider :none) 
+:config
+ (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
+ (yas-global-mode 1))
+
+(use-package yasnippet-snippets)
+
+(defun efs/lsp-mode-setup ()
+  ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
+(lsp-headerline-breadcrumb-mode 1))
+
+(use-package lsp-mode
+:commands (lsp lsp-deferred)
+:hook (lsp-mode . efs/lsp-mode-setup)
+:init
+(setq lsp-keymap-prefix "C-c l")  
+:config
+(lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+:hook (lsp-ui . lsp-ui-mode))
+;; :custom (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+:after lsp)
+
+(use-package lsp-ivy)
+
+(use-package typescript-mode
+:mode "\\.ts\\'"
+:hook (typescript-mode . lsp-deferred)
+:config
+(setq typescript-indent-level 2))
+
+(use-package sh-mode
+:ensure nil
+:hook (sh-mode . lsp-deferred))
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1))
+
+;; (use-package company-box
+;; ;; :init (setq company-box-backend 'company-lsp)
+;; :hook (company-mode . company-box-mode)
+;; :config  (setq company-box-doc t)
+;; )
+
+(use-package magit
+;; :custom 
+;; (magit-display-buffer-function #'magit-display-same-except-diff-v1)
+)
 
 (use-package projectile
   :diminish projectile-mode

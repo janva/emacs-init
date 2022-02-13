@@ -36,7 +36,6 @@ We require use-package ~(require 'package).~  The require function loads feature
    #+begin_src emacs-lisp
      ;; Make ESC quit prompts
 	 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
    #+end_src
 
 * UI
@@ -81,7 +80,7 @@ We require use-package ~(require 'package).~  The require function loads feature
 ** Line numbers
    
    #+begin_src emacs-lisp
-(column-number-mode)
+   (column-number-mode)
 ;; (global-display-line-numbers-mode t)
 
      (dolist (mode'(org-mode-hook
@@ -91,7 +90,7 @@ We require use-package ~(require 'package).~  The require function loads feature
        (add-hook mode (lambda() (display-line-numbers-mode 0))))
    #+end_src
 
-   
+  
 * Fonts configuration
   
   #+begin_src emacs-lisp 
@@ -102,26 +101,25 @@ We require use-package ~(require 'package).~  The require function loads feature
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
-
-;; (load-theme 'wombat)
-
   #+end_src  
 
 * Some basic behaviours configs
-  
+
+Turn on word wrappping on long lines using v. 
   #+begin_src emacs-lisp
-(setq scroll-step 1)
+  (visual-line-mode 1)
+  #+end_src
+
+Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
+
+  #+begin_src emacs-lisp
+  (setq scroll-conservatively 99)
   #+end_src
 
 ** Swiper
    [[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
    [[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9][swiper on github]]
-   This package gives an overview of the current regex search
-candidates.  The search regex can be split into groups with a
-space.  Each group is highlighted with a different face.
-
-It can double as a quick `regex-builder', although only single
-lines will be matched.
+   An UI on top of ISearch (Incremental Search). Swiper gives an overview of the current regex search candidates. Matches are presented in an intuitive fashion and you cab jump to location of selected match. (in buffer search) presented in minibuffer
 
 #+begin_src emacs-lisp
   (use-package swiper
@@ -130,7 +128,7 @@ lines will be matched.
 
 ** Ivy
    
-   Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion
+   Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
 
    [[https://github.com/abo-abo/swiper][Ivy on github page]] 
 
@@ -203,52 +201,59 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
   Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
 
 ** Org-mode
+   Org mode is similar to markdown but with a lot more functionallity.
 *** Org basic
 
     #+begin_src emacs-lisp
- (defun efs/org-font-setup ()
-   ;; Replace list hyphen with dot
-   (font-lock-add-keywords 'org-mode
-                           '(("^ *\\([-]\\) "
-                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
+      (defun efs/org-font-setup ()
+      ;; Replace list hyphen with dot
+	(font-lock-add-keywords 'org-mode
+				'(("^ *\\([-]\\) "
+				   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+	;; Set faces for heading levels
+	(dolist (face '((org-level-1 . 1.2)
+			(org-level-2 . 1.1)
+			(org-level-3 . 1.05)
+			(org-level-4 . 1.0)
+			(org-level-5 . 1.1)
+			(org-level-6 . 1.1)
+			(org-level-7 . 1.1)
+			(org-level-8 . 1.1)))
+	  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+	(set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+	(set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+	(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+	(set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+	(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+	(set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+	(set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+	(set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
     #+end_src
 
     #+begin_src emacs-lisp
-      (use-package org
-	:config
-	(setq org-elisp " ▾" 
-	      org-hide-emphasis-markers t)
-	(efs/org-font-setup))
+	  (use-package org
+	    :hook (org-mode . efs/org-mode-setup)
+	    :config
+	    (setq org-ellipsis " ▾" 
+		  org-hide-emphasis-markers t
+		  org-src-tab-acts-natively t))
+
+
     #+end_src
 
     #+begin_src emacs-lisp
       (defun efs/org-mode-setup()
 	(org-indent-mode)
 	(variable-pitch-mode 1)
-	(auto-fill-mode 0)
 	(visual-line-mode 1))
 
-      (dolist (face '((org-level-1 .  1.2 )
-		      (org-level-2 .  1.1 )
-		      (org-level-3 .  1.05 )
-		      (org-level-4 .  1.0 )
-		      (org-level-5 .  1.1 )
-		      (org-level-6 .  1.1 )
-		      (org-level-7 .  1.1 )
-		      (org-level-8 .  1.1 )))
-	(set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-
-      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-      ;;)
 
     #+end_src
 
@@ -277,16 +282,10 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 
     #+end_src
 
-    #+begin_src emacs-lisp
-      ;; READ up on this. It might take som trickery to load this file such as revert buffer
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    #+end_src
-
-  
 ** Org babel mode
 
    Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
-
+breadcrumb
 *** Babel languages config
   
   #+begin_src emacs-lisp :results value 
@@ -299,11 +298,11 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 *** Org-structure templates  configs
 
     #+begin_src emacs-lisp 
-    ;; https://orgmode.org/worg/org-contrib/babel/languages/
-  (require 'org-tempo)
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+	;; https://orgmode.org/worg/org-contrib/babel/languages/
+      (require 'org-tempo)
+      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+      (add-to-list 'org-structure-template-alist '("py" . "src python"))
   #+end_src
 
 
@@ -311,19 +310,18 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
     
 
     #+begin_src emacs-lisp
-	   ;;auto-tangle files to target on save
+	  ;;auto-tangle files to target on save
       (defun efs/org-babel-tangle-config ()
 	(when (string-equal (buffer-file-name)
-			    (expand-file-name "~/.emacs.d/emacs.org"))
-	  ;; Dynamic scoping to the rescue
-	  (let ((org-confirm-babel-evaluate nil))
-	    (org-babel-tangle))))
+      (expand-file-name "~/.config/emacs/emacs.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
 
       (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
     #+end_src
-
-    
+  
 ** Which-key
    
    Emacs minor mode that displays popup with possible keybindings on prefix commands such C-c C-x M-x. I this config I popup will ony show after beeing idle for at leas 1 second. 
@@ -339,7 +337,6 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
        (setq which-key-idle-delay 1))
    #+end_src
 
-    
 ** Hydra
    Lets you do repetive commands in convienient manner
    [[https://github.com/abo-abo/hydra][Hydra package on github]]
@@ -375,8 +372,7 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
        ([remap describe-variable] . counsel-describe-variable)
        ([remap describe-key] . helpful-key))
    #+end_src
-
-   
+  
 ** Parentices rainbow delimiters
    
    #+begin_src emacs-lisp
@@ -384,7 +380,142 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
        :hook (prog-mode . rainbow-delimiters-mode))
    #+end_src   
 
+
 * Development 
+ 
+** Common settings for all dev modes
+  matching pairs of things such as parentecis
+  #+begin_src emacs-lisp
+  (electric-pair-mode 1)  
+  (show-paren-mode t)
+  #+end_src
+** langauges
+*** yasnippets 
+    #+begin_src emacs-lisp
+   (use-package yasnippet
+   ;; :init
+   ;; (setq lsp-completion-provider :none) 
+   :config
+    (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
+    (yas-global-mode 1))    
+  #+end_src
+
+
+    #+begin_src emacs-lisp
+    (use-package yasnippet-snippets)
+    #+end_src
+***  Breadcrumbs in LSP mode
+
+    #+begin_src emacs-lisp
+      (defun efs/lsp-mode-setup ()
+        ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
+      (lsp-headerline-breadcrumb-mode 1))
+
+    #+end_src
+
+*** LSP servers ( language server protocol)
+    LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [[https://emacs-lsp.github.io/lsp-mode/][Emacs LSP-mode language support pages]]. 
+
+LSP-mode for emacs aims to provide a more IDE like experience to emacs.
+Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
+
+~:commands~ keyword  creates autoloads for the commands you list. An autoload in elisp is a mechanism to make known (register) a function but defer of loading the file that actualy defines it.
+The file is instead loaded at first call to function or macro. The hook =(:hook)= is setup to call =efs/lsp-mode-setup= function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commmands is set to =C-c l=. Finally we enable which-key for LSP.
+
+Some keybinding and commands to get you started  (remember prefix keybining was set to C-c l).
+ 
+    C-c l g r find references
+    C-c l g g find definitions
+    C-l l r r refactor rename
+    fly-make-show-diagnostic-buffer show buffer with errors
+ 
+There exist a =lsp-format-buffer= command but might be a better idea to us seperate language specific formatter for this job
+   
+    #+begin_src emacs-lisp
+    (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . efs/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")  
+    :config
+    (lsp-enable-which-key-integration t))
+    #+end_src
+    
+*** Better LSP UI 
+    #+begin_src emacs-lisp
+    (use-package lsp-ui
+    :hook (lsp-ui . lsp-ui-mode))
+    ;; :custom (lsp-ui-doc-position 'bottom))
+     #+end_src
+    
+***  Treemacs for nice treestructures
+    #+begin_src emacs-lisp
+    (use-package lsp-treemacs
+    :after lsp)
+    #+end_src
+*** lsp with ivy integration 
+    #+begin_src emacs-lisp
+    (use-package lsp-ivy)
+    #+end_src
+    
+
+*** TypeSript
+    TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
+
+npm i -g typescript-language-server; npm i -g typescript
+
+    #+begin_src emacs-lisp
+    (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)
+    :config
+    (setq typescript-indent-level 2))
+    #+end_src
+    
+*** Bash scripts
+    #+begin_src emacs-lisp
+      (use-package sh-mode
+      :ensure nil
+      :hook (sh-mode . lsp-deferred))
+    #+end_src
+   
+** Company  
+   Complete anything is an text completion framework. Used to get better 
+   #+begin_src emacs-lisp
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1))
+
+   #+end_src
+
+
+*** Company box mode
+   #+begin_src emacs-lisp
+ ;; (use-package company-box
+ ;; ;; :init (setq company-box-backend 'company-lsp)
+ ;; :hook (company-mode . company-box-mode)
+ ;; :config  (setq company-box-doc t)
+ ;; )
+   #+end_src
+   
+**  Git tools ie magit
+
+   #+begin_src emacs-lisp
+   (use-package magit
+   ;; :custom 
+   ;; (magit-display-buffer-function #'magit-display-same-except-diff-v1)
+   )
+
+   #+end_src
+
+   
 ** Projectile
    # TODO should be under dev tools
    Project managing package. [[https://github.com/bbatsov/projectile][Projectile github-page]]
@@ -414,6 +545,8 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
    #+end_src
 
 
+
+   
 * Just some random helpfull packages
 
   #+begin_src emacs-lisp

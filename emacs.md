@@ -1,36 +1,50 @@
 
 # Table of Contents
 
-1.  [Package handeling](#org008fad9)
-2.  [Keybindings](#orga3b7a96)
-3.  [UI](#org9f02aa0)
-    1.  [Basic UI config](#org0ef7f4b)
-    2.  [Themes](#org8b77e60)
-    3.  [Line numbers](#org7c79edc)
-4.  [Fonts configuration](#orgb7e37b0)
-5.  [Some basic behaviours configs](#orgf956157)
-    1.  [Swiper](#org2afd85c)
-    2.  [Ivy](#org8e1555d)
-    3.  [Counsel](#orgf5e6e0d)
-6.  [Modes](#org4114f0e)
-    1.  [Org-mode](#orgaf492db)
-        1.  [Org basic](#orgedb452c)
-    2.  [Org babel mode](#org02bd6ff)
-        1.  [Babel languages config](#orge4b0273)
-        2.  [Org-structure templates  configs](#org73651c7)
-        3.  [Org-babel  tangle configs](#org3548b88)
-    3.  [Which-key](#orga16bb7f)
-    4.  [Hydra](#org3766834)
-    5.  [The helpful package](#org2938e88)
-    6.  [Parentices rainbow delimiters](#orgabc2da7)
-7.  [Development](#orgf9d119e)
-    1.  [Projectile](#org85f9bf1)
-8.  [Just some random helpfull packages](#orgf025533)
-9.  [Set by emacs customization](#org9d67e17)
+1.  [Package handeling](#org5929541)
+2.  [Keybindings](#org06b86d7)
+3.  [UI](#org737ff1a)
+    1.  [Basic UI config](#orge1e6348)
+    2.  [Themes](#orgc7b9196)
+    3.  [Line numbers](#org4d8ea02)
+4.  [Fonts configuration](#orgc0f71cd)
+5.  [Some basic behaviours configs](#org6bd4e7e)
+    1.  [Swiper](#orgab7332f)
+    2.  [Ivy](#org270cdf1)
+    3.  [Counsel](#org8d4de36)
+6.  [Modes](#org1b455ea)
+    1.  [Org-mode](#org2e17b0e)
+        1.  [Org basic](#org7beff22)
+    2.  [Org babel mode](#orgdc4fdff)
+        1.  [Babel languages config](#org8232cbc)
+        2.  [Org-structure templates  configs](#orgae04900)
+        3.  [Org-babel  tangle configs](#orgd3a4569)
+    3.  [Which-key](#orged264c1)
+    4.  [Hydra](#org4e08efa)
+    5.  [The helpful package](#orge2ae967)
+    6.  [Parentices rainbow delimiters](#orga26221b)
+7.  [Development](#orgf95eb3d)
+    1.  [Common settings for all dev modes](#org4c1636b)
+    2.  [langauges](#orgae3d316)
+        1.  [yasnippets](#org0a666f0)
+        2.  [Breadcrumbs in LSP mode](#org5ebe8a4)
+        3.  [LSP servers ( language server protocol)](#org07b55f8)
+        4.  [Better LSP UI](#org6aa867b)
+        5.  [Treemacs for nice treestructures](#orgbbcfc7f)
+        6.  [lsp with ivy integration](#org4bffad6)
+        7.  [TypeSript](#org3fdb950)
+        8.  [Bash scripts](#orgc991733)
+    3.  [Company](#org377cf8b)
+        1.  [Company box mode](#org8f56531)
+    4.  [Git tools ie magit](#orgabcbe7d)
+    5.  [Projectile](#org38f0e67)
+8.  [Just some random helpfull packages](#orga3e7e67)
+9.  [Set by emacs customization](#org8d066f1)
+
+\#+title Emacs config
 
 
-
-<a id="org008fad9"></a>
+<a id="org5929541"></a>
 
 # Package handeling
 
@@ -61,7 +75,7 @@ We require use-package `(require 'package).`  The require function loads feature
     (setq use-package-always-ensure t)
 
 
-<a id="orga3b7a96"></a>
+<a id="org06b86d7"></a>
 
 # Keybindings
 
@@ -69,12 +83,12 @@ We require use-package `(require 'package).`  The require function loads feature
         (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 
-<a id="org9f02aa0"></a>
+<a id="org737ff1a"></a>
 
 # UI
 
 
-<a id="org0ef7f4b"></a>
+<a id="orge1e6348"></a>
 
 ## Basic UI config
 
@@ -93,7 +107,7 @@ As little distraction as possible please. No scroll-bars tool-bars and no annoyi
     (setq visible-bell t)
 
 
-<a id="org8b77e60"></a>
+<a id="orgc7b9196"></a>
 
 ## Themes
 
@@ -111,11 +125,11 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
       :custom ((doom-modeline-height 15)))
 
 
-<a id="org7c79edc"></a>
+<a id="org4d8ea02"></a>
 
 ## Line numbers
 
-    (column-number-mode)
+       (column-number-mode)
     ;; (global-display-line-numbers-mode t)
     
          (dolist (mode'(org-mode-hook
@@ -125,7 +139,7 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
            (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
-<a id="orgb7e37b0"></a>
+<a id="orgc0f71cd"></a>
 
 # Fonts configuration
 
@@ -136,39 +150,38 @@ I like the Doom-themes. These themes comes with some nice icons which for instan
     
     ;; Set the variable pitch face
     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
-    
-    ;; (load-theme 'wombat)
 
 
-<a id="orgf956157"></a>
+<a id="org6bd4e7e"></a>
 
 # Some basic behaviours configs
 
-    (setq scroll-step 1)
+Turn on word wrappping on long lines using v. 
+
+    (visual-line-mode 1)
+
+Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
+
+    (setq scroll-conservatively 99)
 
 
-<a id="org2afd85c"></a>
+<a id="orgab7332f"></a>
 
 ## Swiper
 
-   [swiper elpa](https://elpa.gnu.org/packages/swiper.html)
-   [swiper on github](https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9)
-   This package gives an overview of the current regex search
-candidates.  The search regex can be split into groups with a
-space.  Each group is highlighted with a different face.
-
-It can double as a quick \`regex-builder', although only single
-lines will be matched.
+[swiper elpa](https://elpa.gnu.org/packages/swiper.html)
+[swiper on github](https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9)
+An UI on top of ISearch (Incremental Search). Swiper gives an overview of the current regex search candidates. Matches are presented in an intuitive fashion and you cab jump to location of selected match. (in buffer search) presented in minibuffer
 
     (use-package swiper
          :ensure t)
 
 
-<a id="org8e1555d"></a>
+<a id="org270cdf1"></a>
 
 ## Ivy
 
-Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion
+Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
 
 [Ivy on github page](https://github.com/abo-abo/swiper) 
 
@@ -192,7 +205,7 @@ Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures com
       (ivy-mode 1))
 
 
-<a id="orgf5e6e0d"></a>
+<a id="org8d4de36"></a>
 
 ## Counsel
 
@@ -233,7 +246,7 @@ Currently available:
       (ivy-rich-mode 1))
 
 
-<a id="org4114f0e"></a>
+<a id="org1b455ea"></a>
 
 # Modes
 
@@ -242,12 +255,14 @@ Major mode provides means for working with particular file type (.org, .c .pdf e
 Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
 
 
-<a id="orgaf492db"></a>
+<a id="org2e17b0e"></a>
 
 ## Org-mode
 
+Org mode is similar to markdown but with a lot more functionallity.
 
-<a id="orgedb452c"></a>
+
+<a id="org7beff22"></a>
 
 ### Org basic
 
@@ -304,18 +319,16 @@ Minor modes are independent modes that associates some additional behaviour (sug
     (use-package visual-fill-column
       :hook (org-mode . efs/org-mode-visual-fill))
 
-    ;; READ up on this. It might take som trickery to load this file such as revert buffer
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; KEY bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-<a id="org02bd6ff"></a>
+<a id="orgdc4fdff"></a>
 
 ## Org babel mode
 
-Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
+   Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
+breadcrumb
 
 
-<a id="orge4b0273"></a>
+<a id="org8232cbc"></a>
 
 ### Babel languages config
 
@@ -325,7 +338,7 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (python . t)))
 
 
-<a id="org73651c7"></a>
+<a id="orgae04900"></a>
 
 ### Org-structure templates  configs
 
@@ -336,22 +349,22 @@ Babel adds ability to exucute source code within org documents. Babel allows for
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 
-<a id="org3548b88"></a>
+<a id="orgd3a4569"></a>
 
 ### Org-babel  tangle configs
 
-         ;;auto-tangle files to target on save
+        ;;auto-tangle files to target on save
     (defun efs/org-babel-tangle-config ()
-      (when (string-equal (buffer-file-name)
-    		      (expand-file-name "~/.emacs.d/emacs.org"))
-        ;; Dynamic scoping to the rescue
-        (let ((org-confirm-babel-evaluate nil))
-          (org-babel-tangle))))
+    (when (string-equal (buffer-file-name)
+    (expand-file-name "~/.config/emacs/emacs.org"))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle))))
     
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 
-<a id="orga16bb7f"></a>
+<a id="orged264c1"></a>
 
 ## Which-key
 
@@ -366,7 +379,7 @@ Emacs minor mode that displays popup with possible keybindings on prefix command
       (setq which-key-idle-delay 1))
 
 
-<a id="org3766834"></a>
+<a id="org4e08efa"></a>
 
 ## Hydra
 
@@ -387,7 +400,7 @@ Lets you do repetive commands in convienient manner
       ("f" nil "finnished" :exit t))
 
 
-<a id="org2938e88"></a>
+<a id="orge2ae967"></a>
 
 ## The helpful package
 
@@ -405,7 +418,7 @@ Lets you do repetive commands in convienient manner
       ([remap describe-key] . helpful-key))
 
 
-<a id="orgabc2da7"></a>
+<a id="orga26221b"></a>
 
 ## Parentices rainbow delimiters
 
@@ -413,12 +426,164 @@ Lets you do repetive commands in convienient manner
       :hook (prog-mode . rainbow-delimiters-mode))
 
 
-<a id="orgf9d119e"></a>
+<a id="orgf95eb3d"></a>
 
 # Development
 
 
-<a id="org85f9bf1"></a>
+<a id="org4c1636b"></a>
+
+## Common settings for all dev modes
+
+matching pairs of things such as parentecis
+
+
+<a id="orgae3d316"></a>
+
+## langauges
+
+
+<a id="org0a666f0"></a>
+
+### yasnippets
+
+    (use-package yasnippet
+    ;; :init
+    ;; (setq lsp-completion-provider :none) 
+    :config
+     (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
+     (yas-global-mode 1))    
+
+    (use-package yasnippet-snippets)
+
+
+<a id="org5ebe8a4"></a>
+
+### Breadcrumbs in LSP mode
+
+     (defun efs/lsp-mode-setup ()
+    ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+     (lsp-headerline-breadcrumb-mode 1))
+
+
+<a id="org07b55f8"></a>
+
+### LSP servers ( language server protocol)
+
+LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [Emacs LSP-mode language support pages](https://emacs-lsp.github.io/lsp-mode/). 
+
+LSP-mode for emacs aims to provide a more IDE like experience to emacs.
+Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
+
+`:commands` keyword  creates autoloads for the commands you list. An autoload in elisp is a mechanism to make known (register) a function but defer of loading the file that actualy defines it.
+The file is instead loaded at first call to function or macro. The hook `(:hook)` is setup to call `efs/lsp-mode-setup` function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commmands is set to `C-c l`. Finally we enable which-key for LSP.
+
+Some keybinding and commands to get you started  (remember prefix keybining was set to C-c l).
+
+C-c l g r find references
+C-c l g g find definitions
+C-l l r r refactor rename
+fly-make-show-diagnostic-buffer show buffer with errors
+
+There exist a `lsp-format-buffer` command but might be a better idea to us seperate language specific formatter for this job
+
+    (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . efs/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")  
+    :config
+    (lsp-enable-which-key-integration t))
+
+
+<a id="org6aa867b"></a>
+
+### Better LSP UI
+
+    (use-package lsp-ui
+    :hook (lsp-ui . lsp-ui-mode))
+    ;; :custom (lsp-ui-doc-position 'bottom))
+
+
+<a id="orgbbcfc7f"></a>
+
+### Treemacs for nice treestructures
+
+    (use-package lsp-treemacs
+    :after lsp)
+
+
+<a id="org4bffad6"></a>
+
+### lsp with ivy integration
+
+    (use-package lsp-ivy)
+
+
+<a id="org3fdb950"></a>
+
+### TypeSript
+
+TypeScript mode to get lsp-server functioning the [JavaScript/TypeSecript theia-ide](https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/) from lsp documentation pages. You can install it using npm with following command. 
+
+npm i -g typescript-language-server; npm i -g typescript
+
+    (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)
+    :config
+    (setq typescript-indent-level 2))
+
+
+<a id="orgc991733"></a>
+
+### Bash scripts
+
+    (use-package sh-mode
+    :ensure nil
+    :hook (sh-mode . lsp-deferred))
+
+
+<a id="org377cf8b"></a>
+
+## Company
+
+Complete anything is an text completion framework. Used to get better 
+
+    (use-package company
+      :after lsp-mode
+      :hook (lsp-mode . company-mode)
+      :bind (:map company-active-map
+    	 ("<tab>" . company-complete-selection))
+    	(:map lsp-mode-map
+    	 ("<tab>" . company-indent-or-complete-common))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.1))
+
+
+<a id="org8f56531"></a>
+
+### Company box mode
+
+    ;; (use-package company-box
+    ;; ;; :init (setq company-box-backend 'company-lsp)
+    ;; :hook (company-mode . company-box-mode)
+    ;; :config  (setq company-box-doc t)
+    ;; )
+
+
+<a id="orgabcbe7d"></a>
+
+## Git tools ie magit
+
+    (use-package magit
+    ;; :custom 
+    ;; (magit-display-buffer-function #'magit-display-same-except-diff-v1)
+    )
+
+
+<a id="org38f0e67"></a>
 
 ## Projectile
 
@@ -446,14 +611,14 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
     ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
 
-<a id="orgf025533"></a>
+<a id="orga3e7e67"></a>
 
 # Just some random helpfull packages
 
     (use-package command-log-mode)
 
 
-<a id="org9d67e17"></a>
+<a id="org8d066f1"></a>
 
 # Set by emacs customization
 
