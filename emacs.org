@@ -5,31 +5,32 @@
 
 * Package handeling
   In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax to isolate package loading in a performant way.
-   
+  
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
 We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
 
   [[https://github.com/jwiegley/use-package][Use package github page]]
  
   #+begin_src emacs-lisp
-    ;; Initialize package sources
-    (require 'package)
+     ;; Initialize package sources
+     (require 'package)
+
 
     (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-			     ("org" . "https://orgmode.org/elpa/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")))
+                              ("org" . "https://orgmode.org/elpa/")
+                              ("elpa" . "https://elpa.gnu.org/packages/")))
 
-    (package-initialize)
+     (package-initialize)
 
-    (unless package-archive-contents
-     (package-refresh-contents)) 
+     (unless package-archive-contents
+      (package-refresh-contents)) 
 
-    ;; Initialize use-package on non-Linux platforms
-    (unless (package-installed-p 'use-package)
-       (package-install 'use-package))
+     ;; Initialize use-package on non-Linux platforms
+     (unless (package-installed-p 'use-package)
+        (package-install 'use-package))
 
-    (require 'use-package)
-    (setq use-package-always-ensure t)
+     (require 'use-package)
+     (setq use-package-always-ensure t)
 
   #+end_src
 
@@ -340,9 +341,9 @@ breadcrumb
 *** Org-babel  tangle configs    
 
     #+begin_src emacs-lisp
-	  ;;auto-tangle files to target on save
+          ;;auto-tangle files to target on save
       (defun efs/org-babel-tangle-config ()
-	(when (string-equal (buffer-file-name)
+        (when (string-equal (buffer-file-name)
       (expand-file-name "~/.config/emacs/emacs.org"))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
@@ -521,22 +522,16 @@ npm i -g typescript-language-server; npm i -g typescript
 
 #+begin_src emacs-lisp
   ;; TODO hmm would like to make a seperation as well that is use :separate
-              (use-package emacs-lisp-mode
-                :ensure nil
-                :mode  "\\.el\\'"
-                :hook (emacs-lisp-mode . company-mode)
-                ;;company-elisp is obsolete?
-                :custom  (company-backends    '((company-capf :with company-yasnippet :separate)
-                                                company-bbdb  company-files
-                                                (company-dabbrev-code company-gtags  company-keywords)
-                                                company-oddmuse company-dabbrev))
-
-
-  ;;:custom (company-backends ' ((company-elisp :with comany-yasnippet) 
-  ;;                                       (company-bbdb company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
-  ;;                (company-dabbrev-code company-gtags company-etags company-keywords)
-  ;;                company-oddmuse company-dabbrev)
-  ;;  ))
+  (use-package emacs-lisp-mode
+    :ensure nil
+    :mode  "\\.el\\'"
+    :hook (emacs-lisp-mode . company-mode)
+    ;;company-elisp is obsolete?
+    ;; could just use push instead?
+    :custom  (company-backends    '((company-capf :with company-yasnippet :separate)
+                                    company-bbdb  company-files
+                                    (company-dabbrev-code company-gtags  company-keywords)
+                                    company-oddmuse company-dabbrev)))
             ;; TODO make yassnippets local maybe 2. push infront of already existing list
               ;; figure out the :separate
 

@@ -1,24 +1,47 @@
 ;; Initialize package sources
-(require 'package)
+ (require 'package)
+
 
 (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+                          ("org" . "https://orgmode.org/elpa/")
+                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
-(package-initialize)
+ (package-initialize)
 
-(unless package-archive-contents
- (package-refresh-contents)) 
+ (unless package-archive-contents
+  (package-refresh-contents)) 
 
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
+ ;; Initialize use-package on non-Linux platforms
+ (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
 
-(require 'use-package)
-(setq use-package-always-ensure t)
+ (require 'use-package)
+ (setq use-package-always-ensure t)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+                       ;; Using keyboard macros to define thes for now. These will effect the
+;; kill ring as well as point and mark
+(global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
+(fset 'duplicate-line-down
+      (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
+
+(global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
+(fset 'duplicate-line-up 
+      (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
+
+(global-set-key (kbd"M-<up>")  'swapline-up)
+(fset 'swapline-up
+      (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
+
+(global-set-key (kbd "M-<down>")'swapline-down)
+(fset 'swapline-down
+      (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
+
+(global-set-key (kbd" C-<return>") 'open-newline)
+(fset 'open-newline
+      (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
+
 (global-set-key (kbd "<f12>")
                 (lambda () 
                   (interactive) 
@@ -260,22 +283,19 @@
 (defun   jv/setup-emacs-lisp-mode()
    (message "running my hook")
 ;;     (push '(company-elisp :with company-yasnippet)  company-backends)
-     (setq-local  company-backends '((company-elisp :with company-yasnippet) )))
+     (setq-local  company-backends '((company-elisp :with company-yasnippet))))
 
 ;; TODO hmm would like to make a seperation as well that is use :separate
-            (use-package emacs-lisp-mode
-              :ensure nil
-              :mode  "\\.el\\'"
-              :hook (emacs-lisp-mode . company-mode)
-              ;;company-elisp is obsolete?
-              :custom  (company-backends    '((company-capf :with company-yasnippet) )))
-
-
-;;:custom (company-backends ' ((company-elisp :with comany-yasnippet) 
-;;                                       (company-bbdb company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
-;;                (company-dabbrev-code company-gtags company-etags company-keywords)
-;;                company-oddmuse company-dabbrev)
-;;  ))
+(use-package emacs-lisp-mode
+  :ensure nil
+  :mode  "\\.el\\'"
+  :hook (emacs-lisp-mode . company-mode)
+  ;;company-elisp is obsolete?
+  ;; could just use push instead?
+  :custom  (company-backends    '((company-capf :with company-yasnippet :separate)
+                                  company-bbdb  company-files
+                                  (company-dabbrev-code company-gtags  company-keywords)
+                                  company-oddmuse company-dabbrev)))
           ;; TODO make yassnippets local maybe 2. push infront of already existing list
             ;; figure out the :separate
 
