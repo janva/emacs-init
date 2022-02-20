@@ -2,9 +2,12 @@
 
 #+TITLE: Emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+* My  Emacs init file
+This is just a setup for Emacs.  It's based on David Wilson work done on  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
+[[https://github.com/daviwil/emacs-from-scratch][Github repo]]. 
 
 * Package handeling
-  In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax to isolate package loading in a performant way.
+  In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
   
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
 We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
@@ -24,7 +27,6 @@ We require use-package ~(require 'package).~  The require function loads feature
 
      (unless package-archive-contents
       (package-refresh-contents)) 
-
      ;; Initialize use-package on non-Linux platforms
      (unless (package-installed-p 'use-package)
         (package-install 'use-package))
@@ -35,11 +37,13 @@ We require use-package ~(require 'package).~  The require function loads feature
   #+end_src
 
 * Global  keybindings
+Just a few global keybindings
+
 ** TODO Find a better strategy to locate emacs.org file
    #+begin_src emacs-lisp
-                                          ;; Make ESC quit prompts
+     ;; Make ESC quit prompts
      (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-                            ;; Using keyboard macros to define thes for now. These will effect the
+     ;; Using keyboard macros to define thes for now. These will effect the
      ;; kill ring as well as point and mark
      (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
      (fset 'duplicate-line-down
@@ -68,7 +72,7 @@ We require use-package ~(require 'package).~  The require function loads feature
    #+end_src
 
 * UI
-  
+ Global user interface setttings.
 **  Basic UI config
    
    As little distraction as possible please. No scroll-bars tool-bars and no annoying sounds instead use visible bell.
@@ -87,7 +91,7 @@ We require use-package ~(require 'package).~  The require function loads feature
 	 (setq visible-bell t)
    #+end_src
 
-
+   
 ** Themes
    Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
 
@@ -109,20 +113,24 @@ We require use-package ~(require 'package).~  The require function loads feature
    
 ** Line numbers
 
-   Most often i don't need linenumbers. If we turn on linenumbers globaly below then bellow will ensure that certain modes still have them turned off  . Each mode in the list gets a hook added to to it.
+   Most often i don't need to number per line. if i need to know line number i can see it mode-line.
+   I use =M-g g= to get to specific line instead of arrows. I do want to se columnnumber in mode line.
+   The rest of the code only serve as an example of how we how we could set some value for several modes.
+So for instance if  we use global line number the coude would ensure that certain modes still didn't  show line numbers  by adding  hook to each mode  in  list.
    
    #+begin_src emacs-lisp
-     ;; (global-display-line-numbers-mode t)
+
+
      (column-number-mode)
 
+     ;; (global-display-line-numbers-mode t)
      (dolist (mode'(org-mode-hook
                     term-mode-hook
                     shell-mode-hook
                     eshell-mode-hook))
        (add-hook mode (lambda() (display-line-numbers-mode 0))))
    #+end_src
-
-  
+   
 * Fonts configuration
 ** Fonts configuration
   
@@ -138,9 +146,11 @@ We require use-package ~(require 'package).~  The require function loads feature
 
   #+end_src  
 * Some basic behaviours configs
-Turn on word wrappping on long lines using v. 
+
+Turn on word wrappping on long lines using .Visual line mode turns on  word wrapping per buffer. It redefines some editing commands to work on visual lines rather than on logical lines.
+
   #+begin_src emacs-lisp
-  (visual-line-mode  1)
+    (global-visual-line-mode  1)
   #+end_src
 
 Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
@@ -158,6 +168,17 @@ Documentation pages suggests to setting scroll conservatively to high value rath
        :ensure t)
 #+end_src
 
+* Modes
+  Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor.
+  Major mode provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time.
+  Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
+
+  Modes are just code that adhere to a set of  conventions see links
+  - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
+
+  
 ** Ivy
    
    Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
@@ -188,6 +209,7 @@ Documentation pages suggests to setting scroll conservatively to high value rath
    
 ** Counsel 
    [[https://melpa.org/#/counsel][counsel on melpa]]
+Counsel is defined as minor mode.
 ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
 
 Counsel takes this further, providing versions of common Emacs commands that are customised to make the best use of Ivy. For example, counsel-find-file has some additional keybindings. Pressing DEL will move you to the parent directory.
@@ -227,13 +249,9 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 
    #+end_src
 
-* Modes
-  Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor.
-  Major mode provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time.
-  Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode 
-
 ** Org-mode
-   Org mode is similar to markdown but with a lot more functionallity.
+   Org mode for emacs is similar to markdown but with a lot more functionallity.
+for more information see [[https://orgmode.org/][org-mode-pages]]
 *** Org basic
 
     #+begin_src emacs-lisp
@@ -289,9 +307,6 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 
     #+end_src
 
-    #+RESULTS:
-
-
     #+begin_src emacs-lisp
       (use-package org-bullets
 	:after org
@@ -317,7 +332,7 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 ** Org babel mode
 
    Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
-breadcrumb
+
 *** Babel languages config
   
   #+begin_src emacs-lisp :results value 
@@ -328,9 +343,8 @@ breadcrumb
     #+end_src
 
 *** Org-structure templates  configs
-
+[[ https://orgmode.org/worg/org-contrib/babel/languages/][structured templates]]
     #+begin_src emacs-lisp 
-	;; https://orgmode.org/worg/org-contrib/babel/languages/
       (require 'org-tempo)
       (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -411,17 +425,23 @@ breadcrumb
        :hook (prog-mode . rainbow-delimiters-mode))
    #+end_src   
 
-* Development 
- 
+* Development
+  This is separarae section on development modes and tools.
+  
 **  Common settings for all dev modes
 ** TODO make use of prog-mode for common setting of all programming modes
-  matching pairs of things such as parentecis
+
+Auto match pairs of things such as parentecis with =electric-pair-mode= and light up matching parentices with =show-paren-mode=.
+
   #+begin_src emacs-lisp
   (electric-pair-mode 1)  
   (show-paren-mode t)
   #+end_src
 ** langauges
-*** yasnippets 
+*** yasnippets
+
+Is a minor mode providing template system. It features abbreviations that can be expanded automatically into function templates. You can define your own templates and/or use prexisting ones.
+
     #+begin_src emacs-lisp
    (use-package yasnippet
    ;; :init
@@ -431,11 +451,14 @@ breadcrumb
     (yas-global-mode 1))    
   #+end_src
 
-
+ =yasnippet-snippets= provides predefined snippets for a lot of languages.
+ 
     #+begin_src emacs-lisp
     (use-package yasnippet-snippets)
     #+end_src
+    
 ***  Breadcrumbs in LSP mode
+
 
     #+begin_src emacs-lisp
       (defun efs/lsp-mode-setup ()
@@ -557,10 +580,6 @@ TODO company mode fucks up lsp completion
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1))
-
-;;(use-package company-box
-;;  :hook (company-mode . company-box-mode))
-
 #+end_src
 
 
@@ -571,10 +590,7 @@ TODO company mode fucks up lsp completion
 #+end_src
   
 
-
-
 ** Projectile
-   # TODO should be under dev tools
    Project managing package. [[https://github.com/bbatsov/projectile][Projectile github-page]]
    
    #+begin_src emacs-lisp
