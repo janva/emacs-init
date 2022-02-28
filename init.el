@@ -10,7 +10,6 @@
 
  (unless package-archive-contents
   (package-refresh-contents)) 
-
  ;; Initialize use-package on non-Linux platforms
  (unless (package-installed-p 'use-package)
     (package-install 'use-package))
@@ -18,9 +17,13 @@
  (require 'use-package)
  (setq use-package-always-ensure t)
 
+(global-visual-line-mode  1)
+
+(setq scroll-conservatively 99)
+
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-                       ;; Using keyboard macros to define thes for now. These will effect the
+;; Using keyboard macros to define thes for now. These will effect the
 ;; kill ring as well as point and mark
 (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
 (fset 'duplicate-line-down
@@ -68,9 +71,9 @@
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
-;; (global-display-line-numbers-mode t)
 (column-number-mode)
 
+;; (global-display-line-numbers-mode t)
 (dolist (mode'(org-mode-hook
                term-mode-hook
                shell-mode-hook
@@ -84,10 +87,6 @@
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
-
-(visual-line-mode  1)
-
-(setq scroll-conservatively 99)
 
 (use-package swiper
      :ensure t)
@@ -186,7 +185,6 @@
 (emacs-lisp . t)
 (python . t)))
 
-;; https://orgmode.org/worg/org-contrib/babel/languages/
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -210,10 +208,6 @@
   :config
   (setq which-key-idle-delay 1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; hydra lets you repeat commands in convienient manner 
-;;
-;;
 (use-package hydra)
 
 
@@ -223,21 +217,13 @@
   ("k" text-scale-decrease "out")
   ("f" nil "finnished" :exit t))
 
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(electric-pair-mode 1)  
-(show-paren-mode t)
+(use-package prog-mode
+  :ensure nil
+  :custom (electric-pair-mode 1  
+                      show-paren-mode t))
 
 (use-package yasnippet
 ;; :init
@@ -315,9 +301,6 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1))
 
-;;(use-package company-box
-;;  :hook (company-mode . company-box-mode))
-
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
@@ -340,6 +323,16 @@
 ;;.dir-locals.el
 ;; can be use for directory local variables for instance
 ;;((nil .((projectile-project-run-cmd ."npm start") )))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
 
 (use-package command-log-mode)
 

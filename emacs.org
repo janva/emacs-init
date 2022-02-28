@@ -6,11 +6,38 @@
 This is just a setup for Emacs.  It's based on David Wilson work done on  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
 [[https://github.com/daviwil/emacs-from-scratch][Github repo]]. 
 
+* A couple of Emacs concepts
+** Buffers & windows
+
+Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
+
+So when we want to edit a file  stored on our hardrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
+
+the buffer itself contains a lot of information such as name of visited file ,wheter the buffer is editable or not 
+number of character contained in buffer etc. Two such  pieces of information are the *point* (PNT) and *mark* (MRK).
+
+*** Point , Mark (PNT MRK) and region 
+
+*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or inbetween characters. If the buffer is not empty and we are at point 0 we would be looking at first charcter of buffer. Every buffer has a single. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer. If there exist a mark then we call the text between position and mark the *region*.
+The *cursor* is placed on the character following the point. 
+
+** Modes
+
+Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
+
+  Modes are just code that adhere to a set of  conventions see links
+  - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
+    
+keymap is a table that records the bindings between characters and command functions
 * Package handeling
   In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
   
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
 We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
+
+TODO ensure only use secure chanels for packages 
 
   [[https://github.com/jwiegley/use-package][Use package github page]]
  
@@ -36,10 +63,25 @@ We require use-package ~(require 'package).~  The require function loads feature
 
   #+end_src
 
+* Some basic behaviours configs
+
+Turn on word wrappping on long lines using .Visual line mode turns on  word wrapping per buffer. It redefines some editing commands to work on visual lines rather than on logical lines.
+
+  #+begin_src emacs-lisp
+    (global-visual-line-mode  1)
+  #+end_src
+
+Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
+
+  #+begin_src emacs-lisp
+  (setq scroll-conservatively 99)
+   #+end_src  
+
 * Global  keybindings
 Just a few global keybindings
 
-** TODO Find a better strategy to locate emacs.org file
+** TODO Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable
+
    #+begin_src emacs-lisp
      ;; Make ESC quit prompts
      (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -72,7 +114,6 @@ Just a few global keybindings
    #+end_src
 
 * UI
- Global user interface setttings.
 **  Basic UI config
    
    As little distraction as possible please. No scroll-bars tool-bars and no annoying sounds instead use visible bell.
@@ -90,7 +131,6 @@ Just a few global keybindings
 	 ;; Set up the visible bell
 	 (setq visible-bell t)
    #+end_src
-
    
 ** Themes
    Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
@@ -110,7 +150,6 @@ Just a few global keybindings
        :custom ((doom-modeline-height 15)))
    #+end_src
 
-   
 ** Line numbers
 
    Most often i don't need to number per line. if i need to know line number i can see it mode-line.
@@ -131,7 +170,6 @@ So for instance if  we use global line number the coude would ensure that certai
        (add-hook mode (lambda() (display-line-numbers-mode 0))))
    #+end_src
    
-* Fonts configuration
 ** Fonts configuration
   
    #+begin_src emacs-lisp 
@@ -145,40 +183,20 @@ So for instance if  we use global line number the coude would ensure that certai
 
 
   #+end_src  
-* Some basic behaviours configs
 
-Turn on word wrappping on long lines using .Visual line mode turns on  word wrapping per buffer. It redefines some editing commands to work on visual lines rather than on logical lines.
-
-  #+begin_src emacs-lisp
-    (global-visual-line-mode  1)
-  #+end_src
-
-Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
-
-  #+begin_src emacs-lisp
-  (setq scroll-conservatively 99)
-   #+end_src  
+* Completaion  and tools to simplifying editing and navigation
 ** Swiper
-   [[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
-   [[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9][swiper on github]]
-   An UI on top of ISearch (Incremental Search). Swiper gives an overview of the current regex search candidates. Matches are presented in an intuitive fashion and you cab jump to location of selected match. (in buffer search) presented in minibuffer
+
+[[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
+[[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9][swiper on github]]
+
+An UI on top of ISearch (Incremental Search). Swiper gives an overview of the current regex search candidates. Matches are presented in an intuitive fashion and you can jump to location of selected match  (in buffer search) presented in minibuffer
 
 #+begin_src emacs-lisp
   (use-package swiper
        :ensure t)
 #+end_src
 
-* Modes
-  Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor.
-  Major mode provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time.
-  Minor modes are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
-
-  Modes are just code that adhere to a set of  conventions see links
-  - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
-  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
-  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
-
-  
 ** Ivy
    
    Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
@@ -186,8 +204,7 @@ Documentation pages suggests to setting scroll conservatively to high value rath
    [[https://github.com/abo-abo/swiper][Ivy on github page]] 
 
    
-   #+begin_src emacs-lisp
-   
+   #+begin_src emacs-lisp   
      (use-package ivy
        :diminish
        :bind (("C-s" . swiper)
@@ -206,28 +223,16 @@ Documentation pages suggests to setting scroll conservatively to high value rath
        :config
        (ivy-mode 1))
    #+end_src
-   
-** Counsel 
-   [[https://melpa.org/#/counsel][counsel on melpa]]
-Counsel is defined as minor mode.
-ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
 
+** Counsel 
+
+[[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9#counsel][Counsel on github]]
+
+Counsel is defined as minor mode.ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
 Counsel takes this further, providing versions of common Emacs commands that are customised to make the best use of Ivy. For example, counsel-find-file has some additional keybindings. Pressing DEL will move you to the parent directory.
 
 Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements:
-   
-   Just call one of the interactive functions in this file to complete
-   the corresponding thing using `ivy'.
-   
-   Currently available:
-- Symbol completion for Elisp, Common Lisp, Python, Clojure, C, C++.
-- Describe functions for Elisp: function, variable, library, command,
-  bindings, theme.
-- Navigation functions: imenu, ace-line, semantic, outline.
-- Git utilities: git-files, git-grep, git-log, git-stash, git-checkout.
-- Grep utilities: grep, ag, pt, recoll, ack, rg.
-- System utilities: process list, rhythmbox, linux-app.
-- Many more.
+
    #+begin_src emacs-lisp
      (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
    #+end_src
@@ -248,11 +253,41 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
        (ivy-rich-mode 1))
 
    #+end_src
+   
+** Which-key
+      Emacs minor mode that displays popup with possible keybindings on prefix commands such C-c C-x M-x. I this config I popup will ony show after beeing idle for at leas 1 second.  
+   
+   #+begin_src emacs-lisp
+     ;;cln/command-log-buffer
+     ;;If package is not found try to refresh M-x package-list-packages
+     (use-package which-key
+       :init (which-key-mode)
+       :diminish which-key-mode
+       :config
+       (setq which-key-idle-delay 1))
+   #+end_src
 
-** Org-mode
-   Org mode for emacs is similar to markdown but with a lot more functionallity.
-for more information see [[https://orgmode.org/][org-mode-pages]]
-*** Org basic
+** Hydra
+   Lets you do repetive commands in convienient manner. 
+   [[https://github.com/abo-abo/hydra][Hydra package on github]]
+   #+begin_src emacs-lisp
+(use-package hydra)
+
+
+(defhydra hydra-text-scale(:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finnished" :exit t))
+
+   #+end_src
+
+* Org-mode
+[[https://orgmode.org/][org-mode-pages]]
+desribes org-mode as a major mode for keeping notes, authoring documents, computational notebooks, literate programming, maintaining to-do lists, planning projects, and more.
+it's a realy versatile mode that does a lot of things. For instance this init-file has been written in org-mode using litterate programming. 
+
+** Org basic
 
     #+begin_src emacs-lisp
       (defun efs/org-font-setup ()
@@ -367,76 +402,26 @@ for more information see [[https://orgmode.org/][org-mode-pages]]
 
     #+end_src
   
-** Which-key
-   
-   Emacs minor mode that displays popup with possible keybindings on prefix commands such C-c C-x M-x. I this config I popup will ony show after beeing idle for at leas 1 second. 
- 
-   
-   #+begin_src emacs-lisp
-     ;;cln/command-log-buffer
-     ;;If package is not found try to refresh M-x package-list-packages
-     (use-package which-key
-       :init (which-key-mode)
-       :diminish which-key-mode
-       :config
-       (setq which-key-idle-delay 1))
-   #+end_src
+* Development
+  This is separarae section on development modes and tools.
+**  Common settings for all dev modes
 
-** Hydra
-   Lets you do repetive commands in convienient manner
-   [[https://github.com/abo-abo/hydra][Hydra package on github]]
-   #+begin_src emacs-lisp
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; hydra lets you repeat commands in convienient manner 
-;;
-;;
-(use-package hydra)
+rainbow delimiters helps you keep track of matching parantesis etc.
 
-
-(defhydra hydra-text-scale(:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finnished" :exit t))
-
-   #+end_src
-
-**  The helpful package
-   
-  [[https://github.com/Wilfred/helpful][helpful github page]]
-   Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
-
-   #+begin_src emacs-lisp
-     (use-package helpful
-       :custom
-       (counsel-describe-function-function #'helpful-callable)
-       (counsel-describe-variable-function #'helpful-variable)
-       :bind
-       ([remap describe-function] . counsel-describe-function)
-       ([remap describe-command] . helpful-command)
-       ([remap describe-variable] . counsel-describe-variable)
-       ([remap describe-key] . helpful-key))
-   #+end_src
-  
-** Parentices rainbow delimiters
-   
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
        :hook (prog-mode . rainbow-delimiters-mode))
    #+end_src   
-
-* Development
-  This is separarae section on development modes and tools.
-  
-**  Common settings for all dev modes
-** TODO make use of prog-mode for common setting of all programming modes
-
+   
 Auto match pairs of things such as parentecis with =electric-pair-mode= and light up matching parentices with =show-paren-mode=.
 
   #+begin_src emacs-lisp
-  (electric-pair-mode 1)  
-  (show-paren-mode t)
+    (use-package prog-mode
+      :ensure nil
+      :custom (electric-pair-mode 1  
+                          show-paren-mode t))
   #+end_src
+
 ** langauges
 *** yasnippets
 
@@ -513,7 +498,7 @@ There exist a =lsp-format-buffer= command but might be a better idea to us seper
     #+end_src
     
 *** TypeSript
-    TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
+TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
 
 npm i -g typescript-language-server; npm i -g typescript
 
@@ -568,7 +553,6 @@ npm i -g typescript-language-server; npm i -g typescript
 Is a built in mode hence ensure nil.
 [[http://company-mode.github.io/manual/Backends.html#Backends-Usage-Basics][Company backends documentation]] 
 
-TODO company mode fucks up lsp completion
 #+begin_src emacs-lisp
 (use-package company
  ;; :after lsp-mode
@@ -589,7 +573,6 @@ TODO company mode fucks up lsp completion
     :hook (company-mode . company-box-mode))
 #+end_src
   
-
 ** Projectile
    Project managing package. [[https://github.com/bbatsov/projectile][Projectile github-page]]
    
@@ -619,7 +602,24 @@ TODO company mode fucks up lsp completion
 
 
 
+* Better documentation
+**  The helpful package
    
+  [[https://github.com/Wilfred/helpful][helpful github page]]
+   Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
+
+   #+begin_src emacs-lisp
+     (use-package helpful
+       :custom
+       (counsel-describe-function-function #'helpful-callable)
+       (counsel-describe-variable-function #'helpful-variable)
+       :bind
+       ([remap describe-function] . counsel-describe-function)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-variable] . counsel-describe-variable)
+       ([remap describe-key] . helpful-key))
+   #+end_src
+  
 * Just some random helpfull packages
 
   #+begin_src emacs-lisp
