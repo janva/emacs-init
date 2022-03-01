@@ -45,7 +45,7 @@ TODO ensure only use secure chanels for packages
      ;; Initialize package sources
      (require 'package)
 
-
+    ;; Note org elpa will close before 9.6 use org gnu instead.
     (setq package-archives '(("melpa" ."https://melpa.org/packages/")
                               ("org" . "https://orgmode.org/elpa/")
                               ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -201,7 +201,7 @@ An UI on top of ISearch (Incremental Search). Swiper gives an overview of the cu
    
    Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
 
-   [[https://github.com/abo-abo/swiper][Ivy on github page]] 
+   [[https://github.com/abo-abo/swiper][Ivy on github]] 
 
    
    #+begin_src emacs-lisp   
@@ -424,19 +424,18 @@ Auto match pairs of things such as parentecis with =electric-pair-mode= and ligh
 
 ** langauges
 *** yasnippets
-
 Is a minor mode providing template system. It features abbreviations that can be expanded automatically into function templates. You can define your own templates and/or use prexisting ones.
 
     #+begin_src emacs-lisp
-   (use-package yasnippet
-   ;; :init
-   ;; (setq lsp-completion-provider :none) 
-   :config
-    (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
-    (yas-global-mode 1))    
+      (use-package yasnippet
+       :init
+       (setq lsp-completion-provider :none) 
+      :config
+       (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
+       (yas-global-mode 1))    
   #+end_src
 
- =yasnippet-snippets= provides predefined snippets for a lot of languages.
+ =yasnippet-snippets= is a set of predefined snippets for a lot of languages.
  
     #+begin_src emacs-lisp
     (use-package yasnippet-snippets)
@@ -444,19 +443,17 @@ Is a minor mode providing template system. It features abbreviations that can be
     
 ***  Breadcrumbs in LSP mode
 
-
     #+begin_src emacs-lisp
       (defun efs/lsp-mode-setup ()
         ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
       (lsp-headerline-breadcrumb-mode 1))
-
     #+end_src
 
 *** LSP servers ( Language Server  Protocol)
-    LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [[https://emacs-lsp.github.io/lsp-mode/][Emacs LSP-mode language support pages]]. 
 
-LSP-mode for emacs aims to provide a more IDE like experience to emacs.
-Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
+LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [[https://emacs-lsp.github.io/lsp-mode/][Emacs LSP-mode language support pages]]. 
+
+LSP-mode for emacs aims to provide a more IDE like experience to emacs. Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
 
 ~:commands~ keyword  creates autoloads for the commands you list. An autoload in elisp is a mechanism to make known (register) a function but defer of loading the file that actualy defines it.
 The file is instead loaded at first call to function or macro. The hook =(:hook)= is setup to call =efs/lsp-mode-setup= function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commmands is set to =C-c l=. Finally we enable which-key for LSP.
@@ -509,9 +506,56 @@ npm i -g typescript-language-server; npm i -g typescript
     :config
     (setq typescript-indent-level 2))
     #+end_src
+
     
+*** python
+(require 'cl)
+#+begin_src emacs-lisp
+(use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+  :commands dap-debug
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+  ;; Bind `C-c l d` to `dap-hydra` for easy access
+  (general-define-key
+    :keymaps 'lsp-mode-map
+    :prefix lsp-keymap-prefix
+    "d" '(dap-hydra t :wk "debugger")))
+#+end_src
+
+
+=pip install --user "python-language-server[all]"=
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :ensure t
+    :hook (python-mode . lsp-deferred)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    (python-shell-interpreter "python3")
+     (dap-python-executable "python3")
+    (dap-python-debugger 'debugpy)
+    :config
+    (require 'dap-python))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :after python-mode
+  :config
+  (pyvenv-mode 1))
+#+end_src
 *** Shell  scripts
-    #+begin_src emacs-lisp
+
+Use =npm i -g bash-language-server= to install bash language server.
+
+#+begin_src emacs-lisp
       (use-package sh-mode
         :mode "\\.sh\\'"
         :ensure nil
@@ -519,7 +563,9 @@ npm i -g typescript-language-server; npm i -g typescript
     #+end_src
    
 ***  Emacs Lisp mode
-(setq company-gloabal-modes nil)
+
+(setq company-global-modes nil)
+
 #+begin_src emacs-lisp
    (defun   jv/setup-emacs-lisp-mode()
    (message "running my hook")

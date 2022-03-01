@@ -342,7 +342,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
+   (quote
+    ("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default)))
  '(exwm-floating-border-color "#16161c")
  '(fci-rule-color "#f9cec3")
  '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
@@ -351,7 +352,8 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
  '(objed-cursor-color "#e95678")
  '(package-selected-packages
-   '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+   (quote
+    (dap-mode python-mode visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package)))
  '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
  '(rustic-ansi-faces
    ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
