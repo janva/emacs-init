@@ -10,7 +10,6 @@
 
  (unless package-archive-contents
   (package-refresh-contents)) 
-
  ;; Initialize use-package on non-Linux platforms
  (unless (package-installed-p 'use-package)
     (package-install 'use-package))
@@ -20,7 +19,7 @@
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-                       ;; Using keyboard macros to define thes for now. These will effect the
+;; Using keyboard macros to define thes for now. These will effect the
 ;; kill ring as well as point and mark
 (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
 (fset 'duplicate-line-down
@@ -68,9 +67,9 @@
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
-;; (global-display-line-numbers-mode t)
 (column-number-mode)
 
+;; (global-display-line-numbers-mode t)
 (dolist (mode'(org-mode-hook
                term-mode-hook
                shell-mode-hook
@@ -85,7 +84,7 @@
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
 
-(visual-line-mode  1)
+(global-visual-line-mode  1)
 
 (setq scroll-conservatively 99)
 
@@ -186,7 +185,6 @@
 (emacs-lisp . t)
 (python . t)))
 
-;; https://orgmode.org/worg/org-contrib/babel/languages/
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -292,9 +290,10 @@
   :hook (emacs-lisp-mode . company-mode)
   ;;company-elisp is obsolete?
   ;; could just use push instead?
-  :custom  (company-backends    '((company-capf :with company-yasnippet :separate)
-                                  company-bbdb  company-files
-                                  (company-dabbrev-code company-gtags  company-keywords)
+  :custom  (company-backends    '(( :separate company-yasnippet company-capf  )
+
+                                  company-bbdb  company-files 
+                                  (company-dabbrev-code company-gtags  company-keywords :with company-yasnippet ::separate)
                                   company-oddmuse company-dabbrev)))
           ;; TODO make yassnippets local maybe 2. push infront of already existing list
             ;; figure out the :separate
@@ -314,9 +313,6 @@
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1))
-
-;;(use-package company-box
-;;  :hook (company-mode . company-box-mode))
 
 (use-package company-box
   :hook (company-mode . company-box-mode))
