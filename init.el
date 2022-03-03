@@ -17,6 +17,10 @@
  (require 'use-package)
  (setq use-package-always-ensure t)
 
+(global-visual-line-mode  1)
+
+(setq scroll-conservatively 99)
+
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;; Using keyboard macros to define thes for now. These will effect the
@@ -83,6 +87,7 @@
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
+
 
 (global-visual-line-mode  1)
 
@@ -208,10 +213,6 @@
   :config
   (setq which-key-idle-delay 1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;hydra;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; hydra lets you repeat commands in convienient manner 
-;;
-;;
 (use-package hydra)
 
 
@@ -221,21 +222,13 @@
   ("k" text-scale-decrease "out")
   ("f" nil "finnished" :exit t))
 
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(electric-pair-mode 1)  
-(show-paren-mode t)
+(use-package prog-mode
+  :ensure nil
+  :custom (electric-pair-mode 1  
+                      show-paren-mode t))
 
 (use-package yasnippet
 ;; :init
@@ -337,6 +330,16 @@
 ;; can be use for directory local variables for instance
 ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
 (use-package command-log-mode)
 
 (custom-set-variables
@@ -345,7 +348,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
+   (quote
+    ("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default)))
  '(exwm-floating-border-color "#16161c")
  '(fci-rule-color "#f9cec3")
  '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
@@ -354,7 +358,8 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
  '(objed-cursor-color "#e95678")
  '(package-selected-packages
-   '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+   (quote
+    (dap-mode python-mode visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package)))
  '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
  '(rustic-ansi-faces
    ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
