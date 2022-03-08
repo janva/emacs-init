@@ -1,7 +1,7 @@
 ;; Initialize package sources
  (require 'package)
 
-
+;; Note org elpa will close before 9.6 use org gnu instead.
 (setq package-archives '(("melpa" ."https://melpa.org/packages/")
                           ("org" . "https://orgmode.org/elpa/")
                           ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -62,14 +62,18 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(use-package doom-themes
-  :init (load-theme 'doom-horizon t))
-;;use refresh-pakcages to get this working
-(use-package all-the-icons)
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+(require 'all-the-icons)
+             (use-package doom-themes
+               :init (load-theme 'doom-horizon t))
+             ;;use refresh-pakcages to get this working
+     ;; M-x all-the-icons-install-fonts
+             (use-package all-the-icons
+               :if (display-graphic-p)
+               )
+             (use-package doom-modeline
+               :ensure t
+               :init (doom-modeline-mode 1)
+               :custom ((doom-modeline-height 15)))
 
 (column-number-mode)
 
@@ -87,11 +91,6 @@
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
-
-
-(global-visual-line-mode  1)
-
-(setq scroll-conservatively 99)
 
 (use-package swiper
      :ensure t)
@@ -128,6 +127,23 @@
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
+
+;;cln/command-log-buffer
+;;If package is not found try to refresh M-x package-list-packages
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 1))
+
+(use-package hydra)
+
+
+(defhydra hydra-text-scale(:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finnished" :exit t))
 
 (defun efs/org-font-setup ()
 ;; Replace list hyphen with dot
@@ -205,23 +221,6 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-;;cln/command-log-buffer
-;;If package is not found try to refresh M-x package-list-packages
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 1))
-
-(use-package hydra)
-
-
-(defhydra hydra-text-scale(:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finnished" :exit t))
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -231,15 +230,15 @@
                       show-paren-mode t))
 
 (use-package yasnippet
-;; :init
-;; (setq lsp-completion-provider :none) 
+ :init
+ (setq lsp-completion-provider :none) 
 :config
  (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
  (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
 
-(defun efs/lsp-mode-setup ()
+(defun  efs/lsp-mode-setup ()
   ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
 (lsp-headerline-breadcrumb-mode 1))
 
@@ -252,8 +251,12 @@
 (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui
-:hook (lsp-ui . lsp-ui-mode)
-:custom (lsp-ui-doc-position  'bottom))
+  :hook (lsp-ui . lsp-ui-mode)
+  :config
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-doc-header t)
+  (setq lsp-ui-doc-include-signature t)
+  :custom (lsp-ui-doc-position  'bottom))
 
 (use-package lsp-treemacs
 :after lsp)
@@ -265,6 +268,40 @@
 :hook (typescript-mode . lsp-deferred)
 :config
 (setq typescript-indent-level 2))
+
+(use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+  :commands dap-debug
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (dap-node-setup)) ;; Automatically installs Node debug adapter if needed
+
+  ;; Bind `C-c l d` to `dap-hydra` for easy access
+  ;; general-define-key
+  ;;  :keymaps 'lsp-mode-map
+  ;;  :prefix lsp-keymap-prefix
+  ;;  "d" '(dap-hydra t :wk "debugger")))
+
+(use-package python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  (python-shell-interpreter "python3")
+   (dap-python-executable "python3")
+  (dap-python-debugger 'debugpy)
+  :config
+  (require 'dap-python))
+
+(use-package pyvenv
+  :after python-mode
+  :config
+  (pyvenv-mode 1))
 
 (use-package sh-mode
   :mode "\\.sh\\'"
@@ -299,16 +336,60 @@
 (use-package company
  ;; :after lsp-mode
   ;; :hook (lsp-mode . company-mode)
+:init (setq company-format-margin-function    #'company-vscode-dark-icons-margin) 
   :bind (:map company-active-map
          ("<tab>" . company-complete-selection))
         (:map lsp-mode-map
          ("<tab>" . company-indent-or-complete-common))
+        :config (setq    company-show-quick-access t)
   :custom
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1))
 
 (use-package company-box
-  :hook (company-mode . company-box-mode))
+       :hook (company-mode . company-box-mode)
+:config
+  (require 'all-the-icons)
+  (setq company-box-icons-alist 'company-box-icons-all-the-icons
+        company-box-backends-colors nil
+        ;; These are the Doom Emacs defaults
+        company-box-icons-all-the-icons
+        `((Unknown       . ,(all-the-icons-material "find_in_page"             :face 'all-the-icons-purple))
+          (Text          . ,(all-the-icons-material "text_fields"              :face 'all-the-icons-green))
+          (Method        . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+          (Function      . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+          (Constructor   . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+          (Field         . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+          (Variable      . ,(all-the-icons-material "adjust"                   :face 'all-the-icons-blue))
+          (Class         . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
+          (Interface     . ,(all-the-icons-material "settings_input_component" :face 'all-the-icons-red))
+          (Module        . ,(all-the-icons-material "view_module"              :face 'all-the-icons-red))
+          (Property      . ,(all-the-icons-material "settings"                 :face 'all-the-icons-red))
+          (Unit          . ,(all-the-icons-material "straighten"               :face 'all-the-icons-red))
+          (Value         . ,(all-the-icons-material "filter_1"                 :face 'all-the-icons-red))
+          (Enum          . ,(all-the-icons-material "plus_one"                 :face 'all-the-icons-red))
+          (Keyword       . ,(all-the-icons-material "filter_center_focus"      :face 'all-the-icons-red))
+          (Snippet       . ,(all-the-icons-material "short_text"               :face 'all-the-icons-red))
+          (Color         . ,(all-the-icons-material "color_lens"               :face 'all-the-icons-red))
+          (File          . ,(all-the-icons-material "insert_drive_file"        :face 'all-the-icons-red))
+          (Reference     . ,(all-the-icons-material "collections_bookmark"     :face 'all-the-icons-red))
+          (Folder        . ,(all-the-icons-material "folder"                   :face 'all-the-icons-red))
+          (EnumMember    . ,(all-the-icons-material "people"                   :face 'all-the-icons-red))
+          (Constant      . ,(all-the-icons-material "pause_circle_filled"      :face 'all-the-icons-red))
+          (Struct        . ,(all-the-icons-material "streetview"               :face 'all-the-icons-red))
+          (Event         . ,(all-the-icons-material "event"                    :face 'all-the-icons-red))
+          (Operator      . ,(all-the-icons-material "control_point"            :face 'all-the-icons-red))
+          (TypeParameter . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
+          (Template      . ,(all-the-icons-material "short_text"               :face 'all-the-icons-green))))
+
+  ;; Add a space after the icon
+ ;;  (dolist (elt company-box-icons-all-the-icons)
+ ;;    (setcdr elt (concat (cdr elt) " "))))
+  :init
+    (setq company-box-icons-alist 'company-box-icons-all-the-icons))
+
+(use-package company-quickhelp
+  :hook (company-mode . company-quickhelp-mode))
 
 (use-package projectile
   :diminish projectile-mode
@@ -348,8 +429,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default)))
+   '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
  '(exwm-floating-border-color "#16161c")
  '(fci-rule-color "#f9cec3")
  '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
@@ -358,8 +438,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
  '(objed-cursor-color "#e95678")
  '(package-selected-packages
-   (quote
-    (dap-mode python-mode visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package)))
+   '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
  '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
  '(rustic-ansi-faces
    ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])

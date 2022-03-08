@@ -39,10 +39,23 @@
   "Opens a new line below current line even if cursor is in middle of current line.Move point to opened line. If N is set open n lines."
   (interactive "pNumber of lines to open: ")
   (goto-char (line-end-position))
-	     (newline (or N 1)))
+	     (newline (or n 1)))
 
 (defun move-line-down ()
   "Moves whole line down"
-  (interactive "P")
-  )
+   (interactive "P")
+   (let ((beg (line-beginning-position))
+	 (end (line-end-position))
+     )
+   )
+(line-beginning-)
+(line)
+b
 
+abbb
+
+test
+test
+test
+test
+test
