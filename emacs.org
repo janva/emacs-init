@@ -615,7 +615,8 @@ Is a built in mode hence ensure nil.
            ("<tab>" . company-complete-selection))
           (:map lsp-mode-map
            ("<tab>" . company-indent-or-complete-common))
-          :config (setq    company-show-quick-access t)
+          :config (setq    company-show-quick-access t
+                           company-format-margin-function 'company-vscode-dark-icons-margin)
     :custom
     (company-minimum-prefix-length 1)
     (company-idle-delay 0.1))
