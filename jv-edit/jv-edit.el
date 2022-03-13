@@ -1,5 +1,3 @@
-
-
 ;; maybe refactor...
 (defun copy-line ()
 "Copy line(s) into kill-ring. "
@@ -47,15 +45,7 @@
    (let ((beg (line-beginning-position))
 	 (end (line-end-position))
      )
-   )
-(line-beginning-)
+   ))
+
 (line)
-b
-
-abbb
-
-test
-test
-test
-test
 test

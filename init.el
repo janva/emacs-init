@@ -3,8 +3,9 @@
 
 ;; Note org elpa will close before 9.6 use org gnu instead.
 (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-                          ("org" . "https://orgmode.org/elpa/")
-                          ("elpa" . "https://elpa.gnu.org/packages/")))
+                         ;; seems this repo is closing
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
  (package-initialize)
 
@@ -214,7 +215,7 @@
 ;;auto-tangle files to target on save
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
-(expand-file-name "~/.config/emacs/emacs.org"))
+(expand-file-name ".emacs.org"))
 ;; Dynamic scoping to the rescue
 (let ((org-confirm-babel-evaluate nil))
 (org-babel-tangle))))
@@ -320,73 +321,32 @@
   :hook (emacs-lisp-mode . company-mode)
   ;;company-elisp is obsolete?
   ;; could just use push instead?
-  :custom  (company-backends    '(( :separate company-yasnippet company-capf  )
-
-                                  company-bbdb  company-files 
-                                  (company-dabbrev-code company-gtags  company-keywords :with company-yasnippet ::separate)
-                                  company-oddmuse company-dabbrev)))
+  :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
+                                  ;;company-bbdb  company-files 
+                                  ;;(company-dabbrev-code company-gtags  company-keywords :with company-yasnippet :separate)
+                                  ;;company-oddmuse company-dabbrev)))
           ;; TODO make yassnippets local maybe 2. push infront of already existing list
             ;; figure out the :separate
-
      ;; (push '(company-elisp :with company-yasnippet)  company-backends) ) 
-
             ;;:hook(  emacs-lisp-mode . company-mode ))
        ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
 
 (use-package company
- ;; :after lsp-mode
-  ;; :hook (lsp-mode . company-mode)
-:init (setq company-format-margin-function    #'company-vscode-dark-icons-margin) 
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  ;;:init
+  ;;(setq company-format-margin-function  #'company-vscode-dark-icons-margin) 
   :bind (:map company-active-map
          ("<tab>" . company-complete-selection))
         (:map lsp-mode-map
          ("<tab>" . company-indent-or-complete-common))
         :config (setq    company-show-quick-access t)
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1))
-
-(use-package company-box
-       :hook (company-mode . company-box-mode)
-:config
-  (require 'all-the-icons)
-  (setq company-box-icons-alist 'company-box-icons-all-the-icons
-        company-box-backends-colors nil
-        ;; These are the Doom Emacs defaults
-        company-box-icons-all-the-icons
-        `((Unknown       . ,(all-the-icons-material "find_in_page"             :face 'all-the-icons-purple))
-          (Text          . ,(all-the-icons-material "text_fields"              :face 'all-the-icons-green))
-          (Method        . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
-          (Function      . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
-          (Constructor   . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
-          (Field         . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
-          (Variable      . ,(all-the-icons-material "adjust"                   :face 'all-the-icons-blue))
-          (Class         . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
-          (Interface     . ,(all-the-icons-material "settings_input_component" :face 'all-the-icons-red))
-          (Module        . ,(all-the-icons-material "view_module"              :face 'all-the-icons-red))
-          (Property      . ,(all-the-icons-material "settings"                 :face 'all-the-icons-red))
-          (Unit          . ,(all-the-icons-material "straighten"               :face 'all-the-icons-red))
-          (Value         . ,(all-the-icons-material "filter_1"                 :face 'all-the-icons-red))
-          (Enum          . ,(all-the-icons-material "plus_one"                 :face 'all-the-icons-red))
-          (Keyword       . ,(all-the-icons-material "filter_center_focus"      :face 'all-the-icons-red))
-          (Snippet       . ,(all-the-icons-material "short_text"               :face 'all-the-icons-red))
-          (Color         . ,(all-the-icons-material "color_lens"               :face 'all-the-icons-red))
-          (File          . ,(all-the-icons-material "insert_drive_file"        :face 'all-the-icons-red))
-          (Reference     . ,(all-the-icons-material "collections_bookmark"     :face 'all-the-icons-red))
-          (Folder        . ,(all-the-icons-material "folder"                   :face 'all-the-icons-red))
-          (EnumMember    . ,(all-the-icons-material "people"                   :face 'all-the-icons-red))
-          (Constant      . ,(all-the-icons-material "pause_circle_filled"      :face 'all-the-icons-red))
-          (Struct        . ,(all-the-icons-material "streetview"               :face 'all-the-icons-red))
-          (Event         . ,(all-the-icons-material "event"                    :face 'all-the-icons-red))
-          (Operator      . ,(all-the-icons-material "control_point"            :face 'all-the-icons-red))
-          (TypeParameter . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
-          (Template      . ,(all-the-icons-material "short_text"               :face 'all-the-icons-green))))
-
-  ;; Add a space after the icon
- ;;  (dolist (elt company-box-icons-all-the-icons)
- ;;    (setcdr elt (concat (cdr elt) " "))))
-  :init
-    (setq company-box-icons-alist 'company-box-icons-all-the-icons))
+        :custom
+       ( company-format-margin-function  #'company-vscode-dark-icons-margin)
+          (company-require-match 'never)
+          (company-tooltip-align-annotations t)
+        (company-minimum-prefix-length 1)
+        (company-idle-delay 0.1))
 
 (use-package company-quickhelp
   :hook (company-mode . company-quickhelp-mode))
