@@ -227,8 +227,8 @@
 
 (use-package prog-mode
   :ensure nil
-  :custom (electric-pair-mode 1  
-                      show-paren-mode t))
+  :init (show-paren-mode  t)
+  (electric-pair-mode 1  ))
 
 (use-package yasnippet
  :init
@@ -322,14 +322,7 @@
   ;;company-elisp is obsolete?
   ;; could just use push instead?
   :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
-                                  ;;company-bbdb  company-files 
-                                  ;;(company-dabbrev-code company-gtags  company-keywords :with company-yasnippet :separate)
-                                  ;;company-oddmuse company-dabbrev)))
-          ;; TODO make yassnippets local maybe 2. push infront of already existing list
-            ;; figure out the :separate
-     ;; (push '(company-elisp :with company-yasnippet)  company-backends) ) 
-            ;;:hook(  emacs-lisp-mode . company-mode ))
-       ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
+                                          ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
 
 (use-package company
   :after lsp-mode

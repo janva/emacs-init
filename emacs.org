@@ -421,8 +421,8 @@ Auto match pairs of things such as parentecis with =electric-pair-mode= and ligh
   #+begin_src emacs-lisp
     (use-package prog-mode
       :ensure nil
-      :custom (electric-pair-mode 1  
-                          show-paren-mode t))
+      :init (show-paren-mode  t)
+      (electric-pair-mode 1  ))
   #+end_src
 
 ** langauges
