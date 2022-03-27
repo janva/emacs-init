@@ -33,8 +33,6 @@
 ;; If we want to use hooks we then we can add it a variable initialized to nil
 ;; named modename-mode-hook. running the hooks can be done using
 
-;; (make-variable-buffer-local
-
 ;;; Code:
 ;; (make-variable-buffer-local
 (defvar jv-basic-edit-mode nil "Toggle jv-edit-basic-mode")
@@ -77,8 +75,6 @@
   (interactive "pNumber of lines to open: ")
   (goto-char (line-end-position))
 	     (newline (or n 1)))
-
-
 ;; maybe refactor...
 (defun copy-line ()
 "Copy line(s) into kill-ring. "
@@ -101,7 +97,6 @@
     (yank))
   (when (eq direction 1)
     (next-line)))
-
 ;;Fixme only works once for selected region since loosing the marked area when doing next line
 (defun duplicate-line-down  ()
   "Creates newline(s) containing content of current line(s) below the current line. "
@@ -116,11 +111,14 @@
 (defun swapline-down (args)
   "Swaps current line with next line below. Point is set to beginning of line which was selected for swapping."
   (interactive "P")
-  (kill-whole-line args)
-  (end-of-line)
-  (newline)
-  (save-excursion 
-    (insert  (substring  (current-kill 0 ) 0 -1))))
+      (kill-whole-line args)
+      ;;Similar to finally clause. If next-line tries to go beyon end of buffer
+      ;; We still want to yank back the killed line. 
+      (unwind-protect
+	  (next-line)
+	(progn
+  	  (beginning-of-line)
+	  (save-excursion (yank)))))
 
 ;;FIXME under costruction
 (defun swapline-up (arg)
