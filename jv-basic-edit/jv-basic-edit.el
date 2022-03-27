@@ -124,11 +124,12 @@
 (defun swapline-up (arg)
   "Swaps current line with previous line above."
   (interactive "P")
-  (kill-whole-line)
+  (kill-whole-line arg)
+  (unwind-protect 
+      (previous-line)
   (beginning-of-line)
-  (save-excursion
-    (insert
-     (current-kill 0))))
+  (save-excursion (yank))))
+
 (provide 'jv-basic-edit)
 ;;; jv-basic-edit.el ends here
 ;; (current-kill 0))
