@@ -36,16 +36,21 @@
 ;; (make-variable-buffer-local
 
 ;;; Code:
-;; (
+;; (make-variable-buffer-local
 (defvar jv-basic-edit-mode nil "Toggle jv-edit-basic-mode")
 ;; )
 
+;; Create a structure to store your keybindings in
 (defvar jv-basic-edit-mode-map (make-sparse-keymap) "The keymap for jv-edit-basic-mode")
 
 ;; Hooks on attached to this list will be run whenever mode is activated/deactivated
 (defvar jv-basic-edit-mode-hook nil "The hook for jv-basic-edit-mode")
 
-(define-key jv-basic-edit-mode-map (kbd "C-<return>") 'open-new-line )
+(define-key jv-basic-edit-mode-map (kbd "C-<return>")
+  (lambda ()
+    (interactive)
+    (open-newline )))
+
 (define-key jv-basic-edit-mode-map (kbd "M-S-<down>") 'duplicate-line-down )
 (define-key jv-basic-edit-mode-map (kbd "M-S-<up>" ) 'duplicate-line-up)
 (define-key jv-basic-edit-mode-map (kbd "M-<down>")'swap-line-down )
