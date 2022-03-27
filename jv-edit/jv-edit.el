@@ -46,16 +46,11 @@
 ;; Hooks on attached to this list will be run whenever mode is activated/deactivated
 (defvar jv-basic-edit-mode-hook nil "The hook for jv-basic-edit-mode")
 
-(define-key jv-basic-edit-mode-map (kbd "C-<return>")
-  (lambda ()
-    (interactive)
-    (open-newline )))
-
+(define-key jv-basic-edit-mode-map (kbd "C-<return>") 'open-newline)
 (define-key jv-basic-edit-mode-map (kbd "M-S-<down>") 'duplicate-line-down )
 (define-key jv-basic-edit-mode-map (kbd "M-S-<up>" ) 'duplicate-line-up)
-(define-key jv-basic-edit-mode-map (kbd "M-<down>")'swap-line-down )
-(define-key jv-basic-edit-mode-map (kbd "M-<up>")  'swap-line-up )
-
+(define-key jv-basic-edit-mode-map (kbd "M-<down>")'swapline-down )
+(define-key jv-basic-edit-mode-map (kbd "M-<up>")  'swapline-up )
 ;;register minor mode
 (add-to-list 'minor-mode-alist '(jv-basic-edit-mode " jv-edit"))
 
