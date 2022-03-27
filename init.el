@@ -22,7 +22,7 @@
 
 (setq scroll-conservatively 99)
 
-(use-package jv-edit
+(use-package jv-basic-edit
   :config (jv-basic-edit-mode 1))
 
 ;; Make ESC quit prompts
@@ -394,7 +394,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
  '(objed-cursor-color "#e95678")
  '(package-selected-packages
-   '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+   '(jv-basic-edit visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
  '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
  '(rustic-ansi-faces
    ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])

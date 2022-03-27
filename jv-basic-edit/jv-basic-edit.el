@@ -1,4 +1,4 @@
-;;; jv-edit.el --- Some basic text editing commands  -*- lexical-binding:t; -*-
+;;; jv-basic-edit.el --- Some basic text editing commands  -*- lexical-binding:t; -*-
 
 
 ;; Author: Janne Väisänen <janva415@gmail.com>
@@ -50,7 +50,7 @@
 (define-key jv-basic-edit-mode-map (kbd "M-<down>")'swapline-down )
 (define-key jv-basic-edit-mode-map (kbd "M-<up>")  'swapline-up )
 ;;register minor mode
-(add-to-list 'minor-mode-alist '(jv-basic-edit-mode " jv-edit"))
+(add-to-list 'minor-mode-alist '(jv-basic-edit-mode " jv-basic-edit"))
 
 ;;register keybingings map (associate with this mode) 
 (add-to-list 'minor-mode-map-alist ( cons 'jv-basic-edit-mode jv-basic-edit-mode-map))
@@ -129,8 +129,8 @@
   (save-excursion
     (insert
      (current-kill 0))))
-(provide 'jv-edit)
-;;; jv-edit.el ends here
+(provide 'jv-basic-edit)
+;;; jv-basic-edit.el ends here
 ;; (current-kill 0))
 ;; (barf-if-buffer-read-only)
 ;; (barf-if-buffer-read-only)

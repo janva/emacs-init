@@ -78,8 +78,8 @@ Documentation pages suggests to setting scroll conservatively to high value rath
 
 Add some of my own editing commands like duplicate line.
 #+begin_src emacs-lisp
-    (use-package jv-edit
-      :config (jv-basic-edit-mode 1))
+      (use-package jv-basic-edit
+        :config (jv-basic-edit-mode 1))
 #+end_src
 * Global  keybindings
 Just a few global keybindings
