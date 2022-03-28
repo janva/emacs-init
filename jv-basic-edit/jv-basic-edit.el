@@ -85,8 +85,7 @@
      (if (> (point) (mark))
  	 (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
-     (copy-region-as-kill beg end)
-   )))
+     (copy-region-as-kill beg end))))
 
 
 (defun duplicate--line (&optional direction)
@@ -108,6 +107,7 @@
   (interactive)
     (duplicate--line))
 
+
 (defun swapline-down (args)
   "Swaps current line with next line below. Point is set to beginning of line which was selected for swapping."
   (interactive "P")
@@ -120,7 +120,10 @@
   	  (beginning-of-line)
 	  (save-excursion (yank)))))
 
-;;FIXME under costruction
+
+;;FIXME now make these work for region
+;; FIXME need to handle readonly buffers
+;; hmms seems buggy
 (defun swapline-up (arg)
   "Swaps current line with previous line above."
   (interactive "P")
@@ -130,10 +133,38 @@
   (beginning-of-line)
   (save-excursion (yank))))
 
+(defun swaplines-down (args)
+  "Transposes lines down"
+  (interactive "P")
+  (let ((beg (line-beginning-position))
+	;; could cas problems on last line of buffer
+	(end (+ 1 (line-end-position))))
+    ;; could take advantage of exchange-point and mark?
+    (when mark-active
+      ;; beg and end delimits  single line at this point it might be first
+      ;; (if point < mark) or last if (point > mark)
+      (if (> (point)(mark))
+	  ;; If point is after mark then end is correct but beg is beginnging of last line
+	  ;; mark is looking at characther on first line
+	  (setq beg (save-excursion (goto-char (mark))(line-beginning-position)))
+	;; if mark is after point end is currently last of first line and mark is at last line
+	(setq end (save-excursion (goto-char(mark) (+ (line-end-position) 1))))))
+    (kill-region beg end))
+  (next-line))
+    (yank)))
+
 (provide 'jv-basic-edit)
+
+
+;;(transpose-regions)
+;; 1
+;; 4
+;; 5
 ;;; jv-basic-edit.el ends here
+;; two lines
 ;; (current-kill 0))
 ;; (barf-if-buffer-read-only)
+
 ;; (barf-if-buffer-read-only)
 ;; (barf-if-buffer-read-only)
 
