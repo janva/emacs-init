@@ -108,29 +108,30 @@
     (duplicate--line))
 
 ;; @deprecated new version handles region as well
-(defun swapline-down (args)
-  "Swaps current line with next line below. Point is set to beginning of line which was selected for swapping."
-  (interactive "P")
-      (kill-whole-line args)
-      (unwind-protect
-	  (next-line)
-	(progn
-  	  (beginning-of-line)
-	  (save-excursion (yank)))))
+;;(defun swapline-down (args)
+;;  "Swaps current line with next line below. Point is set to beginning of line which was selected for swapping."
+;;  (interactive "P")
+;;      (kill-whole-line args)
+;;      (unwind-protect
+;;	  (next-line)
+;;	(progn
+;;  	  (beginning-of-line)
+;;	  (save-excursion (yank)))))
+;;
 
-
+;; @deprecated
 ;;FIXME now make these work for region
 ;; FIXME need to handle readonly buffers
 ;; hmms seems buggy
-(defun swapline-up (arg)
-  "Swaps current line with previous line above."
-  (interactive "P")
-  (kill-whole-line arg)
-  (unwind-protect 
-      (previous-line)
-  (beginning-of-line)
-  (save-excursion (yank))))
-
+;; (defun swapline-up (arg)
+;;   "Swaps current line with previous line above."
+;;   (interactive "P")
+;;   (kill-whole-line arg)
+;;   (unwind-protect 
+;;       (previous-line)
+;;   (beginning-of-line)
+;;   (save-excursion (yank))))
+;;FIXME should barf on read only buffers
 (defun jv/kill--lines ()
   "Kill whole line(s). If mark is set kill all (whole)lines within region else kill line wher point is. "
   (let ((beg (line-beginning-position))
@@ -149,9 +150,11 @@
     (kill-region beg end))
   )
 
+;; FIXME region is lost when command is executed through keybindings. Hence can do it repeatadly
+;; FIXME should barf on readonly buffers
 (defun swapline-down ()
-  "Transposes lines down"
-  (interactive "P")
+  "Transposes whole line(s) down. POINT is set to begining of moved line."
+  (interactive)
   (jv/kill--lines)
   ;;Similar to finally clause. If next-line tries to go beyon end of buffer
   ;; We still want to yank back the killed line. 
@@ -159,16 +162,29 @@
       (next-line)
     (progn 
       (beginning-of-line)
-      (save-excursion(yank)))))
+      ;; preserve current point
+      (save-mark-and-excursion(yank)))))
+
+(defun swapline-up ()
+  "Transpose line(s) up."
+  (interactive)
+  (jv/kill--lines)
+  (unwind-protect
+
+      (previous-line)
+    (progn
+      (beginning-of-line)
+      (save-mark-and-excursion(yank))
+  )))
 
 (provide 'jv-basic-edit)
 
 
 ;;(transpose-regions)
-;; 4
-;; 3
 ;; 1
 ;; 2
+;; 4
+;; 3
 ;; 5
 
 ;;; jv-basic-edit.el ends here
