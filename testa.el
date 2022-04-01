@@ -22,6 +22,15 @@
 (def)
 (def)
 
+1 one
+2 two
+3 three
+4 four
 
+
+
+
+some line-move-ignore-invisible
 dsafds
 dskjfakj something
+of txt

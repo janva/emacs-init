@@ -1,43 +1,41 @@
-;;; jv-basic-edit.el --- Some basic text editing commands  -*- lexical-binding:t; -*-
+#+begin_src emacs-lisp
+
+  ;;; jv-basic-edit.el --- Some basic text editing commands  -*- lexical-binding:t; -*-
 
 
-;; Author: Janne Väisänen <janva415@gmail.com>
-;; Created 26 Mar 2022
-;; Version: 0.1
+  ;; Author: Janne Väisänen <janva415@gmail.com>
+  ;; Created 26 Mar 2022
+  ;; Version: 0.1
 
-;; Keywords: elisp, textediting
-;; URL:
+  ;; Keywords: elisp, textediting
+  ;; URL:
 
-;;; Commentary
+  ;;; Commentary
 
-;; This package provides the minor mode jv-basic-edit. It's a minimal package ;; consisting of a feew basic text editing commands such as copy whole line.  ;; This file is not part of GNU Emacs. This was part of me learning Elisp and how minor mode are built. Feel free to copy but be aware the code herein has its flaws and there are probably better solutions out there.
+  ;; This package provides the minor mode jv-basic-edit. It's a minimal package ;; consisting of a feew basic text editing commands such as copy whole line.  ;; This file is not part of GNU Emacs. This was part of me learning Elisp and how minor mode are built. Feel free to copy but be aware the code herein has its flaws and there are probably better solutions out there.
 
-;; This file is free sofware...
+  ;; This file is free sofware...
 
-;;;###autoload
+  ;;;###autoload
 
+  #+end_src
+
+;;; Code:
+  
 ** Creating   a minor mode
-Turning your code/package into a minor mode  could  be done using  the =define-minor-mode=
-mode macro. But to get a better understanding I of how minor modes work and are set up I decided to do it manually. To do so you need a bit of boilerplate code (hence the macro exists) following a few conventions.
+Turning your code/package into a minor mode  could  be done using  the =define-minor-mode= mode macro. But to get a better understanding  of how minor modes work and are setup I decided to do it manually. To do so you need a bit of boilerplate code  following a few conventions (hence the macro).
 We need
 
 - a variable naming the mode ending with =-mode=
 - a function with same name as variable (ELisp has different namespaces for functions and variables)
 
-Above is the minimal requirement for a minor mode. In addition 
+  That's really are all that is needed to create minor mode but in addition we can also   
+   
+- Enable keymaps by adding entries in =minor-mode-map-alist=. Entries in the list are  pairs of minor-mode symbols and keymaps.
+- Enable hooks by creating  variable  with following convention =modename-mode-hook=.  This could initially be set to nil. running the hooks can be done using =run-hooks=
+ - enable lighter for minor-mode-alist again using minor mode variable symbol and
 
-;; if we want it to be local to certain buffer set make-variable-buffer-localm
-
-;;  In addtition we can enable keymaps by adding entries in minor-mode-map-alist.
-;; should be pairs of minor modes symbol and keymap to be used
-
-;;we can alsp enable lighter for minor-mode-alist
-;; again usin minor mode variable symbol and
-
-;; If we want to use hooks we then we can add it a variable initialized to nil
-;; named modename-mode-hook. running the hooks can be done using
-
-;;; Code:
+Minor modes can be global or associtiated with specific buffer.  In case you want to to be associated with local buffer we need to make the minor-mode variable buffer local. This could be done using the =make-variable-buffer-local= command. I've comment out that part in the below code as i wanted this minor-mode to be global.  I left the comment so you can se how you could define the mode variable and make it buffer local in one shot.
 
 #+begin_src emacs-lisp
 ;; (make-variable-buffer-local
@@ -46,12 +44,11 @@ Above is the minimal requirement for a minor mode. In addition
 #+end_src
 
 #+begin_src emacs-lisp
-;; Create a structure to store your keybindings in
 (defvar jv-basic-edit-mode-map (make-sparse-keymap) "The keymap for jv-edit-basic-mode")
 #+end_src
 
-#+begin_src emacs-lisp
 ;; Hooks on attached to this list will be run whenever mode is activated/deactivated
+#+begin_src emacs-lisp
 (defvar jv-basic-edit-mode-hook nil "The hook for jv-basic-edit-mode")
 #+end_src
 
@@ -132,26 +129,28 @@ Above is the minimal requirement for a minor mode. In addition
     (duplicate--line))
 #+end_src
 
+;; could cause problems on last line of buffer
+;; could take advantage of exchange-point and mark?
+;; beg and end delimits  single line at this point it might be first
+;; (if point < mark) or last if (point > mark)
+;; If point is after mark then end is correct but beg is beginnging of last line
+;; mark is looking at characther on first line
+;; if mark is after point end is currently last of first line and mark is at last line
 #+begin_src emacs-lisp
 (defun jv/kill--lines ()
   "Kill whole line(s). If mark is set kill all (whole)lines within region else kill line wher point is. "
   (let ((beg (line-beginning-position))
-	;; could cause problems on last line of buffer
 	(end (+ 1 (line-end-position))))
-    ;; could take advantage of exchange-point and mark?
     (when mark-active
-      ;; beg and end delimits  single line at this point it might be first
-      ;; (if point < mark) or last if (point > mark)
       (if (> (point)(mark))
-	  ;; If point is after mark then end is correct but beg is beginnging of last line
-	  ;; mark is looking at characther on first line
 	  (setq beg (save-excursion (goto-char (mark))(line-beginning-position)))
-	;; if mark is after point end is currently last of first line and mark is at last line
 	(setq end (save-excursion (goto-char (mark)) (+ (line-end-position) 1)))))
     (kill-region beg end))
   )
 #+end_src
 
+;;Similar to finally clause. If next-line tries to go beyon end of buffer
+  ;; We still want to yank back the killed line. 
 #+begin_src emacs-lisp
 ;; FIXME region is lost when command is executed through keybindings. Hence can do it repeatadly
 ;; FIXME should barf on readonly buffers
@@ -159,8 +158,6 @@ Above is the minimal requirement for a minor mode. In addition
   "Transposes whole line(s) down. POINT is set to begining of moved line."
   (interactive)
   (jv/kill--lines)
-  ;;Similar to finally clause. If next-line tries to go beyon end of buffer
-  ;; We still want to yank back the killed line. 
   (unwind-protect
       (next-line)
     (progn 
