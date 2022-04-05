@@ -46,7 +46,8 @@ TODO ensure only use secure chanels for packages
     ;; Note org elpa will close before 9.6 use org gnu instead.
     (setq package-archives '(("melpa" ."https://melpa.org/packages/")
                              ;; seems this repo is closing
-                             ("org" . "https://orgmode.org/elpa/")
+                             ;;("org" . "https://elpa.gnu.org/packages/")
+                             ("nongnu". "https://elpa.nongnu.org/nongnu/")
                              ("elpa" . "https://elpa.gnu.org/packages/")))
 
      (package-initialize)
@@ -346,8 +347,6 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
         (org-indent-mode)
         (variable-pitch-mode 1)
         (visual-line-mode 1))
-
-
     #+end_src
 
     #+begin_src emacs-lisp

@@ -4,7 +4,8 @@
 ;; Note org elpa will close before 9.6 use org gnu instead.
 (setq package-archives '(("melpa" ."https://melpa.org/packages/")
                          ;; seems this repo is closing
-                         ("org" . "https://orgmode.org/elpa/")
+                         ;;("org" . "https://elpa.gnu.org/packages/")
+                         ("nongnu". "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
  (package-initialize)
@@ -394,7 +395,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
  '(objed-cursor-color "#e95678")
  '(package-selected-packages
-   '(jv-basic-edit visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+   '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
  '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
  '(rustic-ansi-faces
    ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
