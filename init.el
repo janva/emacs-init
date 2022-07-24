@@ -183,8 +183,10 @@
   :hook (org-mode . efs/org-mode-setup)
   :config
   (setq org-ellipsis " ▾" 
-	org-hide-emphasis-markers t
-	org-src-tab-acts-natively t))
+        org-hide-emphasis-markers t
+        org-src-tab-acts-natively t
+        flyspell-mode t
+        ))
 
 (defun efs/org-mode-setup()
   (org-indent-mode)
@@ -214,6 +216,7 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("js" . "src javascript"))
 
 ;;auto-tangle files to target on save
 (defun efs/org-babel-tangle-config ()
@@ -252,6 +255,7 @@
 :init
 (setq lsp-keymap-prefix "C-c l")  
 :config
+(setq lsp-completion-enable-additional-text-edit nil)
 (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui
@@ -306,6 +310,18 @@
   :after python-mode
   :config
   (pyvenv-mode 1))
+
+(use-package flycheck)
+(use-package yasnippet :config (yas-global-mode))
+(use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :config (setq lsp-completion-enable-additional-text-edit nil))
+          (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-java :ensure nil)
+(use-package helm-lsp)
+(use-package helm
+  :config (helm-mode))
+(use-package lsp-treemacs)
 
 (use-package sh-mode
   :mode "\\.sh\\'"
