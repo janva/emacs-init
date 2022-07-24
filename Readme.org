@@ -522,9 +522,9 @@ npm i -g typescript-language-server; npm i -g typescript
     (setq typescript-indent-level 2))
     #+end_src
 
-*** python
-(require 'cl)
+*** TODO python
 #+begin_src emacs-lisp
+(require 'cl)
 (use-package dap-mode
   ;; Uncomment the config below if you want all UI panes to be hidden by default!
   ;; :custom
@@ -544,7 +544,8 @@ npm i -g typescript-language-server; npm i -g typescript
   ;;  "d" '(dap-hydra t :wk "debugger")))
 #+end_src
 
-=pip install --user "python-language-server[all]"=
+~pip install --user "python-language-server[all]"~
+
 
 #+begin_src emacs-lisp
   (use-package python-mode

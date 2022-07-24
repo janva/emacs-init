@@ -278,6 +278,7 @@
 :config
 (setq typescript-indent-level 2))
 
+(require 'cl)
 (use-package dap-mode
   ;; Uncomment the config below if you want all UI panes to be hidden by default!
   ;; :custom
