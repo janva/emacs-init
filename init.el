@@ -4,7 +4,8 @@
 ;; Note org elpa will close before 9.6 use org gnu instead.
 (setq package-archives '(("melpa" ."https://melpa.org/packages/")
                          ;; seems this repo is closing
-                         ("org" . "https://orgmode.org/elpa/")
+                         ;;("org" . "https://elpa.gnu.org/packages/")
+                         ("nongnu". "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
  (package-initialize)
@@ -22,7 +23,7 @@
 
 (setq scroll-conservatively 99)
 
-(use-package jv-edit
+(use-package jv-basic-edit
   :config (jv-basic-edit-mode 1))
 
 ;; Make ESC quit prompts
