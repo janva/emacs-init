@@ -1,0 +1,6 @@
+#+TODO: TODO(t) | DONE(d)
+#+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
+#+TODO: | CANCELED(c)
+
+* FIXED 
+some bug

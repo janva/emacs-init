@@ -118,6 +118,13 @@ Just a few global keybindings
                        (find-file "~/.config/emacs/emacs.org")))
    #+end_src
 
+* GLobal variables
+#+begin_src emacs-lisp
+(defcustom jv-agenda-directory "~/programering/emacs/org-agenda" 
+"Base directory of my agenda files"
+:type 'string
+:options '("~/programering/emacs/org-agenda/" ))
+#+end_src
 * UI
 **  Basic UI config
    
@@ -193,6 +200,18 @@ So for instance if  we use global line number the coude would ensure that certai
 
   #+end_src  
 
+* Improve shell compability
+Shell in Emacs sometimes appears to behave differently from your native shell. This can sometimes be because  Emacs (especially GUI version in windows and OS x) only imports minimal set of environment variables. Following will fix this problem.
+  
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (or (daemonp) (memq window-system '(ns x)))
+    (exec-path-from-shell-initialize)))
+#+end_src
+=memq= tests if object is member of list and returns a list starting with that member and the rest of  the list. so =(memq 'b '(a b c d))=  returns ='(bcd)=.
+ 
 * Completaion  and tools to simplifying editing and navigation
 ** Swiper
 
@@ -371,9 +390,145 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
 
     #+end_src
 
-** Org babel mode
+** Org agenda
+For agenda to work we need to tell which file to track in our agenda  using =org-agenda-files.= Agenda doesn't output log when for instance when mark things as finnished or done by default =org-agenda-start-with-log-mode=  starts agenda with logging turned on. The =org-log-done= is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][Backquote evaluate list elements]]. If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to mean.
+#+begin_src emacs-lisp
+  (setq org-agenda-files 
+        `( , (expand-file-name "Tasks.org" jv-agenda-directory)
+             , (expand-file-name "Birthdays.org" jv-agenda-directory)
+             , (expand-file-name "Archive.org" jv-agenda-directory)))
 
-   Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+#+end_src
+
+We can add our own keyword and workflow to our own taste using =org-todo-keywords=
+#+begin_src emacs-lisp
+  (setq org-todo-keywords  
+        '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+          (sequence  "BACKLOG(b)" "PLAN(p)"  "READY(r)"
+                     "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" 
+                     "|" "COMPLETED(c)" "CANCEL(k@)")))
+#+end_src
+
+At some point the task list might we swamped with finnished tasks. We can stash these away in a seperate file. This can be done with org-refile command. Below we set the allowed targets.   =Advice-add=
+line makes sure things get saved after refiling.
+
+#+begin_src emacs-lisp
+  (setq org-refile-targets
+    '(("Archive.org" :maxlevel . 1)
+      ("Tasks.org" :maxlevel . 1)))
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
+
+We can add tags to task   and here are some custom tags NEED TO LOOK OVER TAGS I WANT USE.
+
+#+begin_src emacs-lisp
+(setq org-tag-alist
+    '((:startgroup)
+       ; Put mutually exclusive tags here
+       (:endgroup)
+       ("@errand" . ?E)
+       ("@home" . ?H)
+       ("@work" . ?W)
+       ("agenda" . ?a)
+       ("planning" . ?p)
+       ("publish" . ?P)
+       ("batch" . ?b)
+       ("note" . ?n)
+       ("idea" . ?i)))
+#+end_src
+
+Customization of the agenda views LOOK OVER SIMPLIFY DON'T NEED ALL THESE 
+
+#+begin_src emacs-lisp
+  ;; Configure custom agenda views
+  (setq org-agenda-custom-commands
+   '(("d" "Dashboard"
+     ((agenda "" ((org-deadline-warning-days 7)))
+      (todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))
+      (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+    ("n" "Next Tasks"
+     ((todo "NEXT"
+        ((org-agenda-overriding-header "Next Tasks")))))
+
+    ("W" "Work Tasks" tags-todo "+work-email")
+
+    ;; Low-effort next actions
+    ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+     ((org-agenda-overriding-header "Low Effort Tasks")
+      (org-agenda-max-todos 20)
+      (org-agenda-files org-agenda-files)))
+
+    ("w" "Workflow Status"
+     ((todo "WAIT"
+            ((org-agenda-overriding-header "Waiting on External")
+             (org-agenda-files org-agenda-files)))
+      (todo "REVIEW"
+            ((org-agenda-overriding-header "In Review")
+             (org-agenda-files org-agenda-files)))
+      (todo "PLAN"
+            ((org-agenda-overriding-header "In Planning")
+             (org-agenda-todo-list-sublevels nil)
+             (org-agenda-files org-agenda-files)))
+      (todo "BACKLOG"
+            ((org-agenda-overriding-header "Project Backlog")
+             (org-agenda-todo-list-sublevels nil)
+             (org-agenda-files org-agenda-files)))
+      (todo "READY"
+            ((org-agenda-overriding-header "Ready for Work")
+             (org-agenda-files org-agenda-files)))
+      (todo "ACTIVE"
+            ((org-agenda-overriding-header "Active Projects")
+             (org-agenda-files org-agenda-files)))
+      (todo "COMPLETED"
+            ((org-agenda-overriding-header "Completed Projects")
+             (org-agenda-files org-agenda-files)))
+      (todo "CANC"
+            ((org-agenda-overriding-header "Cancelled Projects")
+             (org-agenda-files org-agenda-files)))))))
+
+#+end_src
+
+** Captures
+ Will use this to scribble down ideas that pop up and disturb workflow. It will stash them away into task file under a separate heading SIMPLY AND CLEAN UP TO MY LIKING. 
+#+begin_src emacs-lisp
+  (setq org-capture-templates
+        `(("t" "Tasks / Projects")
+          ("tt" "Task" entry (file+olp (expand-file-name "Tasks.org" jv-agenda-directory ) "Inbox")
+           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+          ("j" "Journal Entries")
+          ("jj" "Journal" entry
+           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+           :clock-in :clock-resume
+           :empty-lines 1)
+          ("jm" "Meeting" entry
+           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+           :clock-in :clock-resume
+           :empty-lines 1)
+
+          ("w" "Workflows")
+          ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+
+          ("m" "Metrics Capture")
+          ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+
+      
+        (define-key global-map (kbd "C-c j")
+          (lambda () (interactive) (org-capture nil "jj")))
+#+end_src
+
+** Org babel mode
+   Babel adds ability to execute source code within org documents. Babel allows for data to be passed accross different parts of document independently of source languages and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embedded in document as plot. Using org babel mode we can use org for literal programming. Babel can reprocess document and write source code to seperate file  (tangled in literate programming jargon).  
 
 *** Babel languages config
   
@@ -381,6 +536,8 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
     (org-babel-do-load-languages
     'org-babel-do-load-languages '(
     (emacs-lisp . t)
+    (java . t)
+    (javascript. t)
     (python . t)))
     #+end_src
 
@@ -391,8 +548,10 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
       (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
       (add-to-list 'org-structure-template-alist '("py" . "src python"))
+      ( add-to-list 'org-structure-template-alist ' ("java"."src java"))
+( add-to-list 'org-structure-template-alist ' ("javascript"."src javascript"))
+      (add-to-list 'org-structure-template-alist '("xml" . "src xml"))
   #+end_src
-
 
 *** Org-babel  tangle configs    
 
@@ -400,13 +559,12 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
           ;;auto-tangle files to target on save
       (defun efs/org-babel-tangle-config ()
         (when (string-equal (buffer-file-name)
-      (expand-file-name ".emacs.org"))
+      (expand-file-name "emacs.org"))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
+        (org-babel-tangle))))
 
       (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
-
     #+end_src
   
 * Development

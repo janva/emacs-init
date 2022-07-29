@@ -1,0 +1,242 @@
+
+* DONE Fred learn about GTD
+CLOSED: [2022-04-10 su 12:57]
+- State "TODO"       from "TODO"       [2022-04-10 su 12:56] \\
+  Need to finnsih this in time
+Learn about GTD.
+* TODO :work:urgent: other things
+- State "TODO"       from              [2022-04-10 su 11:14] \\
+  A note to go with todo.
+this is just a section about other stuff
+* Basic usage
+** Changing state of Todo    
+- =C-c C-t=  to cycle  state of todo
+- =S-RIGHT= and =S-LEFT=  can also be used to cycle
+
+** Extensions to todo lists
+You can add keywords to you hearts content by adding keyword to =org-todo-keywords=.
+#+begin_src emacs-lisp
+  ;;changes take place upon restarting org-mode
+(setq org-todo-keywords
+      '((sequence "TODO" "|" "WIP" "|" "DONE(d)"   )))
+ #+end_src
+
+
+   #+begin_src emacs-lisp
+      (setq org-use-fast-todo-selection 1)
+      (setq org-fast-tag-selection-include-todo 1)
+#+end_src
+
+** Types
+Types are available for backward compatibility reason it's better to use tags instead. The workflow for types is to add for instance persons to assign  task and mark it with done once it has been completed.
+
+   #+begin_src emacs-lisp
+   (setq org-todo-keywords '((type "Fred" "Sara" "Lucy" "|" "DONE")))
+   #+end_src
+
+First time you do =C-c C-t=  one of the names would be selected and cycled. Later when you return to item and hit the key combination the DONE will be selected. The =S-RIGHT= and =S-LEFT= works differently they seem to just cycle as normal. Using this you could filter and view for instance l Lucys tasks. But as mentioned  before use tags instead.
+** Grouping  states 
+ If you want to use several sets of states you can group them like so
+ #+begin_src emacs-lisp
+   (setq org-todo-keywords
+        '((sequence "TODO" "|" "WIP" "|" "DONE" "|"  )
+          (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
+          (sequence "|" "CANCELED")))
+ #+end_src
+ you cycle through them all using =S-LEFT= or =S-RIGHT=. You can cycle  to certain group using =C-S-RIGHT= and =C-S-RIGHT.=
+** Quick access
+We can add the ability to use fast access through single letter. 
+#+begin_src emacs-lisp
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "|" "DONE(d)")
+          (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+          (sequence "|" "CANCELED(c)")))
+#+end_src
+
+With above setting we would for instance do =C-c C-t b= to mark something a bug.
+** File specific keywords
+If you need some specific keywords for certain org file you can set them in the org file headers.
+#+begin_src emacs-lisp
+#+TODO: TODO(t) | DONE(d)
+#+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
+#+TODO: | CANCELED(c)
+#+end_src
+
+** hierarchical todos 
+You can prevent "closing" todo until children todos are done. To enforce this you need to set the =org-enforce-todo-dependencies=.
+
+#+begin_src emacs-lisp
+(setq org-enforce-todo-dependencies 1)
+#+end_src
+* TODO Blocked until (two) is done
+** DONE one
+*** two
+
+*** Parent
+:PROPERTIES:
+:ORDERED:  t
+:END:
+
+** TODO a
+** TODO b, needs to wait for (a)
+** TODO c, needs to wait for (a) and (b)
+
+conversly you can ensure entry never block doing the following
+** TODO This entry is never blocked
+:PROPERTIES:
+:NOBLOCKING: t
+:END:
+
+* DONE save to logs 
+CLOSED: [2022-04-10 su 18:23]
+:LOGBOOK:
+- State "DONE"       from "WAIT"       [2022-04-10 su 18:23]
+- State "DONE"       from "WAIT"       [2022-04-10 su 18:23]
+- State "TODO"       from "TODO"       [2022-04-10 su 18:20] \\
+  Testing drawers
+:END:
+some
+* Customization 
+** Faces
+You can customize the faces of keywords
+#+begin_src emacs-lisp
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning) ("STARTED" . "yellow")
+        ("CANCELED" . (:foreground "blue" :weight bold))))
+#+end_src
+*  Tracking and organizing your tasks
+** Simple timestamps
+You can attach note and timestamp to your todo by doing
+#+begin_src emacs-lisp
+C-u C-c C-t 
+#+end_src
+This will open buffer where you can insert your note. You can alter timestamp using =S-UP=
+and =S-DOWN= To get a closing timestamp set the following.
+#+begin_src emacs-lisp
+(setq org-log-done 'time)
+#+end_src
+
+Enabling closing notes can be done as so.
+#+begin_src emacs-lisp
+(setq org-log-done 'note)
+#+end_src
+** Priority
+ You can add a priority cookie to mark  the priority of tod. By default priorites goes from A-C but you can use numerics if you prefer that. Priorites have no meaning to org mode except in for agendas.
+When using numeric priorities, you need to set =org-priority-highest= , =org-priority-lowest= and =org-priority-default= to integers.
+
+*** TODO  [#B] Write letter to Sam Fortune
+Need to write a lengthy letter to Sam F.
+*** TODO [#C] Code super app 
+Code that super app that will make me super rich. 
+*** TODO  [#1] Write letter to Sam Fortune
+Need to write a lengthy letter to Sam F.
+*** TODO [#2] Code super app 
+Code that super app that will make me super rich.
+
+
+You can change priorities using 
+=C-c , (org-priority)= or =S-UP (org-priority-up)= and =S-DOWN (org-priority-down)=.
+
+As before you can change file specific priorities with headers. These has the format highest lowest and default.
+#+begin_src emacs-lisp
+#+PRIORITIES: A  D B
+#+PRIORITIES: 1 10 5
+#+end_src
+** Subtasks
+
+Subtask are just outline trees. You can add percentage done by adding cookie [%] on heading line or subtasks finished by adding =[/].= You can manually update cookie by =C-c C-c=
+whilst on top a cookie.
+*** TODO Organize Party  [66%]
+**** TODO Call people [1/2]
+***** DONE Peter
+***** TODO Sarah
+**** DONE Buy food
+**** DONE Talk to neighbor
+
+
+If you are mixing Todos and checkboxes you need to choose one for the statistics by =org-hierarchical-todo-statistics=  variable or for single hierarchy you can use setting the =:COOKIE_DATA= property inline like so 
+ 
+*** Parent capturing statistics [2/20]
+  :PROPERTIES:
+  :COOKIE_DATA: todo recursive
+  :END: 
+** Tracking changes 
+
+You can track changes automatically in separate drawers. Lets look at an example 
+
+#+begin_src emacs-lisp
+(setq org-log-into-drawer  'LOGBOOK)
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+
+#+end_src
+the =@= says we want to log the timestamp and the =!= say we want to log the notes. These special markers are per keyword. LOGBOOOK or LOGDRAWER are suggested names for this.
+A drawer in org mode is simply something we can hide away using tab key. We can create drawers manually using =:DRAWERNAME:= and =:END:= We put everything that goes into drawer between these two marks. 
+:DRAWER_NAME:
+content goes here
+:END:
+
+Interactively we can create drawer using command =org-insert-drawer=
+out of region. It's by default bound to =C-c C-x d=
+
+File local drawer settings for task can be achieve as so.
+
+#+STARTUP: logdrawer
+#+TODO: TODO(t) WAIT(w@/!) | DONE(d!) CANCELED(c@)  
+
+Logging specific subtree 
+** TODO Log each state with only a time
+  :PROPERTIES:
+  :LOGGING: TODO(!) WAIT(!) DONE(!) CANCELED(!)
+  :END:
+** TODO Only log when switching to WAIT, and when repeating
+  :PROPERTIES:
+  :LOGGING: WAIT(@) logrepeat
+  :END:
+** TODO No logging at all
+  :PROPERTIES:
+  :LOGGING: nil
+  :END:
+
+read more at [[https://orgmode.org/manual/Tracking-TODO-state-changes.html][org-mode manual]]
+
+** Habits.
+ org-mode also has the concept of habits. These are repeated task that you want to track. Habbits can viewed in consistency graph. read more at [[https://orgmode.org/manual/Tracking-your-habits.html][manual about habit tracking.]]
+
+
+*  Checked boxes 
+Plain list items can be turned into checkboxes adding =[]= after list sign.
+
+** TODO Organize party [2/4]
+  - [-] call people [1/3]
+    - [ ] Peter
+    - [X] Sarah
+    - [ ] Sam
+  - [X] order food
+  - [ ] think about what music to play
+  - [X] talk to the neighbors
+
+Use =C-c C-c= to toggle checkbox status.
+
+see  [[https://orgmode.org/manual/Checkboxes.html][org-mode manual]] more info on keybinding etc for checkboxes
+* Tags
+Tags start with : and ends with : so for instance  =:work:= we can chain several  tags like. =:work:important:=  
+** Inheritance 
+If you tag a heading then all subheadings will inherit that tag. You can also set filetags these will be inherited by all headings in file. =#+FILETAGS: :Peter:Boss:Secret:=. It is possible to limit inheritance or turn it off. To do this you need to manipulate =org-use-tag-inheritance=  =org-tags-exclude-from-inheritance=
+
+
+** Setting tags                                             
+Setting tags can be done using following commands 
+- =C-c C-q (org-set-tags-command)=   
+will prompt for tags to insert
+- =C-c C-c (org-set-tags-command)=
+If we are looking at headline this is same as above.
+
+Tags can be selected from hardcoded list of tags by setting 
+=org-tag-alist=. File specific tags again can be set as so.
+#+TAGS: @work @home @tennisclub
+#+TAGS: laptop car pc sailboat
+
+You may also set global using =org-tag-persistent-alist= and turn of per file tags
+#+STARTUP: noptag
+* Agendas
