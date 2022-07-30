@@ -494,37 +494,41 @@ Customization of the agenda views LOOK OVER SIMPLIFY DON'T NEED ALL THESE
 #+end_src
 
 ** Captures
- Will use this to scribble down ideas that pop up and disturb workflow. It will stash them away into task file under a separate heading SIMPLY AND CLEAN UP TO MY LIKING. 
+ Will use this to scribble down ideas that pop up and disturb workflow. It will stash them away into task file under a separate heading SIMPLify AND CLEAN UP TO MY LIKING. 
 #+begin_src emacs-lisp
-  (setq org-capture-templates
-        `(("t" "Tasks / Projects")
-          ("tt" "Task" entry (file+olp (expand-file-name "Tasks.org" jv-agenda-directory ) "Inbox")
-           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+    (setq org-capture-templates
+      `(("t" "Tasks / Projects")
+        ("tt" "Task" entry (file+olp
+                            ,(expand-file-name "Tasks.org" jv-agenda-directory) "Inbox")
+             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-          ("j" "Journal Entries")
-          ("jj" "Journal" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
-          ("jm" "Meeting" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-           :clock-in :clock-resume
-           :empty-lines 1)
+        ("j" "Journal Entries")
+        ("jj" "Journal" entry
+             (file+olp+datetree 
+              ,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+             :clock-in :clock-resume
+             :empty-lines 1)
+        ("jm" "Meeting" entry
+             (file+olp+datetree ,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+             :clock-in :clock-resume
+             :empty-lines 1)
 
-          ("w" "Workflows")
-          ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+        ("w" "Workflows")
+        ("we" "Checking Email" entry (file+olp+datetree 
+,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
 
-          ("m" "Metrics Capture")
-          ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+        ("m" "Metrics Capture")
+        ("mw" "Weight" table-line (file+headline ,(expand-file-name "Metrics.org"  jv-agenda-directory)
+ "Weight")
+         "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t))) 
 
-      
-        (define-key global-map (kbd "C-c j")
-          (lambda () (interactive) (org-capture nil "jj")))
+            (define-key global-map (kbd "C-c j")
+              (lambda () (interactive) (org-capture nil "jj")))
+
 #+end_src
 
 ** Org babel mode

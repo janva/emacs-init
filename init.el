@@ -55,7 +55,7 @@
                    (interactive) 
                    (find-file "~/.config/emacs/emacs.org")))
 
-(defcustom jv-agenda-directory "~/programering/emacs/org-agenda/" 
+(defcustom jv-agenda-directory "~/programering/emacs/org-agenda" 
 "Base directory of my agenda files"
 :type 'string
 :options '("~/programering/emacs/org-agenda/" ))
@@ -217,13 +217,14 @@
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
-(setq org-agenda-files '( 
-                             "~/programering/emacs/org-agenda/Birthdays.org"
-                             "~/programering/emacs/org-agenda/Archive.org"))
-(cons (expand-file-name  "Tasks.org" jv-agenda-directory) org-agenda-files)
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
-    (setq org-log-into-drawer t)
+(setq org-agenda-files 
+      `( , (expand-file-name "Tasks.org" jv-agenda-directory)
+           , (expand-file-name "Birthdays.org" jv-agenda-directory)
+           , (expand-file-name "Archive.org" jv-agenda-directory)))
+
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
 
 (setq org-todo-keywords  
       '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -258,7 +259,6 @@
     (todo "NEXT"
       ((org-agenda-overriding-header "Next Tasks")))
     (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-
   ("n" "Next Tasks"
    ((todo "NEXT"
       ((org-agenda-overriding-header "Next Tasks")))))
@@ -299,35 +299,38 @@
           ((org-agenda-overriding-header "Cancelled Projects")
            (org-agenda-files org-agenda-files)))))))
 
-     "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
-
 (setq org-capture-templates
-    `(("t" "Tasks / Projects")
-      ("tt" "Task" entry (file+olp "~/programering/emacs/org-agenda/Tasks.org" "Inbox")
-           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      `(("t" "Tasks / Projects")
+        ("tt" "Task" entry (file+olp
+                            ,(expand-file-name "Tasks.org" jv-agenda-directory) "Inbox")
+             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-      ("j" "Journal Entries")
-      ("jj" "Journal" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
-      ("jm" "Meeting" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-           :clock-in :clock-resume
-           :empty-lines 1)
+        ("j" "Journal Entries")
+        ("jj" "Journal" entry
+             (file+olp+datetree 
+              ,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+             :clock-in :clock-resume
+             :empty-lines 1)
+        ("jm" "Meeting" entry
+             (file+olp+datetree ,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+             :clock-in :clock-resume
+             :empty-lines 1)
 
-      ("w" "Workflows")
-      ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+        ("w" "Workflows")
+        ("we" "Checking Email" entry (file+olp+datetree 
+,(expand-file-name "Journal.org"  jv-agenda-directory))
+             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
 
-      ("m" "Metrics Capture")
-      ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")))
-    
-(define-key global-map (kbd "C-c j")
-    (lambda () (interactive) (org-capture nil "jj")))
+        ("m" "Metrics Capture")
+        ("mw" "Weight" table-line (file+headline ,(expand-file-name "Metrics.org"  jv-agenda-directory)
+ "Weight")
+         "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t))) 
+
+            (define-key global-map (kbd "C-c j")
+              (lambda () (interactive) (org-capture nil "jj")))
 
 (org-babel-do-load-languages
 'org-babel-do-load-languages '(
