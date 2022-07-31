@@ -267,16 +267,13 @@
      (todo "NEXT" ((org-agenda-overriding-header "Next action:")))
      (todo "WAITING" ((org-agenda-overriding-header "Waiting on:")))
      (todo "DONE" ((org-agenda-overriding-header "Completed items:")))
-     (tags "Projects" ((org-agenda-overriding-header "Projects in progress:")))
-     ("d" "Dashboard" 
-   ((agenda "" ((org-deadline-warning-days 7)))
-    (todo "NEXT"
-      ((org-agenda-overriding-header "Next Tasks")))
-    (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-  ("n" "Next Tasks"
-   ((todo "NEXT"
-      ((org-agenda-overriding-header "Next Tasks")))))
+     (tags "Project" ((org-agenda-overriding-header "Projects in progress:")))))
 
+     ("d" "Dashboard" ((agenda "" ((org-deadline-warning-days 7)))
+    (todo "NEXT"((org-agenda-overriding-header "Next Tasks")))
+    (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+     ("n" "Next Tasks"
+   ((todo "NEXT"((org-agenda-overriding-header "Next Tasks")))))
   ("W" "Work Tasks" tags-todo "+work-email")
   ;; Low-effort next actions
   ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
