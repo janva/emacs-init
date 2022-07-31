@@ -14,11 +14,11 @@ this is just a section about other stuff
 - =S-RIGHT= and =S-LEFT=  can also be used to cycle
 
 ** Extensions to todo lists
-You can add keywords to you hearts content by adding keyword to =org-todo-keywords=.
+You can add keywords to you hearts content by adding keyword to =org-todo-keywords=. The "|" delimits which are active and which are done.
 #+begin_src emacs-lisp
   ;;changes take place upon restarting org-mode
 (setq org-todo-keywords
-      '((sequence "TODO" "|" "WIP" "|" "DONE(d)"   )))
+      '((sequence "TODO"  "WIP" "|" "DONE(d)"   )))
  #+end_src
 
 
@@ -39,7 +39,7 @@ First time you do =C-c C-t=  one of the names would be selected and cycled. Late
  If you want to use several sets of states you can group them like so
  #+begin_src emacs-lisp
    (setq org-todo-keywords
-        '((sequence "TODO" "|" "WIP" "|" "DONE" "|"  )
+        '((sequence "TODO"  "WIP" "|" "DONE" "|"  )
           (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
           (sequence "|" "CANCELED")))
  #+end_src

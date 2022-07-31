@@ -88,6 +88,9 @@ Just a few global keybindings
 ** TODO Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable
 
    #+begin_src emacs-lisp
+;; get to agen faster
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
      ;; Make ESC quit prompts
      (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
      ;; Using keyboard macros to define thes for now. These will effect the
@@ -120,10 +123,10 @@ Just a few global keybindings
 
 * GLobal variables
 #+begin_src emacs-lisp
-(defcustom jv-agenda-directory "~/programering/emacs/org-agenda" 
+(defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"
 :type 'string
-:options '("~/programering/emacs/org-agenda/" ))
+:options '("~/Documents/tasks" ))
 #+end_src
 * UI
 **  Basic UI config
@@ -392,39 +395,45 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
 
 ** Org agenda
 For agenda to work we need to tell which file to track in our agenda  using =org-agenda-files.= Agenda doesn't output log when for instance when mark things as finnished or done by default =org-agenda-start-with-log-mode=  starts agenda with logging turned on. The =org-log-done= is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][Backquote evaluate list elements]]. If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to mean.
+
 #+begin_src emacs-lisp
+
   (setq org-agenda-files 
         `( , (expand-file-name "Tasks.org" jv-agenda-directory)
              , (expand-file-name "Birthdays.org" jv-agenda-directory)
-             , (expand-file-name "Archive.org" jv-agenda-directory)))
+             , (expand-file-name "Archives.org" jv-agenda-directory)
+             , (expand-file-name "Projects.org" jv-agenda-directory)
+             , (expand-file-name "Next.org" jv-agenda-directory)))
 
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
 #+end_src
 
-We can add our own keyword and workflow to our own taste using =org-todo-keywords=
+We can add our own keyword and workflow to our own taste using =org-todo-keywords=. These can be set inside org files per file as well.
 #+begin_src emacs-lisp
   (setq org-todo-keywords  
         '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-          (sequence  "BACKLOG(b)" "PLAN(p)"  "READY(r)"
-                     "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" 
-                     "|" "COMPLETED(c)" "CANCEL(k@)")))
+          (sequence  "BACKLOG(b)" "NEXT(n)" "ACTIVE(a)" "|" "DONE(d)")))
+          
+;; (setq org-todo-keyword-faces
+;;       '(("TODO" . org-warning) ("STARTED" . "yellow")
+;;         ("CANCELED" . (:foreground "blue" :weight bold))))
 #+end_src
 
 At some point the task list might we swamped with finnished tasks. We can stash these away in a seperate file. This can be done with org-refile command. Below we set the allowed targets.   =Advice-add=
-line makes sure things get saved after refiling.
+line makes sure things get saved after refiling. Use keybord shortcut =C-c C-w=.
 
 #+begin_src emacs-lisp
   (setq org-refile-targets
-    '(("Archive.org" :maxlevel . 1)
+    '(("Archives.org" :maxlevel . 1)
       ("Tasks.org" :maxlevel . 1)))
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 #+end_src
 
 We can add tags to task   and here are some custom tags NEED TO LOOK OVER TAGS I WANT USE.
-
+TODO think through which tags i want to use
 #+begin_src emacs-lisp
 (setq org-tag-alist
     '((:startgroup)
@@ -441,12 +450,19 @@ We can add tags to task   and here are some custom tags NEED TO LOOK OVER TAGS I
        ("idea" . ?i)))
 #+end_src
 
-Customization of the agenda views LOOK OVER SIMPLIFY DON'T NEED ALL THESE 
+Customization of the agenda views 
 
 #+begin_src emacs-lisp
   ;; Configure custom agenda views
   (setq org-agenda-custom-commands
-   '(("d" "Dashboard"
+
+   '(("g" "GTD view" 
+      ((agenda "")
+       (todo "NEXT" ((org-agenda-overriding-header "Next action:")))
+       (todo "WAITING" ((org-agenda-overriding-header "Waiting on:")))
+       (todo "DONE" ((org-agenda-overriding-header "Completed items:")))
+       (tags "Projects" ((org-agenda-overriding-header "Projects in progress:")))
+       ("d" "Dashboard" 
      ((agenda "" ((org-deadline-warning-days 7)))
       (todo "NEXT"
         ((org-agenda-overriding-header "Next Tasks")))
@@ -456,7 +472,6 @@ Customization of the agenda views LOOK OVER SIMPLIFY DON'T NEED ALL THESE
         ((org-agenda-overriding-header "Next Tasks")))))
 
     ("W" "Work Tasks" tags-todo "+work-email")
-
     ;; Low-effort next actions
     ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
      ((org-agenda-overriding-header "Low Effort Tasks")
@@ -494,7 +509,7 @@ Customization of the agenda views LOOK OVER SIMPLIFY DON'T NEED ALL THESE
 #+end_src
 
 ** Captures
- Will use this to scribble down ideas that pop up and disturb workflow. It will stash them away into task file under a separate heading SIMPLify AND CLEAN UP TO MY LIKING. 
+ Will use this to scribble down ideas that pop up and disturb workflow. It will stash them away into task file under a separate heading 
 #+begin_src emacs-lisp
     (setq org-capture-templates
       `(("t" "Tasks / Projects")

@@ -26,39 +26,42 @@
 (use-package jv-basic-edit
   :config (jv-basic-edit-mode 1))
 
-;; Make ESC quit prompts
- (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
- ;; Using keyboard macros to define thes for now. These will effect the
- ;; kill ring as well as point and mark
-;;  (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
-;;  (fset 'duplicate-line-down
-;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
-;; 
-;;  (global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
-;;  (fset 'duplicate-line-up 
-;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
+;; get to agen faster
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+     ;; Make ESC quit prompts
+     (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+     ;; Using keyboard macros to define thes for now. These will effect the
+     ;; kill ring as well as point and mark
+    ;;  (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
+    ;;  (fset 'duplicate-line-down
+    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
+    ;; 
+    ;;  (global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
+    ;;  (fset 'duplicate-line-up 
+    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
 
-;; (global-set-key (kbd"M-<up>")  'swapline-up)
-;; (fset 'swapline-up
-;;       (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
-;;
-;; (global-set-key (kbd "M-<down>")'swapline-down)
-;; (fset 'swapline-down
-;;       (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
-;;
-;; (global-set-key (kbd" C-<return>") 'open-newline)
-;; (fset 'open-newline
-;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
+    ;; (global-set-key (kbd"M-<up>")  'swapline-up)
+    ;; (fset 'swapline-up
+    ;;       (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
+    ;;
+    ;; (global-set-key (kbd "M-<down>")'swapline-down)
+    ;; (fset 'swapline-down
+    ;;       (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
+    ;;
+    ;; (global-set-key (kbd" C-<return>") 'open-newline)
+    ;; (fset 'open-newline
+    ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
 
- (global-set-key (kbd "<f12>")
-                 (lambda () 
-                   (interactive) 
-                   (find-file "~/.config/emacs/emacs.org")))
+     (global-set-key (kbd "<f12>")
+                     (lambda () 
+                       (interactive) 
+                       (find-file "~/.config/emacs/emacs.org")))
 
-(defcustom jv-agenda-directory "~/programering/emacs/org-agenda" 
+(defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"
 :type 'string
-:options '("~/programering/emacs/org-agenda/" ))
+:options '("~/Documents/tasks" ))
 
 (setq inhibit-startup-message t)
 
@@ -220,20 +223,24 @@
 (setq org-agenda-files 
       `( , (expand-file-name "Tasks.org" jv-agenda-directory)
            , (expand-file-name "Birthdays.org" jv-agenda-directory)
-           , (expand-file-name "Archive.org" jv-agenda-directory)))
+           , (expand-file-name "Archives.org" jv-agenda-directory)
+           , (expand-file-name "Projects.org" jv-agenda-directory)
+           , (expand-file-name "Next.org" jv-agenda-directory)))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
 
 (setq org-todo-keywords  
-      '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-        (sequence  "BACKLOG(b)" "PLAN(p)"  "READY(r)"
-                   "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" 
-                   "|" "COMPLETED(c)" "CANCEL(k@)")))
+        '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+          (sequence  "BACKLOG(b)" "NEXT(n)" "ACTIVE(a)" "|" "DONE(d)")))
+          
+;; (setq org-todo-keyword-faces
+;;       '(("TODO" . org-warning) ("STARTED" . "yellow")
+;;         ("CANCELED" . (:foreground "blue" :weight bold))))
 
 (setq org-refile-targets
-  '(("Archive.org" :maxlevel . 1)
+  '(("Archives.org" :maxlevel . 1)
     ("Tasks.org" :maxlevel . 1)))
 ;; Save Org buffers after refiling!
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -254,7 +261,14 @@
 
 ;; Configure custom agenda views
 (setq org-agenda-custom-commands
- '(("d" "Dashboard"
+
+ '(("g" "GTD view" 
+    ((agenda "")
+     (todo "NEXT" ((org-agenda-overriding-header "Next action:")))
+     (todo "WAITING" ((org-agenda-overriding-header "Waiting on:")))
+     (todo "DONE" ((org-agenda-overriding-header "Completed items:")))
+     (tags "Projects" ((org-agenda-overriding-header "Projects in progress:")))
+     ("d" "Dashboard" 
    ((agenda "" ((org-deadline-warning-days 7)))
     (todo "NEXT"
       ((org-agenda-overriding-header "Next Tasks")))
@@ -264,7 +278,6 @@
       ((org-agenda-overriding-header "Next Tasks")))))
 
   ("W" "Work Tasks" tags-todo "+work-email")
-
   ;; Low-effort next actions
   ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
    ((org-agenda-overriding-header "Low Effort Tasks")
