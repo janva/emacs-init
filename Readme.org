@@ -1,0 +1,749 @@
+#+TITLE: Emacs config
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+* My  Emacs init file
+This is just a setup for Emacs.  It's based on David Wilson work done on  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i felt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
+[[https://github.com/daviwil/emacs-from-scratch][Github repo]]. This init file is using litteral programming concept. Adding settings in this file requires  tangling code. In my emacs it can be done using =C-c C-v t=  or =M-x org-babel-tangle=. 
+
+* A couple of Emacs concepts
+** Buffers & windows
+
+Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
+
+So when we want to edit a file  stored on our hardrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
+
+the buffer itself contains a lot of information such as name of visited file ,wheter the buffer is editable or not 
+number of character contained in buffer etc. Two such  pieces of information are the *point* (PNT) and *mark* (MRK).
+
+*** Point , Mark (PNT MRK) and region 
+
+*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or inbetween characters. If the buffer is not empty and we are at point 0 we would be looking at first charcter of buffer. Every buffer has a single. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer. If there exist a mark then we call the text between position and mark the *region*.
+The *cursor* is placed on the character following the point. 
+
+** Modes
+
+Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
+
+  Modes are just code that adhere to a set of  conventions see links
+  - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
+  - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
+    
+keymap is a table that records the bindings between characters and command functions
+* Package handeling
+  In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
+  
+  We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
+We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
+
+TODO ensure only use secure chanels for packages 
+
+  [[https://github.com/jwiegley/use-package][Use package github page]]
+ 
+  #+begin_src emacs-lisp
+     ;; Initialize package sources
+     (require 'package)
+
+    ;; Note org elpa will close before 9.6 use org gnu instead.
+    (setq package-archives '(("melpa" ."https://melpa.org/packages/")
+                             ;; seems this repo is closing
+                             ;;("org" . "https://elpa.gnu.org/packages/")
+                             ("nongnu". "https://elpa.nongnu.org/nongnu/")
+                             ("elpa" . "https://elpa.gnu.org/packages/")))
+
+     (package-initialize)
+
+     (unless package-archive-contents
+      (package-refresh-contents)) 
+     ;; Initialize use-package on non-Linux platforms
+     (unless (package-installed-p 'use-package)
+        (package-install 'use-package))
+
+     (require 'use-package)
+     (setq use-package-always-ensure t)
+
+  #+end_src
+
+* Some basic behaviors configs
+
+Turn on word wrappping on long lines using .Visual line mode turns on  word wrapping per buffer. It redefines some editing commands to work on visual lines rather than on logical lines.
+
+  #+begin_src emacs-lisp
+    (global-visual-line-mode  1)
+  #+end_src
+
+Documentation pages suggests to setting scroll conservatively to high value rather than setting scroll-step to 1 if you want to scroll only single line at the time.
+
+  #+begin_src emacs-lisp
+  (setq scroll-conservatively 99)
+   #+end_src  
+
+Add some of my own editing commands like duplicate line.
+#+begin_src emacs-lisp
+      (use-package jv-basic-edit
+        :config (jv-basic-edit-mode 1))
+#+end_src
+* Global  keybindings
+Just a few global keybindings
+
+** TODO Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable
+
+   #+begin_src emacs-lisp
+     ;; Make ESC quit prompts
+     (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+     ;; Using keyboard macros to define thes for now. These will effect the
+     ;; kill ring as well as point and mark
+    ;;  (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
+    ;;  (fset 'duplicate-line-down
+    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
+    ;; 
+    ;;  (global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
+    ;;  (fset 'duplicate-line-up 
+    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
+
+    ;; (global-set-key (kbd"M-<up>")  'swapline-up)
+    ;; (fset 'swapline-up
+    ;;       (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
+    ;;
+    ;; (global-set-key (kbd "M-<down>")'swapline-down)
+    ;; (fset 'swapline-down
+    ;;       (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
+    ;;
+    ;; (global-set-key (kbd" C-<return>") 'open-newline)
+    ;; (fset 'open-newline
+    ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
+
+     (global-set-key (kbd "<f12>")
+                     (lambda () 
+                       (interactive) 
+                       (find-file "~/.config/emacs/emacs.org")))
+   #+end_src
+
+* UI
+**  Basic UI config
+   
+   As little distraction as possible please. No scroll-bars tool-bars and no annoying sounds instead use visible bell.
+
+   #+begin_src emacs-lisp 
+	 (setq inhibit-startup-message t)
+
+	 (scroll-bar-mode -1)        ; Disable visible scrollbar
+	 (tool-bar-mode -1)         
+	 (tooltip-mode -1)          
+	 (set-fringe-mode 10)       
+
+	 (menu-bar-mode -1)         
+
+	 ;; Set up the visible bell
+	 (setq visible-bell t)
+   #+end_src
+   
+** Themes
+   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
+
+   ~:init~ keyword will make code run before package is loaded. We use thall-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
+
+   [[https://github.com/doomemacs/themes][Doom-themes github page]]
+   
+   #+begin_src emacs-lisp
+(require 'all-the-icons)
+             (use-package doom-themes
+               :init (load-theme 'doom-horizon t))
+             ;;use refresh-pakcages to get this working
+     ;; M-x all-the-icons-install-fonts
+             (use-package all-the-icons
+               :if (display-graphic-p)
+               )
+             (use-package doom-modeline
+               :ensure t
+               :init (doom-modeline-mode 1)
+               :custom ((doom-modeline-height 15)))
+   #+end_src
+
+** Line numbers
+
+   Most often i don't need to number per line. if i need to know line number i can see it mode-line.
+   I use =M-g g= to get to specific line instead of arrows. I do want to se columnnumber in mode line.
+   The rest of the code only serve as an example of how we how we could set some value for several modes.
+So for instance if  we use global line number the coude would ensure that certain modes still didn't  show line numbers  by adding  hook to each mode  in  list.
+   
+   #+begin_src emacs-lisp
+
+
+     (column-number-mode)
+
+     ;; (global-display-line-numbers-mode t)
+     (dolist (mode'(org-mode-hook
+                    term-mode-hook
+                    shell-mode-hook
+                    eshell-mode-hook))
+       (add-hook mode (lambda() (display-line-numbers-mode 0))))
+   #+end_src
+   
+** Fonts configuration
+  
+   #+begin_src emacs-lisp 
+     (set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
+
+     ;; Set the fixed pitch face
+     (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 210)
+
+     ;; Set the variable pitch face
+     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
+
+
+  #+end_src  
+
+* Completion  and tools to simplifying editing and navigation
+** Swiper
+
+[[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
+[[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9][swiper on github]]
+
+An UI on top of ISearch (Incremental Search). Swiper gives an overview of the current regex search candidates. Matches are presented in an intuitive fashion and you can jump to location of selected match  (in buffer search) presented in minibuffer
+
+#+begin_src emacs-lisp
+  (use-package swiper
+       :ensure t)
+#+end_src
+
+** Ivy
+   
+   Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures completing-read-function uses ivy for completion. Used for instance when finding files.
+
+   [[https://github.com/abo-abo/swiper][Ivy on github]] 
+
+   
+   #+begin_src emacs-lisp   
+     (use-package ivy
+       :diminish
+       :bind (("C-s" . swiper)
+	      :map ivy-minibuffer-map
+	      ("TAB" . ivy-alt-done)	
+	      ("C-l" . ivy-alt-done)
+	      ("C-j" . ivy-next-line)
+	      ("C-k" . ivy-previous-line)
+	      :map ivy-switch-buffer-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-l" . ivy-done)
+	      ("C-d" . ivy-switch-buffer-kill)
+	      :map ivy-reverse-i-search-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-d" . ivy-reverse-i-search-kill))
+       :config
+       (ivy-mode 1))
+   #+end_src
+
+** Counsel 
+
+[[https://github.com/abo-abo/swiper/tree/c97ea72285f2428ed61b519269274d27f2b695f9#counsel][Counsel on github]]
+
+Counsel is defined as minor mode.ivy-mode ensures that any Emacs command using completing-read-function uses ivy for completion.
+Counsel takes this further, providing versions of common Emacs commands that are customised to make the best use of Ivy. For example, counsel-find-file has some additional keybindings. Pressing DEL will move you to the parent directory.
+
+Enabling counsel-mode remaps built-in Emacs functions that have counsel replacements:
+
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+   #+end_src
+
+    
+   #+begin_src emacs-lisp
+     (use-package counsel
+       :bind (("M-x" . counsel-M-x)
+	      ("C-x b" . counsel-ibuffer)
+	      ("C-x C-f" . counsel-find-file)
+	      :map minibuffer-local-map
+	      ("C-r" . counsel-minibuffer-history))
+       :config
+       (setq ivy-initial-alist nil )) ; don't start search with ^
+
+     (use-package ivy-rich
+       :init
+       (ivy-rich-mode 1))
+
+   #+end_src
+   
+** Which-key
+      Emacs minor mode that displays popup with possible keybindings on prefix commands such C-c C-x M-x. I this config I popup will ony show after beeing idle for at leas 1 second.  
+   
+   #+begin_src emacs-lisp
+     ;;cln/command-log-buffer
+     ;;If package is not found try to refresh M-x package-list-packages
+     (use-package which-key
+       :init (which-key-mode)
+       :diminish which-key-mode
+       :config
+       (setq which-key-idle-delay 1))
+   #+end_src
+
+** Hydra
+   Lets you do repetive commands in convienient manner. 
+   [[https://github.com/abo-abo/hydra][Hydra package on github]]
+   #+begin_src emacs-lisp
+(use-package hydra)
+
+
+(defhydra hydra-text-scale(:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finnished" :exit t))
+
+   #+end_src
+
+* Org-mode
+[[https://orgmode.org/][org-mode-pages]]
+describes org-mode as a major mode for keeping notes, authoring documents, computational notebooks, literate programming, maintaining to-do lists, planning projects, and more.
+it's a relay versatile mode that does a lot of things. For instance this init-file has been written in org-mode using litterate programming. 
+
+** Org basic
+
+    #+begin_src emacs-lisp
+      (defun efs/org-font-setup ()
+      ;; Replace list hyphen with dot
+	(font-lock-add-keywords 'org-mode
+				'(("^ *\\([-]\\) "
+				   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+	;; Set faces for heading levels
+	(dolist (face '((org-level-1 . 1.2)
+			(org-level-2 . 1.1)
+			(org-level-3 . 1.05)
+			(org-level-4 . 1.0)
+			(org-level-5 . 1.1)
+			(org-level-6 . 1.1)
+			(org-level-7 . 1.1)
+			(org-level-8 . 1.1)))
+	  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+	(set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+	(set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+	(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+	(set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+	(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+	(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+	(set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+	(set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+	(set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+
+    #+end_src
+
+    #+begin_src emacs-lisp
+                            (use-package org
+                              :hook (org-mode . efs/org-mode-setup)
+                              :config
+                              (setq org-ellipsis " ▾" 
+                                    org-hide-emphasis-markers t
+                                    org-src-tab-acts-natively t
+                                    flyspell-mode t
+                                    ))
+
+
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun efs/org-mode-setup()
+        (org-indent-mode)
+        (variable-pitch-mode 1)
+        (visual-line-mode 1))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (use-package org-bullets
+	:after org
+	:hook (org-mode . org-bullets-mode)
+	:custom
+	(org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+        #+end_src
+
+    #+begin_src emacs-lisp
+      (defun efs/org-mode-visual-fill ()
+	(setq visual-fill-column-width 100
+	      visual-fill-column-center-text t)
+	(visual-fill-column-mode 1))
+
+    #+end_src
+
+    #+begin_src emacs-lisp
+ (use-package visual-fill-column
+   :hook (org-mode . efs/org-mode-visual-fill))
+
+    #+end_src
+
+** Org babel mode
+
+   Babel adds ability to exucute source code within org documents. Babel allows for data to be passed accross different parts of document independantly of source languges and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embeded in document as plot. Using org babel mode we can use org for litteral programming. Babel can preprocess document and write source code to seperate file  (tangled in litterate programming jargon).  
+
+*** Babel languages config
+  
+  #+begin_src emacs-lisp :results value 
+    (org-babel-do-load-languages
+    'org-babel-do-load-languages '(
+    (emacs-lisp . t)
+    (python . t)))
+    #+end_src
+
+*** Org-structure templates  configs
+[[ https://orgmode.org/worg/org-contrib/babel/languages/][structured templates]]
+    #+begin_src emacs-lisp 
+      (require 'org-tempo)
+      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+      (add-to-list 'org-structure-template-alist '("py" . "src python"))
+      (add-to-list 'org-structure-template-alist '("js" . "src javascript"))
+  #+end_src
+
+
+*** Org-babel  tangle configs    
+
+    #+begin_src emacs-lisp
+          ;;auto-tangle files to target on save
+      (defun efs/org-babel-tangle-config ()
+        (when (string-equal (buffer-file-name)
+      (expand-file-name ".emacs.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+
+      (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+
+    #+end_src
+  
+* Development
+  This is separarae section on development modes and tools.
+**  Common settings for all dev modes
+
+rainbow delimiters helps you keep track of matching parantesis etc.
+
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :hook (prog-mode . rainbow-delimiters-mode))
+   #+end_src   
+   
+Auto match pairs of things such as parentecis with =electric-pair-mode= and light up matching parentices with =show-paren-mode=.
+
+  #+begin_src emacs-lisp
+    (use-package prog-mode
+      :ensure nil
+      :init (show-paren-mode  t)
+      (electric-pair-mode 1  ))
+  #+end_src
+
+** langauges
+*** yasnippets
+Is a minor mode providing template system. It features abbreviations that can be expanded automatically into function templates. You can define your own templates and/or use prexisting ones.
+
+    #+begin_src emacs-lisp
+      (use-package yasnippet
+       :init
+       (setq lsp-completion-provider :none) 
+      :config
+       (setq yas-snippets-dirs '("~/programering/settings/emacs2021/snippets"))
+       (yas-global-mode 1))    
+  #+end_src
+
+ =yasnippet-snippets= is a set of predefined snippets for a lot of languages.
+ 
+    #+begin_src emacs-lisp
+    (use-package yasnippet-snippets)
+    #+end_src
+    
+***  Breadcrumbs in LSP mode
+
+    #+begin_src emacs-lisp
+      (defun  efs/lsp-mode-setup ()
+        ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
+      (lsp-headerline-breadcrumb-mode 1))
+    #+end_src
+
+*** LSP servers ( Language Server  Protocol)
+
+LSP is an effort made by VSCode team to standardize the protocol for language servers.The idea is to have single standardize server protocol between language server and dev-tool. In such an scenario we can reuse language server accross different devtools with minimal effort which is good news for both language providers and tooling vendors. Information about LSP support can be found at [[https://emacs-lsp.github.io/lsp-mode/][Emacs LSP-mode language support pages]]. 
+
+LSP-mode for emacs aims to provide a more IDE like experience to emacs. Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
+
+~:commands~ keyword  creates autoloads for the commands you list. An autoload in elisp is a mechanism to make known (register) a function but defer of loading the file that actualy defines it.
+The file is instead loaded at first call to function or macro. The hook =(:hook)= is setup to call =efs/lsp-mode-setup= function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commmands is set to =C-c l=. Finally we enable which-key for LSP.
+
+Some keybinding and commands to get you started  (remember prefix keybining was set to C-c l).
+ 
+    C-c l g r find references
+    C-c l g g find definitions
+    C-l l r r refactor rename
+    fly-make-show-diagnostic-buffer show buffer with errors
+ 
+There exist a =lsp-format-buffer= command but might be a better idea to us seperate language specific formatter for this job
+   
+    #+begin_src emacs-lisp
+          (use-package lsp-mode
+          :commands (lsp lsp-deferred)
+          :hook (lsp-mode . efs/lsp-mode-setup)
+          :init
+          (setq lsp-keymap-prefix "C-c l")  
+          :config
+          (setq lsp-completion-enable-additional-text-edit nil)
+          (lsp-enable-which-key-integration t))
+    #+end_src
+    
+*** Better LSP UI 
+    #+begin_src emacs-lisp
+      (use-package lsp-ui
+        :hook (lsp-ui . lsp-ui-mode)
+        :config
+        (setq lsp-ui-doc-enable nil)
+        (setq lsp-ui-doc-header t)
+        (setq lsp-ui-doc-include-signature t)
+        :custom (lsp-ui-doc-position  'bottom))
+     #+end_src
+    
+***  Treemacs for nice treestructures
+    #+begin_src emacs-lisp
+    (use-package lsp-treemacs
+    :after lsp)
+    #+end_src
+*** lsp with ivy integration 
+    #+begin_src emacs-lisp
+    (use-package lsp-ivy)
+    #+end_src
+    
+*** TypeSript
+TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
+
+npm i -g typescript-language-server; npm i -g typescript
+
+    #+begin_src emacs-lisp
+    (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)
+    :config
+    (setq typescript-indent-level 2))
+    #+end_src
+
+*** TODO python
+#+begin_src emacs-lisp
+(require 'cl)
+(use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+  :commands dap-debug
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (dap-node-setup)) ;; Automatically installs Node debug adapter if needed
+
+  ;; Bind `C-c l d` to `dap-hydra` for easy access
+  ;; general-define-key
+  ;;  :keymaps 'lsp-mode-map
+  ;;  :prefix lsp-keymap-prefix
+  ;;  "d" '(dap-hydra t :wk "debugger")))
+#+end_src
+
+~pip install --user "python-language-server[all]"~
+
+
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :ensure t
+    :hook (python-mode . lsp-deferred)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    (python-shell-interpreter "python3")
+     (dap-python-executable "python3")
+    (dap-python-debugger 'debugpy)
+    :config
+    (require 'dap-python))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :after python-mode
+  :config
+  (pyvenv-mode 1))
+#+end_src
+*** Java  
+#+begin_src emacs-lisp
+                 (use-package flycheck)
+(use-package yasnippet :config (yas-global-mode))
+(use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :config (setq lsp-completion-enable-additional-text-edit nil))
+          (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-java :ensure nil)
+(use-package helm-lsp)
+(use-package helm
+  :config (helm-mode))
+(use-package lsp-treemacs)
+#+end_src
+*** Shell  scripts
+
+Use =npm i -g bash-language-server= to install bash language server.
+
+#+begin_src emacs-lisp
+      (use-package sh-mode
+        :mode "\\.sh\\'"
+        :ensure nil
+        :hook (sh-mode . lsp-deferred))
+    #+end_src
+   
+***  Emacs Lisp mode
+
+(setq company-global-modes nil)
+
+#+begin_src emacs-lisp
+   (defun   jv/setup-emacs-lisp-mode()
+   (message "running my hook")
+;;     (push '(company-elisp :with company-yasnippet)  company-backends)
+     (setq-local  company-backends '((company-elisp :with company-yasnippet))))
+#+end_src
+
+
+#+begin_src emacs-lisp
+  ;; TODO hmm would like to make a seperation as well that is use :separate
+  (use-package emacs-lisp-mode
+    :ensure nil
+    :mode  "\\.el\\'"
+    :hook (emacs-lisp-mode . company-mode)
+    ;;company-elisp is obsolete?
+    ;; could just use push instead?
+    :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
+                                            ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
+#+end_src
+
+** Company mode
+Is a built in mode hence ensure nil.
+[[http://company-mode.github.io/manual/Backends.html#Backends-Usage-Basics][Company backends documentation]] 
+
+#+begin_src emacs-lisp
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    ;;:init
+    ;;(setq company-format-margin-function  #'company-vscode-dark-icons-margin) 
+    :bind (:map company-active-map
+           ("<tab>" . company-complete-selection))
+          (:map lsp-mode-map
+           ("<tab>" . company-indent-or-complete-common))
+          :config (setq    company-show-quick-access t)
+          :custom
+         ( company-format-margin-function  #'company-vscode-dark-icons-margin)
+            (company-require-match 'never)
+            (company-tooltip-align-annotations t)
+          (company-minimum-prefix-length 1)
+          (company-idle-delay 0.1))
+#+end_src
+
+
+  #+begin_src emacs-lisp
+  (use-package company-quickhelp
+    :hook (company-mode . company-quickhelp-mode))
+#+end_src
+
+** Projectile
+   Project managing package. [[https://github.com/bbatsov/projectile][Projectile github-page]]
+   
+   #+begin_src emacs-lisp
+
+     (use-package projectile
+       :diminish projectile-mode
+       :config (projectile-mode)
+       :custom (projectile-completion-system 'ivy)
+       :bind-keymap
+       ("C-c p". projectile-command-map)
+       :init
+       (when (file-directory-p "~/programering")
+	 (setq projectile-project-search '("~programering")))
+       (setq projectile-switch-project-action #'projectile-dired))
+
+     (use-package  counsel-projectile
+       :config (counsel-projectile-mode))
+     ;;#' is like ' but for functions returns function object without evaluating it # is mainly help to byte compiler 
+     ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Anonymous-Functions.html#Anonymous-Functions  
+
+     ;;.dir-locals.el
+     ;; can be use for directory local variables for instance
+     ;;((nil .((projectile-project-run-cmd ."npm start") )))
+
+   #+end_src
+
+* Better documentation
+**  The helpful package
+   
+  [[https://github.com/Wilfred/helpful][helpful github page]]
+   Helpful is an alternative to the built-in Emacs help that provides much more contextual information.
+
+   #+begin_src emacs-lisp
+     (use-package helpful
+       :custom
+       (counsel-describe-function-function #'helpful-callable)
+       (counsel-describe-variable-function #'helpful-variable)
+       :bind
+       ([remap describe-function] . counsel-describe-function)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-variable] . counsel-describe-variable)
+       ([remap describe-key] . helpful-key))
+   #+end_src
+  
+* Just some random helpfull packages
+
+  #+begin_src emacs-lisp
+(use-package command-log-mode)
+  #+end_src
+
+* Set by emacs customization
+  
+  #+begin_src emacs-lisp
+    (custom-set-variables
+     ;; custom-set-variables was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(custom-safe-themes
+       '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
+     '(exwm-floating-border-color "#16161c")
+     '(fci-rule-color "#f9cec3")
+     '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
+     '(jdee-db-active-breakpoint-face-colors (cons "#16161c" "#e95678"))
+     '(jdee-db-requested-breakpoint-face-colors (cons "#16161c" "#09f7a0"))
+     '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
+     '(objed-cursor-color "#e95678")
+     '(package-selected-packages
+       '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+     '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
+     '(rustic-ansi-faces
+       ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
+     '(vc-annotate-background "#232530")
+     '(vc-annotate-color-map
+       (list
+	(cons 20 "#09f7a0")
+	(cons 40 "#59e19c")
+	(cons 60 "#a9cc98")
+	(cons 80 "#fab795")
+	(cons 100 "#f6ab8f")
+	(cons 120 "#f39f89")
+	(cons 140 "#f09383")
+	(cons 160 "#c48788")
+	(cons 180 "#987a8d")
+	(cons 200 "#6c6f93")
+	(cons 220 "#95668a")
+	(cons 240 "#bf5e81")
+	(cons 260 "#e95678")
+	(cons 280 "#c95b74")
+	(cons 300 "#a96071")
+	(cons 320 "#89656d")
+	(cons 340 "#f9cec3")
+	(cons 360 "#f9cec3")))
+     '(vc-annotate-very-old-color nil))
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     )
+  #+end_src
+
