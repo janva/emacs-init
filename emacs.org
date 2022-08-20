@@ -126,7 +126,7 @@ Just a few global keybindings
 (defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"
 :type 'string
-:options '("~/Documents/tasks" ))
+:options '("~/Documents/org-files" ))
 #+end_src
 * UI
 **  Basic UI config
@@ -365,10 +365,11 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
     #+end_src
 
     #+begin_src emacs-lisp
-      (defun efs/org-mode-setup()
-        (org-indent-mode)
-        (variable-pitch-mode 1)
-        (visual-line-mode 1))
+          (defun efs/org-mode-setup()
+            (org-indent-mode)
+            (variable-pitch-mode 1)
+            (flyspell-mode 1)
+            (visual-line-mode 1))
     #+end_src
 
     #+begin_src emacs-lisp
@@ -394,16 +395,15 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
     #+end_src
 
 ** Org agenda
-For agenda to work we need to tell which file to track in our agenda  using =org-agenda-files.= Agenda doesn't output log when for instance when mark things as finnished or done by default =org-agenda-start-with-log-mode=  starts agenda with logging turned on. The =org-log-done= is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][Backquote evaluate list elements]]. If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to mean.
+For agenda to work we need to tell which file to track in our agenda  using =org-agenda-files.= Agenda doesn't output log when for instance when mark things as finnished or done by default =org-agenda-start-with-log-mode=  starts agenda with logging turned on. The =org-log-done= is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][Backquote evaluate list elements]]. If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to me.
 
 #+begin_src emacs-lisp
-
   (setq org-agenda-files 
-        `( , (expand-file-name "Tasks.org" jv-agenda-directory)
-             , (expand-file-name "Birthdays.org" jv-agenda-directory)
+        `( , (expand-file-name "Projects.org" jv-agenda-directory)
+             , (expand-file-name "Learning.org" jv-agenda-directory)
              , (expand-file-name "Archives.org" jv-agenda-directory)
-             , (expand-file-name "Projects.org" jv-agenda-directory)
-             , (expand-file-name "Next.org" jv-agenda-directory)))
+             , (expand-file-name "Current-project.org" jv-agenda-directory)
+             , (expand-file-name "Todos.org" jv-agenda-directory)))
 
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)

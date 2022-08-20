@@ -61,7 +61,7 @@
 (defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"
 :type 'string
-:options '("~/Documents/tasks" ))
+:options '("~/Documents/org-files" ))
 
 (setq inhibit-startup-message t)
 
@@ -204,6 +204,7 @@
 (defun efs/org-mode-setup()
   (org-indent-mode)
   (variable-pitch-mode 1)
+  (flyspell-mode 1)
   (visual-line-mode 1))
 
 (use-package org-bullets
@@ -221,11 +222,11 @@
   :hook (org-mode . efs/org-mode-visual-fill))
 
 (setq org-agenda-files 
-      `( , (expand-file-name "Tasks.org" jv-agenda-directory)
-           , (expand-file-name "Birthdays.org" jv-agenda-directory)
+      `( , (expand-file-name "Projects.org" jv-agenda-directory)
+           , (expand-file-name "Learning.org" jv-agenda-directory)
            , (expand-file-name "Archives.org" jv-agenda-directory)
-           , (expand-file-name "Projects.org" jv-agenda-directory)
-           , (expand-file-name "Next.org" jv-agenda-directory)))
+           , (expand-file-name "Current-project.org" jv-agenda-directory)
+           , (expand-file-name "Todos.org" jv-agenda-directory)))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
