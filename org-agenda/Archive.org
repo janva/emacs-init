@@ -1,0 +1,8 @@
+* Juli 
+** Activ e
+*** DONE finnish demo
+CLOSED: [2022-07-30 la 11:18] SCHEDULED: <2022-07-30 la>
+*** DONE merge PR
+CLOSED: [2022-07-30 la 11:20] DEADLINE: <2022-08-08 ma>
+* Augusti 
+* Septemeber

@@ -1,0 +1,49 @@
+*  Inbox 
+
+* ACTIVE
+* NEXT Test                                                   :@errand:@work:
+SCHEDULED: <2022-08-01 ma 07:00>
+:PROPERTIES:
+:Effort:   5
+:END:
+DEADLINE: <2022-08-02 ti 12:00> 
+
+
+* NEXT [#A] Learn basics of tasks [1/8]  
+:PROPERTIES:
+:ORDERED:  t
+:END:
+:LOGBOOK:
+CLOCK: [2022-07-30 la 20:14]--[2022-07-30 la 20:15] =>  0:01
+:END:
+- [X] Creating basic tasks.Try out different ways of creating tasks =S-Right_ARROW C-c C-t=
+- [ ] Changing  tasks status
+  How do we switch between states =S-Right_ARROW C-c C-t=
+- [ ] Setting priority of task with =C-c ,=  or Cycle with =S-UP= or =S-DOWN=
+- [ ] Marking check box with =C-c C-x C-b=  or sometimes =C-c C-c= works?
+- [ ] Adding timestamp anywher =C-c .= and navigate callender with =S-LEFT= and =S-RIGHT= you can also add time by just writing time in prompt.
+- [ ] Schedule a task with =C-c C-s= timestamps can be inc/decremented using =S-ARROW= keys after they have been added
+- [ ] Set deadline for task =C-c C-d= basically the same as above but now it's deadline
+- [ ] Tracking time [0/3] 
+  - [ ] Clocking in  =C-c C-x C-i=
+  - [ ]  Clocking out  =C-c C-x C-o=
+  - [ ]  Jump to current clock  =C-c C-x C-j=
+
+* BACKLOG Learn more about tasks and  agenda [0/2]
+For agenda to be able to process your todos it needs to know where you files are at. You can set =org-agenda-files= to contain list of all files you want agenda to handle.
+- [ ] Get to agenda view by =M-x org-agenda=
+ - [ ] Show different agenda views by experimenting with different options after =M-x org-agenda=.
+- [ ] Filter views to see certain types of events.
+- [ ] 
+- [ ] Tags are delimited by :tag:. can be added using =counsel-org-tag=. Several tags per item are allowed.
+=C-c C-q=  bound to org-set-tags-command do none counsel way. =C-c C-c= seems to work as well.
+ - [ ] Properties  
+-[ ] Captures 
+* BACKLOG Create my own work flow 
+:LOGBOOK:
+:END:
+- [ ] Align agendas and task with advice from finnishit
+
+
+
+

@@ -1,0 +1,31 @@
+
+* 2022
+** 2022-07 heinäkuu
+*** 2022-07-30 lauantai
+
+**** 10:51  - Journal                                            :journal:
+:LOGBOOK:
+CLOCK: [2022-07-30 la 10:51]--[2022-07-30 la 10:51] =>  0:00
+:END:
+
+**** 10:51  - Journal                                            :journal:
+:LOGBOOK:
+CLOCK: [2022-07-30 la 10:51]--[2022-07-30 la 10:52] =>  0:01
+:END:
+
+Some random journal entry.
+
+**** 10:59  - [[file:~/programering/emacs/emacs-init/emacs.org::*Captures][Captures]] :meetings:
+:LOGBOOK:
+CLOCK: [2022-07-30 la 10:59]--[2022-07-30 la 10:59] =>  0:00
+:END:
+
+A meeting journal  about anything
+
+**** Checking Email                                                :email:
+:LOGBOOK:
+CLOCK: [2022-07-30 la 11:01]--[2022-07-30 la 11:01] =>  0:00
+:END:
+
+Some email thingy
+
