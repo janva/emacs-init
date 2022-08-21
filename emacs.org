@@ -1,9 +1,24 @@
 #+TITLE: Emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
-* My  Emacs init file
-This is just a setup for Emacs.  It's based on David Wilson work done on  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
-[[https://github.com/daviwil/emacs-from-scratch][Github repo]]. 
 
+* My  Emacs init file
+This is just a setup for Emacs.  It's based on David Wilson work done in this  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
+[[https://github.com/daviwil/emacs-from-scratch][Github repo]].
+
+** Note on requirements
+This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply installed the by issuing  following in bash
+
+#+begin_src shell
+    sudo apt install fonts-cantarell
+    sudo apt install fonts-firacode
+#+end_src
+
+I'm also using icons to make things look a bit nicer.  These through Emacs using 
+
+#+begin_src emacs-lisp
+  M-x package-install all-the-icons
+  M-x all-the-icons-install-fonts
+#+end_src
 * A couple of Emacs concepts
 ** Buffers & windows
 
@@ -148,7 +163,7 @@ Just a few global keybindings
    #+end_src
    
 ** Themes
-   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
+   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I used =package-install all-the-icons= followed by  =M-x all-the-icons-install-fonts=  To pull down and install needed fonts manually for this to work.
 
    ~:init~ keyword will make code run before package is loaded. We use thall-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
 
@@ -190,7 +205,9 @@ So for instance if  we use global line number the coude would ensure that certai
    #+end_src
    
 ** Fonts configuration
-  
+
+Here i use fira code font they can be installed on ubuntu by isuing =sudo apt install fonts-firacode= command. I also use the cantarell fonts which in similar fashion can be installed as so sudo =apt install fonts-cantarell=
+
    #+begin_src emacs-lisp 
      (set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
 
@@ -854,52 +871,52 @@ Is a built in mode hence ensure nil.
 * Set by emacs customization
   
   #+begin_src emacs-lisp
-    (custom-set-variables
-     ;; custom-set-variables was added by Custom.
-     ;; If you edit it by hand, you could mess it up, so be careful.
-     ;; Your init file should contain only one such instance.
-     ;; If there is more than one, they won't work right.
-     '(custom-safe-themes
-       '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
-     '(exwm-floating-border-color "#16161c")
-     '(fci-rule-color "#f9cec3")
-     '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
-     '(jdee-db-active-breakpoint-face-colors (cons "#16161c" "#e95678"))
-     '(jdee-db-requested-breakpoint-face-colors (cons "#16161c" "#09f7a0"))
-     '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
-     '(objed-cursor-color "#e95678")
-     '(package-selected-packages
-       '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
-     '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
-     '(rustic-ansi-faces
-       ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
-     '(vc-annotate-background "#232530")
-     '(vc-annotate-color-map
-       (list
-	(cons 20 "#09f7a0")
-	(cons 40 "#59e19c")
-	(cons 60 "#a9cc98")
-	(cons 80 "#fab795")
-	(cons 100 "#f6ab8f")
-	(cons 120 "#f39f89")
-	(cons 140 "#f09383")
-	(cons 160 "#c48788")
-	(cons 180 "#987a8d")
-	(cons 200 "#6c6f93")
-	(cons 220 "#95668a")
-	(cons 240 "#bf5e81")
-	(cons 260 "#e95678")
-	(cons 280 "#c95b74")
-	(cons 300 "#a96071")
-	(cons 320 "#89656d")
-	(cons 340 "#f9cec3")
-	(cons 360 "#f9cec3")))
-     '(vc-annotate-very-old-color nil))
-    (custom-set-faces
-     ;; custom-set-faces was added by Custom.
-     ;; If you edit it by hand, you could mess it up, so be careful.
-     ;; Your init file should contain only one such instance.
-     ;; If there is more than one, they won't work right.
-     )
+        (custom-set-variables
+         ;; custom-set-variables was added by Custom.
+         ;; If you edit it by hand, you could mess it up, so be careful.
+         ;; Your init file should contain only one such instance.
+         ;; If there is more than one, they won't work right.
+         '(custom-safe-themes
+           '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
+         '(exwm-floating-border-color "#16161c")
+         '(fci-rule-color "#f9cec3")
+         '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
+         '(jdee-db-active-breakpoint-face-colors (cons "#16161c" "#e95678"))
+         '(jdee-db-requested-breakpoint-face-colors (cons "#16161c" "#09f7a0"))
+         '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
+         '(objed-cursor-color "#e95678")
+         '(package-selected-packages
+           '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
+         '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
+         '(rustic-ansi-faces
+           ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
+         '(vc-annotate-background "#232530")
+         '(vc-annotate-color-map
+           (list
+            (cons 20 "#09f7a0")
+            (cons 40 "#59e19c")
+            (cons 60 "#a9cc98")
+            (cons 80 "#fab795")
+            (cons 100 "#f6ab8f")
+            (cons 120 "#f39f89")
+            (cons 140 "#f09383")
+            (cons 160 "#c48788")
+            (cons 180 "#987a8d")
+            (cons 200 "#6c6f93")
+            (cons 220 "#95668a")
+            (cons 240 "#bf5e81")
+            (cons 260 "#e95678")
+            (cons 280 "#c95b74")
+            (cons 300 "#a96071")
+            (cons 320 "#89656d")
+            (cons 340 "#f9cec3")
+            (cons 360 "#f9cec3")))
+         '(vc-annotate-very-old-color nil))
+        (custom-set-faces
+         ;; custom-set-faces was added by Custom.
+         ;; If you edit it by hand, you could mess it up, so be careful.
+         ;; Your init file should contain only one such instance.
+         ;; If there is more than one, they won't work right.
+         )
   #+end_src
 

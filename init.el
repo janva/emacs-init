@@ -1,3 +1,6 @@
+M-x package-install all-the-icons
+M-x all-the-icons-install-fonts
+
 ;; Initialize package sources
  (require 'package)
 
