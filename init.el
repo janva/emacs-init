@@ -1,6 +1,3 @@
-M-x package-install all-the-icons
-M-x all-the-icons-install-fonts
-
 ;; Initialize package sources
  (require 'package)
 
@@ -114,6 +111,8 @@ M-x all-the-icons-install-fonts
   (when (or (daemonp) (memq window-system '(ns x)))
     (exec-path-from-shell-initialize)))
 
+(add-hook 'flyspell-mode-hook (lambda () (local-set-key (kbd "C-.") #'flyspell-correct-word-before-point )))
+
 (use-package swiper
      :ensure t)
 
@@ -166,6 +165,32 @@ M-x all-the-icons-install-fonts
   ("j" text-scale-increase "in")
   ("k" text-scale-decrease "out")
   ("f" nil "finnished" :exit t))
+
+(use-package  tex
+    :ensure auctex
+    :hook (LaTeX-mode .  (lambda ()
+			   (setq TeX-auto-save t)
+			   (set TeX-parse-self t)
+			   (set-default TeX-master nil)))
+    :config
+    (setq TeX-PDF-mode t)
+    (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+    (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
+
+  (use-package pdf-tools
+    :config
+(pdf-tools-install)
+(setq pdf-view-use-scaling t)
+(setq pdf-view-use-imagemagick nil)
+(setq pdf-view-resize-factor 1.1))
+  ;; keybindings   
+  (use-package latex
+    :ensure auctex
+    :bind (:map LaTeX-mode-map
+		("C-c C-c". TeX-command-run-all)))
+
+;; syntax highlight 
+(add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
 
 (defun efs/org-font-setup ()
 ;; Replace list hyphen with dot
@@ -223,6 +248,8 @@ M-x all-the-icons-install-fonts
 
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
+
+;;(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
 
 (setq org-agenda-files 
       `( , (expand-file-name "Projects.org" jv-agenda-directory)
@@ -345,6 +372,14 @@ M-x all-the-icons-install-fonts
 
             (define-key global-map (kbd "C-c j")
               (lambda () (interactive) (org-capture nil "jj")))
+
+;;  (setq org-fragtog-backend 'imagemagick)
+
+  (use-package org-fragtog
+   :hook (org-mode . org-fragtog-mode)
+   :config
+  (setq org-format-latex-options
+      (plist-put org-format-latex-options :scale 2.0)))
 
 (org-babel-do-load-languages
 'org-babel-do-load-languages '(

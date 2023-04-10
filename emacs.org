@@ -14,11 +14,9 @@ This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply
 #+end_src
 
 I'm also using icons to make things look a bit nicer.  These through Emacs using 
-
-#+begin_src emacs-lisp
   M-x package-install all-the-icons
   M-x all-the-icons-install-fonts
-#+end_src
+
 * A couple of Emacs concepts
 ** Buffers & windows
 
@@ -233,6 +231,10 @@ Shell in Emacs sometimes appears to behave differently from your native shell. T
 =memq= tests if object is member of list and returns a list starting with that member and the rest of  the list. so =(memq 'b '(a b c d))=  returns ='(bcd)=.
  
 * Completaion  and tools to simplifying editing and navigation
+** Flyspell mode
+#+begin_src emacs-lisp
+  (add-hook 'flyspell-mode-hook (lambda () (local-set-key (kbd "C-.") #'flyspell-correct-word-before-point )))
+#+end_src
 ** Swiper
 
 [[https://elpa.gnu.org/packages/swiper.html][swiper elpa]]
@@ -330,6 +332,37 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 
    #+end_src
 
+* latex mode
+#+begin_src emacs-lisp  
+
+  (use-package  tex
+      :ensure auctex
+      :hook (LaTeX-mode .  (lambda ()
+			     (setq TeX-auto-save t)
+			     (set TeX-parse-self t)
+			     (set-default TeX-master nil)))
+      :config
+      (setq TeX-PDF-mode t)
+      (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+      (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
+
+    (use-package pdf-tools
+      :config
+  (pdf-tools-install)
+  (setq pdf-view-use-scaling t)
+  (setq pdf-view-use-imagemagick nil)
+  (setq pdf-view-resize-factor 1.1))
+    ;; keybindings   
+    (use-package latex
+      :ensure auctex
+      :bind (:map LaTeX-mode-map
+		  ("C-c C-c". TeX-command-run-all)))
+
+  ;; syntax highlight 
+  (add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
+
+#+end_src
+
 * Org-mode
 [[https://orgmode.org/][org-mode-pages]]
 desribes org-mode as a major mode for keeping notes, authoring documents, computational notebooks, literate programming, maintaining to-do lists, planning projects, and more.
@@ -371,15 +404,16 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
     #+end_src
 
     #+begin_src emacs-lisp
-	  (use-package org
-	    :hook (org-mode . efs/org-mode-setup)
-	    :config
-	    (setq org-ellipsis " ▾" 
-		  org-hide-emphasis-markers t
-		  org-src-tab-acts-natively t))
+      (use-package org
+	:hook (org-mode . efs/org-mode-setup)
+	:config
+	(setq org-ellipsis " ▾" 
+	      org-hide-emphasis-markers t
+	      org-src-tab-acts-natively t))
 
 
     #+end_src
+    
 
     #+begin_src emacs-lisp
           (defun efs/org-mode-setup()
@@ -410,6 +444,11 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
    :hook (org-mode . efs/org-mode-visual-fill))
 
     #+end_src
+
+#+begin_src emacs-lisp
+;;(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+ #+end_src
+
 
 ** Org agenda
 For agenda to work we need to tell which file to track in our agenda  using =org-agenda-files.= Agenda doesn't output log when for instance when mark things as finnished or done by default =org-agenda-start-with-log-mode=  starts agenda with logging turned on. The =org-log-done= is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html][Backquote evaluate list elements]]. If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to me.
@@ -557,6 +596,22 @@ Customization of the agenda views
 
             (define-key global-map (kbd "C-c j")
               (lambda () (interactive) (org-capture nil "jj")))
+
+#+end_src
+
+** TODO org-fragtog
+
+Renders LaTex math expressions in my org files.
+
+#+begin_src emacs-lisp 
+  ;;  (setq org-fragtog-backend 'imagemagick)
+
+    (use-package org-fragtog
+     :hook (org-mode . org-fragtog-mode)
+     :config
+    (setq org-format-latex-options
+	(plist-put org-format-latex-options :scale 2.0)))
+
 
 #+end_src
 
