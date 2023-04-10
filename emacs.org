@@ -42,7 +42,7 @@ Modes (editing modes) in emacs are used to alters how emacs behaves in some usef
   - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
     
 keymap is a table that records the bindings between characters and command functions
-* Package handeling
+* Package handling 
   In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
   
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
@@ -655,7 +655,7 @@ Renders LaTex math expressions in my org files.
     #+end_src
   
 * Development
-  This is separarae section on development modes and tools.
+  This is separate  section on development modes and tools.
 **  Common settings for all dev modes
 
 rainbow delimiters helps you keep track of matching parantesis etc.
