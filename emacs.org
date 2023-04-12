@@ -230,7 +230,7 @@ Shell in Emacs sometimes appears to behave differently from your native shell. T
 #+end_src
 =memq= tests if object is member of list and returns a list starting with that member and the rest of  the list. so =(memq 'b '(a b c d))=  returns ='(bcd)=.
  
-* Completaion  and tools to simplifying editing and navigation
+* Completion  and tools to simplifying editing and navigation
 ** Flyspell mode
 #+begin_src emacs-lisp
   (add-hook 'flyspell-mode-hook (lambda () (local-set-key (kbd "C-.") #'flyspell-correct-word-before-point )))
@@ -599,9 +599,9 @@ Customization of the agenda views
 
 #+end_src
 
-** TODO org-fragtog
+** org-fragtog
 
-Renders LaTex math expressions in my org files.
+Renders LaTex math expressions in my org files. This  depends on *dvisvgm* package which needs to be installed separately  /sudo apt install dvisvgm/
 
 #+begin_src emacs-lisp 
   ;;  (setq org-fragtog-backend 'imagemagick)
