@@ -53,10 +53,13 @@
     ;; (fset 'open-newline
     ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
 
-     (global-set-key (kbd "<f12>")
-                     (lambda () 
-                       (interactive) 
-                       (find-file "~/.config/emacs/emacs.org")))
+(global-set-key (kbd "<f12>")
+                (lambda () 
+                  (interactive)
+                  (let ((init-file-location (or (getenv "EMACS_INIT_FILE")
+                                               "~/.emacs.d/init.el")))
+                    (find-file init-file-location)
+                                         )))
 
 (defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"

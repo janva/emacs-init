@@ -98,41 +98,49 @@ Add some of my own editing commands like duplicate line.
 * Global  keybindings
 Just a few global keybindings
 
-** TODO Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable
+** 
 
    #+begin_src emacs-lisp
-;; get to agen faster
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-     ;; Make ESC quit prompts
-     (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-     ;; Using keyboard macros to define thes for now. These will effect the
-     ;; kill ring as well as point and mark
-    ;;  (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
-    ;;  (fset 'duplicate-line-down
-    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
-    ;; 
-    ;;  (global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
-    ;;  (fset 'duplicate-line-up 
-    ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
+     ;; get to agen faster
+     (global-set-key (kbd "C-c a") 'org-agenda)
+     (global-set-key (kbd "C-c c") 'org-capture)
+          ;; Make ESC quit prompts
+          (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+          ;; Using keyboard macros to define thes for now. These will effect the
+          ;; kill ring as well as point and mark
+         ;;  (global-set-key (kbd" M-S-<down>") 'duplicate-line-down)
+         ;;  (fset 'duplicate-line-down
+         ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w return ?\C-a ?\C-y] 0 "%d"))
+         ;; 
+         ;;  (global-set-key (kbd" M-S-<up>") 'duplicate-line-up )
+         ;;  (fset 'duplicate-line-up 
+         ;;        (kmacro-lambda-form [?\C-a ?\C-  ?\C-e ?\M-w up return ?\C-a ?\C-y ?\C-a] 0 "%d"))
 
-    ;; (global-set-key (kbd"M-<up>")  'swapline-up)
-    ;; (fset 'swapline-up
-    ;;       (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
-    ;;
-    ;; (global-set-key (kbd "M-<down>")'swapline-down)
-    ;; (fset 'swapline-down
-    ;;       (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
-    ;;
-    ;; (global-set-key (kbd" C-<return>") 'open-newline)
-    ;; (fset 'open-newline
-    ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
-
-     (global-set-key (kbd "<f12>")
-                     (lambda () 
-                       (interactive) 
-                       (find-file "~/.config/emacs/emacs.org")))
+         ;; (global-set-key (kbd"M-<up>")  'swapline-up)
+         ;; (fset 'swapline-up
+         ;;       (kmacro-lambda-form [?\C-a ?\C-k backspace ?\C-a return up ?\C-y ?\C-a tab] 0 "%d"))
+         ;;
+         ;; (global-set-key (kbd "M-<down>")'swapline-down)
+         ;; (fset 'swapline-down
+         ;;       (kmacro-lambda-form [?\C-a ?\C-k down ?\C-e return ?\C-y up up ?\C-a ?\C-k down] 0 "%d"))
+         ;;
+         ;; (global-set-key (kbd" C-<return>") 'open-newline)
+         ;; (fset 'open-newline
+         ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
    #+end_src
+
+ Currently set environment variable named *EMACS_INIT_FILE* to point to my emacs.org file (this file). If this file is not set we get default *init.el* file (Admittedly not ideal solution but works for now ). This file (emacs.org) is *tangled*  upon save to *./init.el*. Inside ~/emacs.d we create a soft link  to actual init.el file *ln -s ~/location/of/init.el init.el*  
+ 
+#+begin_src  emacs-lisp    
+          (global-set-key (kbd "<f12>")
+                          (lambda () 
+                            (interactive)
+                            (let ((init-file-location (or (getenv "EMACS_INIT_FILE")
+                                                         "~/.emacs.d/init.el")))
+                              (find-file init-file-location)
+                                                   )))
+   #+end_src
+
 
 * GLobal variables
 #+begin_src emacs-lisp
@@ -140,6 +148,8 @@ Just a few global keybindings
 "Base directory of my agenda files"
 :type 'string
 :options '("~/Documents/org-files" ))
+
+
 #+end_src
 * UI
 **  Basic UI config
