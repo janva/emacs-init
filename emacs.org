@@ -129,7 +129,11 @@ Just a few global keybindings
          ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
    #+end_src
 
- Currently set environment variable named *EMACS_INIT_FILE* to point to my emacs.org file (this file). If this file is not set we get default *init.el* file (Admittedly not ideal solution but works for now ). This file (emacs.org) is *tangled*  upon save to *./init.el*. Inside ~/emacs.d we create a soft link  to actual init.el file *ln -s ~/location/of/init.el init.el*  
+Currently set environment variable named *EMACS_INIT_FILE* to point to my emacs.org file (this file). If this file is not set we get default *init.el* file (Admittedly not ideal solution but works for now ). This file (emacs.org) is *tangled*  upon save to *./init.el*. Inside ~/emacs.d we create a soft link  to actual init.el file *ln -s ~/location/of/init.el init.el*  
+ 
+If you start your emacs from shell you can simple set an environment variable  for instance in your local *.profile* file like so =export EMACS_INIT_FILE=path/to/emacs.org=. Most often i don't start emacs from shell so  instead i created a new  folder =~/.config/environment.d=. Inside that folder i create a new file with extension =.conf=
+ for instance =my.conf=.  This file set a variable as so  =EMACS_INIT_FILE=path/to/emacs.org=.
+ 
  
 #+begin_src  emacs-lisp    
           (global-set-key (kbd "<f12>")
