@@ -1,72 +1,91 @@
 
 # Table of Contents
 
-1.  [My  Emacs init file](#org30a18e3)
-2.  [A couple of Emacs concepts](#orged73dc5)
-    1.  [Buffers & windows](#org8db7d60)
-        1.  [Point , Mark (PNT MRK) and region](#org56cc3d1)
-    2.  [Modes](#org75f032b)
-3.  [Package handeling](#orgeb18306)
-4.  [Some basic behaviours configs](#org430901f)
-5.  [Global  keybindings](#org12b35e7)
-    1.  [Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable](#org9414b3a)
-6.  [GLobal variables](#org89f01f4)
-7.  [UI](#orgf3e61ea)
-    1.  [Basic UI config](#org5271672)
-    2.  [Themes](#org1e92062)
-    3.  [Line numbers](#org2a69ca2)
-    4.  [Fonts configuration](#orgbadcfdd)
-8.  [Improve shell compability](#orga5a32d3)
-9.  [Completaion  and tools to simplifying editing and navigation](#orgafe11e6)
-    1.  [Swiper](#org1b0e757)
-    2.  [Ivy](#orgc7ed121)
-    3.  [Counsel](#org6d6a539)
-    4.  [Which-key](#orgd8e8a5c)
-    5.  [Hydra](#org375ca2d)
-10. [Org-mode](#org9c9282e)
-    1.  [Org basic](#org04441ff)
-    2.  [Org agenda](#org274c82e)
-    3.  [Captures](#orgf56ccc1)
-    4.  [Org babel mode](#orgd316fc8)
-        1.  [Babel languages config](#orgc454f33)
-        2.  [Org-structure templates  configs structured templates](#org507056e)
-        3.  [Org-babel  tangle configs](#orgd172a8d)
-11. [Development](#org13b32d2)
-    1.  [Common settings for all dev modes](#org1edd1b7)
-    2.  [langauges](#org1c54d13)
-        1.  [yasnippets](#org071eee5)
-        2.  [Breadcrumbs in LSP mode](#org94f56e6)
-        3.  [LSP servers ( Language Server  Protocol)](#orgd9c8275)
-        4.  [Better LSP UI](#org9d61940)
-        5.  [Treemacs for nice treestructures](#orga19afbb)
-        6.  [lsp with ivy integration](#orgc601741)
-        7.  [TypeSript](#org1250484)
-        8.  [python](#orgebfc84e)
-        9.  [Shell  scripts](#org794eeb4)
-        10. [Emacs Lisp mode](#org694acb4)
-    3.  [Company mode](#orgdc60918)
-    4.  [Projectile](#orga70238a)
-12. [Better documentation](#org2f84100)
-    1.  [The helpful package](#org3d662d0)
-13. [Just some random helpfull packages](#org66bf4c8)
-14. [Set by emacs customization](#org5a029a9)
+1.  [My  Emacs init file](#org7754a09)
+    1.  [Note on requirements](#org275163c)
+2.  [A couple of Emacs concepts](#org07cad9f)
+    1.  [Buffers & windows](#orgd7a7d57)
+        1.  [Point , Mark (PNT MRK) and region](#orgc7c00de)
+    2.  [Modes](#org384bfd2)
+3.  [Package handling](#orgeca8b66)
+4.  [Some basic behaviours configs](#orgeffbaaf)
+5.  [Global  keybindings](#orgf2a445d)
+    1.  [](#orgc67e05b)
+6.  [GLobal variables](#orgd164e48)
+7.  [UI](#org670ea2e)
+    1.  [Basic UI config](#orge85042c)
+    2.  [Themes](#org1dd2ce4)
+    3.  [Line numbers](#orgfbdfbd0)
+    4.  [Fonts configuration](#org4ea750c)
+8.  [Improve shell compability](#org012a349)
+9.  [Completion  and tools to simplifying editing and navigation](#org65d258e)
+    1.  [Flyspell mode](#org1d8b361)
+    2.  [Swiper](#orge537f3c)
+    3.  [Ivy](#org5be60a3)
+    4.  [Counsel](#orge902140)
+    5.  [Which-key](#org48b0ffc)
+    6.  [Hydra](#org5565e25)
+10. [latex mode](#org546c5c6)
+11. [Org-mode](#orgd1cdd70)
+    1.  [Org basic](#orgbe9e7a9)
+    2.  [Org agenda](#org998467a)
+    3.  [Captures](#org41ca70e)
+    4.  [org-fragtog](#orgf70c821)
+    5.  [Org babel mode](#org053d3ac)
+        1.  [Babel languages config](#orga83bb50)
+        2.  [Org-structure templates  configs structured templates](#org97482f5)
+        3.  [Org-babel  tangle configs](#orgf913802)
+12. [Development](#org8ad1737)
+    1.  [Common settings for all dev modes](#org6d89e1e)
+    2.  [languages](#org70e60da)
+        1.  [yasnippets](#orgc75630a)
+        2.  [Breadcrumbs in LSP mode](#org69d7636)
+        3.  [LSP servers ( Language Server  Protocol)](#org512d895)
+        4.  [Better LSP UI](#orge4b3e52)
+        5.  [Treemacs for nice treestructures](#org8c0be70)
+        6.  [lsp with ivy integration](#org0edd18f)
+        7.  [C++](#orgb6a3076)
+        8.  [TypeSript](#org313a7fe)
+        9.  [python](#org3d32b6a)
+        10. [Shell  scripts](#org84b91a2)
+        11. [Emacs Lisp mode](#orgd73c895)
+    3.  [Company mode](#orgfe05ac3)
+    4.  [Projectile](#orgf282728)
+13. [Better documentation](#orgc18e28c)
+    1.  [The helpful package](#orge678081)
+14. [Just some random helpfull packages](#orgcc37e50)
+15. [Set by emacs customization](#org81a85d2)
 
 
 
-<a id="org30a18e3"></a>
+<a id="org7754a09"></a>
 
 # My  Emacs init file
 
-This is just a setup for Emacs.  It's based on David Wilson work done on  [youtube livestream](https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ). I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
-[Github repo](https://github.com/daviwil/emacs-from-scratch). 
+This is just a setup for Emacs.  It's based on David Wilson work done in this  [youtube livestream](https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ). I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
+[Github repo](https://github.com/daviwil/emacs-from-scratch).
 
 
-<a id="orged73dc5"></a>
+<a id="org275163c"></a>
+
+## Note on requirements
+
+This setup depends on a fonts **Cantarell** and **Fira code retina fonts**. I simply installed the by issuing  following in bash
+
+    sudo apt install fonts-cantarell
+    sudo apt install fonts-firacode
+
+I'm also using icons to make things look a bit nicer.  These through Emacs using 
+  M-x package-install all-the-icons
+  M-x all-the-icons-install-fonts
+
+
+<a id="org07cad9f"></a>
 
 # A couple of Emacs concepts
 
 
-<a id="org8db7d60"></a>
+<a id="orgd7a7d57"></a>
 
 ## Buffers & windows
 
@@ -78,7 +97,7 @@ the buffer itself contains a lot of information such as name of visited file ,wh
 number of character contained in buffer etc. Two such  pieces of information are the **point** (PNT) and **mark** (MRK).
 
 
-<a id="org56cc3d1"></a>
+<a id="orgc7c00de"></a>
 
 ### Point , Mark (PNT MRK) and region
 
@@ -86,7 +105,7 @@ number of character contained in buffer etc. Two such  pieces of information are
 The **cursor** is placed on the character following the point. 
 
 
-<a id="org75f032b"></a>
+<a id="org384bfd2"></a>
 
 ## Modes
 
@@ -101,9 +120,9 @@ Modes are just code that adhere to a set of  conventions see links
 keymap is a table that records the bindings between characters and command functions
 
 
-<a id="orgeb18306"></a>
+<a id="orgeca8b66"></a>
 
-# Package handeling
+# Package handling
 
 In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
 
@@ -119,10 +138,10 @@ TODO ensure only use secure chanels for packages
     
     ;; Note org elpa will close before 9.6 use org gnu instead.
     (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-    			 ;; seems this repo is closing
-    			 ;;("org" . "https://elpa.gnu.org/packages/")
-    			 ("nongnu". "https://elpa.nongnu.org/nongnu/")
-    			 ("elpa" . "https://elpa.gnu.org/packages/")))
+                             ;; seems this repo is closing
+                             ;;("org" . "https://elpa.gnu.org/packages/")
+                             ("nongnu". "https://elpa.nongnu.org/nongnu/")
+                             ("elpa" . "https://elpa.gnu.org/packages/")))
     
      (package-initialize)
     
@@ -136,7 +155,7 @@ TODO ensure only use secure chanels for packages
      (setq use-package-always-ensure t)
 
 
-<a id="org430901f"></a>
+<a id="orgeffbaaf"></a>
 
 # Some basic behaviours configs
 
@@ -154,16 +173,16 @@ Add some of my own editing commands like duplicate line.
       :config (jv-basic-edit-mode 1))
 
 
-<a id="org12b35e7"></a>
+<a id="orgf2a445d"></a>
 
 # Global  keybindings
 
 Just a few global keybindings
 
 
-<a id="org9414b3a"></a>
+<a id="orgc67e05b"></a>
 
-## TODO Find a better strategy to locate emacs.org file for instance softlink from default locations or environment variable
+## 
 
     ;; get to agen faster
     (global-set-key (kbd "C-c a") 'org-agenda)
@@ -191,29 +210,37 @@ Just a few global keybindings
         ;; (global-set-key (kbd" C-<return>") 'open-newline)
         ;; (fset 'open-newline
         ;;       (kmacro-lambda-form [?\C-e return tab] 0 "%d"))
-    
-         (global-set-key (kbd "<f12>")
-    		     (lambda () 
-    		       (interactive) 
-    		       (find-file "~/.config/emacs/emacs.org")))
+
+Currently set environment variable named **EMACS<sub>INIT</sub><sub>FILE</sub>** to point to my emacs.org file (this file). If this file is not set we get default **init.el** file (Admittedly not ideal solution but works for now ). This file (emacs.org) is **tangled**  upon save to **./init.el**. Inside ~/emacs.d we create a soft link  to actual init.el file **ln -s ~/location/of/init.el init.el**  
+
+If you start your emacs from shell you can simple set an environment variable  for instance in your local **.profile** file like so `export EMACS_INIT_FILE=path/to/emacs.org`. Most often i don't start emacs from shell so  instead i created a new  folder `~/.config/environment.d`. Inside that folder i create a new file with extension `.conf`
+ for instance `my.conf`.  This file set a variable as so  `EMACS_INIT_FILE=path/to/emacs.org`.
+
+    (global-set-key (kbd "<f12>")
+                    (lambda () 
+                      (interactive)
+                      (let ((init-file-location (or (getenv "EMACS_INIT_FILE")
+                                                   "~/.emacs.d/init.el")))
+                        (find-file init-file-location)
+                                             )))
 
 
-<a id="org89f01f4"></a>
+<a id="orgd164e48"></a>
 
 # GLobal variables
 
     (defcustom jv-agenda-directory "~/Documents/tasks" 
     "Base directory of my agenda files"
     :type 'string
-    :options '("~/Documents/tasks" ))
+    :options '("~/Documents/org-files" ))
 
 
-<a id="orgf3e61ea"></a>
+<a id="org670ea2e"></a>
 
 # UI
 
 
-<a id="org5271672"></a>
+<a id="orge85042c"></a>
 
 ## Basic UI config
 
@@ -232,31 +259,31 @@ As little distraction as possible please. No scroll-bars tool-bars and no annoyi
     (setq visible-bell t)
 
 
-<a id="org1e92062"></a>
+<a id="org1dd2ce4"></a>
 
 ## Themes
 
-Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I had to install all-the-icons-install-fonts on my Ubuntu seperatly to get this working.
+Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I used `package-install all-the-icons` followed by  `M-x all-the-icons-install-fonts`  To pull down and install needed fonts manually for this to work.
 
 `:init` keyword will make code run before package is loaded. We use thall-the-icons to get some nice icons and the tweak the mode-line. `:ensure t` isn't stricly needed as we set this as default for all packages. The `:custom`  keyword is used here to set custom variables of doom-modeline packages.
 
 [Doom-themes github page](https://github.com/doomemacs/themes)
 
     (require 'all-the-icons)
-    	     (use-package doom-themes
-    	       :init (load-theme 'doom-horizon t))
-    	     ;;use refresh-pakcages to get this working
+                 (use-package doom-themes
+                   :init (load-theme 'doom-horizon t))
+                 ;;use refresh-pakcages to get this working
          ;; M-x all-the-icons-install-fonts
-    	     (use-package all-the-icons
-    	       :if (display-graphic-p)
-    	       )
-    	     (use-package doom-modeline
-    	       :ensure t
-    	       :init (doom-modeline-mode 1)
-    	       :custom ((doom-modeline-height 15)))
+                 (use-package all-the-icons
+                   :if (display-graphic-p)
+                   )
+                 (use-package doom-modeline
+                   :ensure t
+                   :init (doom-modeline-mode 1)
+                   :custom ((doom-modeline-height 15)))
 
 
-<a id="org2a69ca2"></a>
+<a id="orgfbdfbd0"></a>
 
 ## Line numbers
 
@@ -271,15 +298,17 @@ So for instance if  we use global line number the coude would ensure that certai
     
     ;; (global-display-line-numbers-mode t)
     (dolist (mode'(org-mode-hook
-    	       term-mode-hook
-    	       shell-mode-hook
-    	       eshell-mode-hook))
+                   term-mode-hook
+                   shell-mode-hook
+                   eshell-mode-hook))
       (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
 
-<a id="orgbadcfdd"></a>
+<a id="org4ea750c"></a>
 
 ## Fonts configuration
+
+Here i use fira code font they can be installed on ubuntu by isuing `sudo apt install fonts-firacode` command. I also use the cantarell fonts which in similar fashion can be installed as so sudo `apt install fonts-cantarell`
 
     (set-face-attribute 'default nil :font "Fira Code Retina" :height 170)
     
@@ -290,7 +319,7 @@ So for instance if  we use global line number the coude would ensure that certai
     (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 210 :weight 'regular)
 
 
-<a id="orga5a32d3"></a>
+<a id="org012a349"></a>
 
 # Improve shell compability
 
@@ -305,12 +334,19 @@ Shell in Emacs sometimes appears to behave differently from your native shell. T
 `memq` tests if object is member of list and returns a list starting with that member and the rest of  the list. so `(memq 'b '(a b c d))`  returns `'(bcd)`.
 
 
-<a id="orgafe11e6"></a>
+<a id="org65d258e"></a>
 
-# Completaion  and tools to simplifying editing and navigation
+# Completion  and tools to simplifying editing and navigation
 
 
-<a id="org1b0e757"></a>
+<a id="org1d8b361"></a>
+
+## Flyspell mode
+
+    (add-hook 'flyspell-mode-hook (lambda () (local-set-key (kbd "C-.") #'flyspell-correct-word-before-point )))
+
+
+<a id="orge537f3c"></a>
 
 ## Swiper
 
@@ -323,7 +359,7 @@ An UI on top of ISearch (Incremental Search). Swiper gives an overview of the cu
          :ensure t)
 
 
-<a id="orgc7ed121"></a>
+<a id="org5be60a3"></a>
 
 ## Ivy
 
@@ -334,23 +370,23 @@ Ivy minor mode is a generic completion mechanism for Emacs. Ivy-mode ensures com
     (use-package ivy
       :diminish
       :bind (("C-s" . swiper)
-    	 :map ivy-minibuffer-map
-    	 ("TAB" . ivy-alt-done)	
-    	 ("C-l" . ivy-alt-done)
-    	 ("C-j" . ivy-next-line)
-    	 ("C-k" . ivy-previous-line)
-    	 :map ivy-switch-buffer-map
-    	 ("C-k" . ivy-previous-line)
-    	 ("C-l" . ivy-done)
-    	 ("C-d" . ivy-switch-buffer-kill)
-    	 :map ivy-reverse-i-search-map
-    	 ("C-k" . ivy-previous-line)
-    	 ("C-d" . ivy-reverse-i-search-kill))
+             :map ivy-minibuffer-map
+             ("TAB" . ivy-alt-done)	
+             ("C-l" . ivy-alt-done)
+             ("C-j" . ivy-next-line)
+             ("C-k" . ivy-previous-line)
+             :map ivy-switch-buffer-map
+             ("C-k" . ivy-previous-line)
+             ("C-l" . ivy-done)
+             ("C-d" . ivy-switch-buffer-kill)
+             :map ivy-reverse-i-search-map
+             ("C-k" . ivy-previous-line)
+             ("C-d" . ivy-reverse-i-search-kill))
       :config
       (ivy-mode 1))
 
 
-<a id="org6d6a539"></a>
+<a id="orge902140"></a>
 
 ## Counsel
 
@@ -365,10 +401,10 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 
     (use-package counsel
       :bind (("M-x" . counsel-M-x)
-    	 ("C-x b" . counsel-ibuffer)
-    	 ("C-x C-f" . counsel-find-file)
-    	 :map minibuffer-local-map
-    	 ("C-r" . counsel-minibuffer-history))
+             ("C-x b" . counsel-ibuffer)
+             ("C-x C-f" . counsel-find-file)
+             :map minibuffer-local-map
+             ("C-r" . counsel-minibuffer-history))
       :config
       (setq ivy-initial-alist nil )) ; don't start search with ^
     
@@ -377,7 +413,7 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
       (ivy-rich-mode 1))
 
 
-<a id="orgd8e8a5c"></a>
+<a id="org48b0ffc"></a>
 
 ## Which-key
 
@@ -392,7 +428,7 @@ Emacs minor mode that displays popup with possible keybindings on prefix command
       (setq which-key-idle-delay 1))
 
 
-<a id="org375ca2d"></a>
+<a id="org5565e25"></a>
 
 ## Hydra
 
@@ -409,7 +445,39 @@ Lets you do repetive commands in convienient manner.
       ("f" nil "finnished" :exit t))
 
 
-<a id="org9c9282e"></a>
+<a id="org546c5c6"></a>
+
+# latex mode
+
+    
+    (use-package  tex
+        :ensure auctex
+        :hook (LaTeX-mode .  (lambda ()
+                               (setq TeX-auto-save t)
+                               (set TeX-parse-self t)
+                               (set-default TeX-master nil)))
+        :config
+        (setq TeX-PDF-mode t)
+        (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+        (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
+    
+      (use-package pdf-tools
+        :config
+    (pdf-tools-install)
+    (setq pdf-view-use-scaling t)
+    (setq pdf-view-use-imagemagick nil)
+    (setq pdf-view-resize-factor 1.1))
+      ;; keybindings   
+      (use-package latex
+        :ensure auctex
+        :bind (:map LaTeX-mode-map
+                    ("C-c C-c". TeX-command-run-all)))
+    
+    ;; syntax highlight 
+    (add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
+
+
+<a id="orgd1cdd70"></a>
 
 # Org-mode
 
@@ -418,25 +486,25 @@ desribes org-mode as a major mode for keeping notes, authoring documents, comput
 it's a realy versatile mode that does a lot of things. For instance this init-file has been written in org-mode using litterate programming. 
 
 
-<a id="org04441ff"></a>
+<a id="orgbe9e7a9"></a>
 
 ## Org basic
 
     (defun efs/org-font-setup ()
     ;; Replace list hyphen with dot
       (font-lock-add-keywords 'org-mode
-    			  '(("^ *\\([-]\\) "
-    			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                              '(("^ *\\([-]\\) "
+                                 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
     
       ;; Set faces for heading levels
       (dolist (face '((org-level-1 . 1.2)
-    		  (org-level-2 . 1.1)
-    		  (org-level-3 . 1.05)
-    		  (org-level-4 . 1.0)
-    		  (org-level-5 . 1.1)
-    		  (org-level-6 . 1.1)
-    		  (org-level-7 . 1.1)
-    		  (org-level-8 . 1.1)))
+                      (org-level-2 . 1.1)
+                      (org-level-3 . 1.05)
+                      (org-level-4 . 1.0)
+                      (org-level-5 . 1.1)
+                      (org-level-6 . 1.1)
+                      (org-level-7 . 1.1)
+                      (org-level-8 . 1.1)))
         (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
     
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
@@ -456,12 +524,13 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
       :hook (org-mode . efs/org-mode-setup)
       :config
       (setq org-ellipsis " ▾" 
-    	org-hide-emphasis-markers t
-    	org-src-tab-acts-natively t))
+            org-hide-emphasis-markers t
+            org-src-tab-acts-natively t))
 
     (defun efs/org-mode-setup()
       (org-indent-mode)
       (variable-pitch-mode 1)
+      (flyspell-mode 1)
       (visual-line-mode 1))
 
     (use-package org-bullets
@@ -472,26 +541,27 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
 
     (defun efs/org-mode-visual-fill ()
       (setq visual-fill-column-width 100
-    	visual-fill-column-center-text t)
+            visual-fill-column-center-text t)
       (visual-fill-column-mode 1))
 
     (use-package visual-fill-column
       :hook (org-mode . efs/org-mode-visual-fill))
 
+    ;;(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
 
-<a id="org274c82e"></a>
+
+<a id="org998467a"></a>
 
 ## Org agenda
 
-For agenda to work we need to tell which file to track in our agenda  using `org-agenda-files.` Agenda doesn't output log when for instance when mark things as finnished or done by default `org-agenda-start-with-log-mode`  starts agenda with logging turned on. The `org-log-done` is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [Backquote evaluate list elements](https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html). If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to mean.
+For agenda to work we need to tell which file to track in our agenda  using `org-agenda-files.` Agenda doesn't output log when for instance when mark things as finnished or done by default `org-agenda-start-with-log-mode`  starts agenda with logging turned on. The `org-log-done` is used to tell what to log when we mark task as DONE. The org-log-drawer is at least suppose allow for us to fold away those notes so that they are not visibla all the the time but can be accessed through a "drawer".  Here i use backquote constructs to evaluate elements see [Backquote evaluate list elements](https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html). If we just create the list of function calls to expand-filename they want be evaluated and org-agende will throw wrong type error. Could probably us cons to create the list but this feels tidier  to me.
 
-    
     (setq org-agenda-files 
-          `( , (expand-file-name "Tasks.org" jv-agenda-directory)
-    	   , (expand-file-name "Birthdays.org" jv-agenda-directory)
-    	   , (expand-file-name "Archives.org" jv-agenda-directory)
-    	   , (expand-file-name "Projects.org" jv-agenda-directory)
-    	   , (expand-file-name "Next.org" jv-agenda-directory)))
+          `( , (expand-file-name "Projects.org" jv-agenda-directory)
+               , (expand-file-name "Learning.org" jv-agenda-directory)
+               , (expand-file-name "Archives.org" jv-agenda-directory)
+               , (expand-file-name "Current-project.org" jv-agenda-directory)
+               , (expand-file-name "Todos.org" jv-agenda-directory)))
     
     (setq org-agenda-start-with-log-mode t)
     (setq org-log-done 'time)
@@ -500,8 +570,8 @@ For agenda to work we need to tell which file to track in our agenda  using `org
 We can add our own keyword and workflow to our own taste using `org-todo-keywords`. These can be set inside org files per file as well.
 
       (setq org-todo-keywords  
-    	'((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-    	  (sequence  "BACKLOG(b)" "NEXT(n)" "ACTIVE(a)" "|" "DONE(d)")))
+            '((sequence  "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence  "BACKLOG(b)" "NEXT(n)" "ACTIVE(a)" "|" "DONE(d)")))
     
     ;; (setq org-todo-keyword-faces
     ;;       '(("TODO" . org-warning) ("STARTED" . "yellow")
@@ -559,34 +629,34 @@ Customization of the agenda views
     
       ("w" "Workflow Status"
        ((todo "WAIT"
-    	  ((org-agenda-overriding-header "Waiting on External")
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "Waiting on External")
+               (org-agenda-files org-agenda-files)))
         (todo "REVIEW"
-    	  ((org-agenda-overriding-header "In Review")
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "In Review")
+               (org-agenda-files org-agenda-files)))
         (todo "PLAN"
-    	  ((org-agenda-overriding-header "In Planning")
-    	   (org-agenda-todo-list-sublevels nil)
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "In Planning")
+               (org-agenda-todo-list-sublevels nil)
+               (org-agenda-files org-agenda-files)))
         (todo "BACKLOG"
-    	  ((org-agenda-overriding-header "Project Backlog")
-    	   (org-agenda-todo-list-sublevels nil)
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "Project Backlog")
+               (org-agenda-todo-list-sublevels nil)
+               (org-agenda-files org-agenda-files)))
         (todo "READY"
-    	  ((org-agenda-overriding-header "Ready for Work")
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "Ready for Work")
+               (org-agenda-files org-agenda-files)))
         (todo "ACTIVE"
-    	  ((org-agenda-overriding-header "Active Projects")
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "Active Projects")
+               (org-agenda-files org-agenda-files)))
         (todo "COMPLETED"
-    	  ((org-agenda-overriding-header "Completed Projects")
-    	   (org-agenda-files org-agenda-files)))
+              ((org-agenda-overriding-header "Completed Projects")
+               (org-agenda-files org-agenda-files)))
         (todo "CANC"
-    	  ((org-agenda-overriding-header "Cancelled Projects")
-    	   (org-agenda-files org-agenda-files)))))))
+              ((org-agenda-overriding-header "Cancelled Projects")
+               (org-agenda-files org-agenda-files)))))))
 
 
-<a id="orgf56ccc1"></a>
+<a id="org41ca70e"></a>
 
 ## Captures
 
@@ -594,46 +664,61 @@ Will use this to scribble down ideas that pop up and disturb workflow. It will s
 
         (setq org-capture-templates
           `(("t" "Tasks / Projects")
-    	("tt" "Task" entry (file+olp
-    			    ,(expand-file-name "Tasks.org" jv-agenda-directory) "Inbox")
-    	     "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+            ("tt" "Task" entry (file+olp
+                                ,(expand-file-name "Tasks.org" jv-agenda-directory) "Inbox")
+                 "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
     
-    	("j" "Journal Entries")
-    	("jj" "Journal" entry
-    	     (file+olp+datetree 
-    	      ,(expand-file-name "Journal.org"  jv-agenda-directory))
-    	     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-    	     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-    	     :clock-in :clock-resume
-    	     :empty-lines 1)
-    	("jm" "Meeting" entry
-    	     (file+olp+datetree ,(expand-file-name "Journal.org"  jv-agenda-directory))
-    	     "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-    	     :clock-in :clock-resume
-    	     :empty-lines 1)
+            ("j" "Journal Entries")
+            ("jj" "Journal" entry
+                 (file+olp+datetree 
+                  ,(expand-file-name "Journal.org"  jv-agenda-directory))
+                 "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                 ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+                 :clock-in :clock-resume
+                 :empty-lines 1)
+            ("jm" "Meeting" entry
+                 (file+olp+datetree ,(expand-file-name "Journal.org"  jv-agenda-directory))
+                 "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+                 :clock-in :clock-resume
+                 :empty-lines 1)
     
-    	("w" "Workflows")
-    	("we" "Checking Email" entry (file+olp+datetree 
+            ("w" "Workflows")
+            ("we" "Checking Email" entry (file+olp+datetree 
     ,(expand-file-name "Journal.org"  jv-agenda-directory))
-    	     "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+                 "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
     
-    	("m" "Metrics Capture")
-    	("mw" "Weight" table-line (file+headline ,(expand-file-name "Metrics.org"  jv-agenda-directory)
+            ("m" "Metrics Capture")
+            ("mw" "Weight" table-line (file+headline ,(expand-file-name "Metrics.org"  jv-agenda-directory)
      "Weight")
-    	 "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t))) 
+             "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t))) 
     
-    	    (define-key global-map (kbd "C-c j")
-    	      (lambda () (interactive) (org-capture nil "jj")))
+                (define-key global-map (kbd "C-c j")
+                  (lambda () (interactive) (org-capture nil "jj")))
 
 
-<a id="orgd316fc8"></a>
+<a id="orgf70c821"></a>
+
+## org-fragtog
+
+Renders LaTex math expressions in my org files. This  depends on **dvisvgm** package which needs to be installed separately  *sudo apt install dvisvgm*
+
+    ;;  (setq org-fragtog-backend 'imagemagick)
+    
+      (use-package org-fragtog
+       :hook (org-mode . org-fragtog-mode)
+       :config
+      (setq org-format-latex-options
+          (plist-put org-format-latex-options :scale 2.0)))
+
+
+<a id="org053d3ac"></a>
 
 ## Org babel mode
 
 Babel adds ability to execute source code within org documents. Babel allows for data to be passed accross different parts of document independently of source languages and applications. For instance we could have a python block outputting some data as input to c block which later could be passed through GnuPlot block and to finally be embedded in document as plot. Using org babel mode we can use org for literal programming. Babel can reprocess document and write source code to seperate file  (tangled in literate programming jargon).  
 
 
-<a id="orgc454f33"></a>
+<a id="orga83bb50"></a>
 
 ### Babel languages config
 
@@ -645,7 +730,7 @@ Babel adds ability to execute source code within org documents. Babel allows for
     (python . t)))
 
 
-<a id="org507056e"></a>
+<a id="org97482f5"></a>
 
 ### Org-structure templates  configs [structured templates](https://orgmode.org/worg/org-contrib/babel/languages/)
 
@@ -658,7 +743,7 @@ Babel adds ability to execute source code within org documents. Babel allows for
           (add-to-list 'org-structure-template-alist '("xml" . "src xml"))
 
 
-<a id="orgd172a8d"></a>
+<a id="orgf913802"></a>
 
 ### Org-babel  tangle configs
 
@@ -673,14 +758,14 @@ Babel adds ability to execute source code within org documents. Babel allows for
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 
-<a id="org13b32d2"></a>
+<a id="org8ad1737"></a>
 
 # Development
 
-This is separarae section on development modes and tools.
+This is separate  section on development modes and tools.
 
 
-<a id="org1edd1b7"></a>
+<a id="org6d89e1e"></a>
 
 ## Common settings for all dev modes
 
@@ -697,12 +782,12 @@ Auto match pairs of things such as parentecis with `electric-pair-mode` and ligh
       (electric-pair-mode 1  ))
 
 
-<a id="org1c54d13"></a>
+<a id="org70e60da"></a>
 
-## langauges
+## languages
 
 
-<a id="org071eee5"></a>
+<a id="orgc75630a"></a>
 
 ### yasnippets
 
@@ -720,7 +805,7 @@ Is a minor mode providing template system. It features abbreviations that can be
     (use-package yasnippet-snippets)
 
 
-<a id="org94f56e6"></a>
+<a id="org69d7636"></a>
 
 ### Breadcrumbs in LSP mode
 
@@ -729,7 +814,7 @@ Is a minor mode providing template system. It features abbreviations that can be
     (lsp-headerline-breadcrumb-mode 1))
 
 
-<a id="orgd9c8275"></a>
+<a id="org512d895"></a>
 
 ### LSP servers ( Language Server  Protocol)
 
@@ -758,7 +843,7 @@ There exist a `lsp-format-buffer` command but might be a better idea to us seper
     (lsp-enable-which-key-integration t))
 
 
-<a id="org9d61940"></a>
+<a id="orge4b3e52"></a>
 
 ### Better LSP UI
 
@@ -771,7 +856,7 @@ There exist a `lsp-format-buffer` command but might be a better idea to us seper
       :custom (lsp-ui-doc-position  'bottom))
 
 
-<a id="orga19afbb"></a>
+<a id="org8c0be70"></a>
 
 ### Treemacs for nice treestructures
 
@@ -779,14 +864,38 @@ There exist a `lsp-format-buffer` command but might be a better idea to us seper
     :after lsp)
 
 
-<a id="orgc601741"></a>
+<a id="org0edd18f"></a>
 
 ### lsp with ivy integration
 
     (use-package lsp-ivy)
 
 
-<a id="org1250484"></a>
+<a id="orgb6a3076"></a>
+
+### C++
+
+Tree-sitter is  a dynamic source code parser for editors. This provides the means for more accurate syntax highlighting and more complex functions like refactoring support and more. Emacs 29 comes with lib but we need grammar definitions for each language we want to use it for.  
+
+    (setq treesit-language-source-alist
+        '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
+        (c  "https://github.com/tree-sitter/tree-sitter-c")))
+    
+    (dolist (lang treesit-language-source-alist)
+      (unless (treesit-language-available-p (car lang))
+      (treesit-install-language-grammar (car lang))))
+    
+    ;;treesitter mode for c++ is the c++-ts-mode lets remap c++ to this name
+    (setq treesit-load-name-override-list
+          '((c++ "libtree-sitter-cpp")))
+    
+    ;; Lets use tree-sitter  as default mode for c++
+    (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode))
+
+
+<a id="org313a7fe"></a>
 
 ### TypeSript
 
@@ -801,7 +910,7 @@ npm i -g typescript-language-server; npm i -g typescript
     (setq typescript-indent-level 2))
 
 
-<a id="orgebfc84e"></a>
+<a id="org3d32b6a"></a>
 
 ### python
 
@@ -844,7 +953,7 @@ npm i -g typescript-language-server; npm i -g typescript
       (pyvenv-mode 1))
 
 
-<a id="org794eeb4"></a>
+<a id="org84b91a2"></a>
 
 ### Shell  scripts
 
@@ -856,7 +965,7 @@ Use `npm i -g bash-language-server` to install bash language server.
       :hook (sh-mode . lsp-deferred))
 
 
-<a id="org694acb4"></a>
+<a id="orgd73c895"></a>
 
 ### Emacs Lisp mode
 
@@ -875,10 +984,10 @@ Use `npm i -g bash-language-server` to install bash language server.
       ;;company-elisp is obsolete?
       ;; could just use push instead?
       :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
-    					  ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
+                                              ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
 
 
-<a id="orgdc60918"></a>
+<a id="orgfe05ac3"></a>
 
 ## Company mode
 
@@ -891,22 +1000,22 @@ Is a built in mode hence ensure nil.
       ;;:init
       ;;(setq company-format-margin-function  #'company-vscode-dark-icons-margin) 
       :bind (:map company-active-map
-    	 ("<tab>" . company-complete-selection))
-    	(:map lsp-mode-map
-    	 ("<tab>" . company-indent-or-complete-common))
-    	:config (setq    company-show-quick-access t)
-    	:custom
+             ("<tab>" . company-complete-selection))
+            (:map lsp-mode-map
+             ("<tab>" . company-indent-or-complete-common))
+            :config (setq    company-show-quick-access t)
+            :custom
            ( company-format-margin-function  #'company-vscode-dark-icons-margin)
-    	  (company-require-match 'never)
-    	  (company-tooltip-align-annotations t)
-    	(company-minimum-prefix-length 1)
-    	(company-idle-delay 0.1))
+              (company-require-match 'never)
+              (company-tooltip-align-annotations t)
+            (company-minimum-prefix-length 1)
+            (company-idle-delay 0.1))
 
     (use-package company-quickhelp
       :hook (company-mode . company-quickhelp-mode))
 
 
-<a id="orga70238a"></a>
+<a id="orgf282728"></a>
 
 ## Projectile
 
@@ -934,12 +1043,12 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
     ;;((nil .((projectile-project-run-cmd ."npm start") )))
 
 
-<a id="org2f84100"></a>
+<a id="orgc18e28c"></a>
 
 # Better documentation
 
 
-<a id="org3d662d0"></a>
+<a id="orge678081"></a>
 
 ## The helpful package
 
@@ -957,14 +1066,14 @@ Project managing package. [Projectile github-page](https://github.com/bbatsov/pr
       ([remap describe-key] . helpful-key))
 
 
-<a id="org66bf4c8"></a>
+<a id="orgcc37e50"></a>
 
 # Just some random helpfull packages
 
     (use-package command-log-mode)
 
 
-<a id="org5a029a9"></a>
+<a id="org81a85d2"></a>
 
 # Set by emacs customization
 
