@@ -451,6 +451,23 @@
 
 (use-package lsp-ivy)
 
+(setq treesit-language-source-alist
+    '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
+    (c  "https://github.com/tree-sitter/tree-sitter-c")))
+
+(dolist (lang treesit-language-source-alist)
+  (unless (treesit-language-available-p (car lang))
+  (treesit-install-language-grammar (car lang))))
+
+;;treesitter mode for c++ is the c++-ts-mode lets remap c++ to this name
+(setq treesit-load-name-override-list
+      '((c++ "libtree-sitter-cpp")))
+
+;; Lets use tree-sitter  as default mode for c++
+(add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
+(add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
+(add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode))
+
 (use-package typescript-mode
 :mode "\\.ts\\'"
 :hook (typescript-mode . lsp-deferred)
