@@ -787,6 +787,22 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
 #+end_src
 
 
+*** Cmake
+Cmake lsp
+
+#+begin_src emacs-lisp
+
+(use-package cmake-mode
+  :ensure t
+  :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'")
+  :hook (cmake-mode . lsp-deferred))
+
+(use-package cmake-font-lock
+  :ensure t
+  :after cmake-mode
+  :config (cmake-font-lock-activate))
+#+end_src
+
 *** TypeSript
 TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
 
