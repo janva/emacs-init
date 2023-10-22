@@ -672,7 +672,7 @@ Renders LaTex math expressions in my org files. This  depends on *dvisvgm* packa
   This is separate  section on development modes and tools.
 **  Common settings for all dev modes
 
-rainbow delimiters helps you keep track of matching parantesis etc.
+rainbow delimiters helps you keep track of matching parentesis  etc.
 
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters
@@ -708,7 +708,6 @@ Is a minor mode providing template system. It features abbreviations that can be
     #+end_src
     
 ***  Breadcrumbs in LSP mode
-
     #+begin_src emacs-lisp
       (defun  efs/lsp-mode-setup ()
         ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file ;; symbols))
@@ -722,7 +721,7 @@ LSP is an effort made by VSCode team to standardize the protocol for language se
 LSP-mode for emacs aims to provide a more IDE like experience to emacs. Normally you are required to seperatly install a language server for each language. Again the link above will provide needed information on specific language support. 
 
 ~:commands~ keyword  creates autoloads for the commands you list. An autoload in elisp is a mechanism to make known (register) a function but defer of loading the file that actualy defines it.
-The file is instead loaded at first call to function or macro. The hook =(:hook)= is setup to call =efs/lsp-mode-setup= function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commmands is set to =C-c l=. Finally we enable which-key for LSP.
+The file is instead loaded at first call to function or macro. The hook =(:hook)= is setup to call =efs/lsp-mode-setup= function which simply setups breadcrumb mode in all our LSP buffers(windows?).The prefix keybinding for lsp commands is set to =C-c l=. Finally we enable which-key for LSP.
 
 Some keybinding and commands to get you started  (remember prefix keybining was set to C-c l).
  
@@ -734,13 +733,13 @@ Some keybinding and commands to get you started  (remember prefix keybining was 
 There exist a =lsp-format-buffer= command but might be a better idea to us seperate language specific formatter for this job
    
     #+begin_src emacs-lisp
-    (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :hook (lsp-mode . efs/lsp-mode-setup)
-    :init
-    (setq lsp-keymap-prefix "C-c l")  
-    :config
-    (lsp-enable-which-key-integration t))
+      (use-package lsp-mode
+      :commands (lsp lsp-deferred)
+      :hook (lsp-mode . efs/lsp-mode-setup)
+      :init
+      (setq lsp-keymap-prefix "C-c l")  
+      :config
+      (lsp-enable-which-key-integration t))
     #+end_src
     
 *** Better LSP UI 
@@ -771,7 +770,7 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
   (setq treesit-language-source-alist
       '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
       (c  "https://github.com/tree-sitter/tree-sitter-c")))
-
+  
   (dolist (lang treesit-language-source-alist)
     (unless (treesit-language-available-p (car lang))
     (treesit-install-language-grammar (car lang))))
@@ -786,8 +785,8 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
   (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode))
 #+end_src
 
-
 *** Cmake
+
 Cmake lsp
 
 #+begin_src emacs-lisp
@@ -803,7 +802,17 @@ Cmake lsp
   :config (cmake-font-lock-activate))
 #+end_src
 
+*** C++-mode
+
+#+begin_src emacs-lisp
+  (use-package c++-mode 
+  :ensure nil
+  :mode ("\\.cpp\\'" "\\.cc\\'" "\\.h\\'")
+  :hook(c++-mode .lsp))
+#+end_src
+
 *** TypeSript
+
 TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
 
 npm i -g typescript-language-server; npm i -g typescript
