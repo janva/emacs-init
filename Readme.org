@@ -6,7 +6,7 @@ This is just a setup for Emacs.  It's based on David Wilson work done in this  [
 [[https://github.com/daviwil/emacs-from-scratch][Github repo]].
 
 ** Note on requirements
-This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply installed the by issuing  following in bash
+This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply installed them by issuing  following in bash
 
 #+begin_src shell
     sudo apt install fonts-cantarell
@@ -19,32 +19,36 @@ I'm also using icons to make things look a bit nicer.  These through Emacs using
   M-x package-install all-the-icons
   M-x all-the-icons-install-fonts
 #+end_src
+
+* TODO Move to intro to emacs file instead
 * A couple of Emacs concepts
 ** Buffers & windows
 
-Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
+Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are viewed through *windows*. You can have several windows open at any time but not all  buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect, it's the active buffer so to speak. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
 
-So when we want to edit a file  stored on our hardrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
+So when we want to edit a file  stored on our harddrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
 
-the buffer itself contains a lot of information such as name of visited file ,wheter the buffer is editable or not 
+the buffer itself contains a lot of information such as name of visited file ,whether the buffer is editable or not 
 number of character contained in buffer etc. Two such  pieces of information are the *point* (PNT) and *mark* (MRK).
 
 *** Point , Mark (PNT MRK) and region 
 
-*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or inbetween characters. If the buffer is not empty and we are at point 0 we would be looking at first charcter of buffer. Every buffer has a single. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer. If there exist a mark then we call the text between position and mark the *region*.
-The *cursor* is placed on the character following the point. 
+*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or in between characters. If the buffer is not empty and we are at point 0 we would be looking at first character of buffer. Every buffer has a single point. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer. The *mark* can be located in at a different location than *position*. If there exist a mark then we call the text between position and mark the *region*.
+The *cursor* is placed on the character following the point.
 
 ** Modes
 
-Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
+Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (sugar) to file or buffer type. By independent we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
 
   Modes are just code that adhere to a set of  conventions see links
   - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
   - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
   - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
-    
+
+* Keymaps
 keymap is a table that records the bindings between characters and command functions
-* Package handeling
+
+* Package handling
   In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
   
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.

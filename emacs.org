@@ -2,7 +2,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * My  Emacs init file
-This is just a setup for Emacs.  It's based on David Wilson work done in this  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i feelt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
+This is just a setup for Emacs.  It's based on David Wilson work done in this  [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][youtube livestream]]. I've picked the parts i felt I needed/liked and added and tweaked things to my own taste. You can find Davids full code on i his
 [[https://github.com/daviwil/emacs-from-scratch][Github repo]].
 
 ** Note on requirements
@@ -13,14 +13,18 @@ This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply
     sudo apt install fonts-firacode
 #+end_src
 
-I'm also using icons to make things look a bit nicer.  These through Emacs using 
+I'm also using icons to make things look a bit nicer.  These through Emacs using
+
   M-x package-install all-the-icons
   M-x all-the-icons-install-fonts
+  
+* Debugging
+You can make emacs jump into debugger on any error by doing =m-x toggle-debug-on-error.=
 
 * A couple of Emacs concepts
 ** Buffers & windows
 
-Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
+Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect, it's the active buffer so to speak. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
 
 So when we want to edit a file  stored on our hardrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
 
@@ -29,52 +33,111 @@ number of character contained in buffer etc. Two such  pieces of information are
 
 *** Point , Mark (PNT MRK) and region 
 
-*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or inbetween characters. If the buffer is not empty and we are at point 0 we would be looking at first charcter of buffer. Every buffer has a single. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer. If there exist a mark then we call the text between position and mark the *region*.
+*Point and mark* are two integers representing text positions inside buffer. We say that point is *looking at* charcter if point is placed before that character.  A point is hence not on the character but before after or in between characters. If the buffer is not empty and we are at point 0 we would be looking at first charcter of buffer. Every buffer has a single *point*. A *mark* also represents a position in the buffer. There can be one or zero marks in a buffer and it can be placed anywhere within buffer. If there exist a mark then we call the text between position and mark the *region*.
 The *cursor* is placed on the character following the point. 
 
 ** Modes
 
-Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (suger) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
+Modes (editing modes) in emacs are used to alters how emacs behaves in some useful ways.Modes are categorized as being either major or minor. *Major mode* provides means for working with particular file type (.org, .c .pdf etc) or buffers of none-file type (shell etc). Each buffer allways uses a single major mode at any time. *Minor modes* are independent modes that associates some additional behaviour (sugar) to file or buffer type. By independt we mean that they are not dependent on other modes neither major or minor ones and as such can be used independently of other modes. Minor modes can be turned on and off as we you wish you can have any number of minor modes in use for each buffer. Examples of minor modes are show-paren-mode, display-line-number-mode and cwarn-mode.
 
   Modes are just code that adhere to a set of  conventions see links
   - [[https://systemcrafters.cc/learning-emacs-lisp/creating-minor-modes][Systemcrafters tutorial on minor modes]]
   - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Minor-Mode-Conventions.html][Gnu Emacs manual pages on  minor modes conventions]]
   - [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html][Gnu Emacs manual pages on major mode conventions]]
-    
+
+** Keymaps
+
 keymap is a table that records the bindings between characters and command functions
-* Package handling 
+
+** The init file
+
+Never linux distrubut$$$$ions usually =~/.config/emacs/init.el=  It could also be located in =~/.emacs.d/init.el= or if you are old school in =~.emacs=
+
+* Native compiler silence
+
+Avoid show a lot of warnings
+
+#+begin_src emacs-lisp
+;; Silence compiler warnings as they can be pretty disruptive
+(setq comp-async-report-warnings-errors nil)
+#+end_src
+
+* Package manager
+
+** TODO use-package is built in for emacs > 29.x
+** TODO Migrate to straight package manager
+    
   In this setup use-package is used to simplify configuration and loading of packages. Usepackage introduces tidy syntax and isolate package loading in a performant way.
   
   We set a few package repositories, load and activate packages from package-load-list  ~(package-initialize)~. Check if archive list (list of packateges) are cached if not we download list. The use-package comes preinstalled with emacs on most system but not necesarilly on windows so we check we can find this package and install it unless is has not yet been installed.
 We require use-package ~(require 'package).~  The require function loads feature (in this case 'package) only if it hasn't yet been loaded. Finally we set ~:ensure t~ as defualt for all package ~(setq use-package-always-ensure t)~. This will cause packages to be downloaded and installed automatically unless they are already installed. For more on use-package see
 
-TODO ensure only use secure chanels for packages 
+TODO ensure only use secure chanels for packages
 
-  [[https://github.com/jwiegley/use-package][Use package github page]]
- 
-  #+begin_src emacs-lisp
-     ;; Initialize package sources
-     (require 'package)
+[[https://github.com/jwiegley/use-package][Use package github page]]
 
-    ;; Note org elpa will close before 9.6 use org gnu instead.
-    (setq package-archives '(("melpa" ."https://melpa.org/packages/")
-                             ;; seems this repo is closing
-                             ;;("org" . "https://elpa.gnu.org/packages/")
-                             ("nongnu". "https://elpa.nongnu.org/nongnu/")
-                             ("elpa" . "https://elpa.gnu.org/packages/")))
+#+begin_src emacs-lisp
+;; seems to start daemon by default so no need?
+;; (server-start)
+#+end_src
 
-     (package-initialize)
 
-     (unless package-archive-contents
-      (package-refresh-contents)) 
-     ;; Initialize use-package on non-Linux platforms
-     (unless (package-installed-p 'use-package)
-        (package-install 'use-package))
-
-     (require 'use-package)
-     (setq use-package-always-ensure t)
+    #+begin_src emacs-lisp
+             ;; Initialize package sources
+;;          (require 'package)
+;; 
+;;         ;; Note org elpa will close before 9.6 use org gnu instead.
+;;         (setq package-archives '(("melpa" ."https://melpa.org/packages/")
+;;                                  ;; seems this repo is closing
+;;                                  ;;("org" . "https://elpa.gnu.org/packages/")
+;;                                  ("nongnu". "https://elpa.nongnu.org/nongnu/")
+;;                                  ("elpa" . "https://elpa.gnu.org/packages/")))
+;; 
+;;          (package-initialize)
+;; 
+;;          (unless package-archive-contents
+;;           (package-refresh-contents)) 
+;; 
+      ;; Initialize use-package on non-Linux platforms
+      ;;       (unless (package-installed-p 'use-package)
+      ;;          (package-install 'use-package))
+      ;;
+      ;;       (require 'use-package)
+      ;;       (setq use-package-always-ensure t)
 
   #+end_src
+
+** Straight package manager
+
+Straight package manager is an alternative to built in package manager. It's allows us to clone git repos rather then use tars. The packages are compiled natively locally on your machine. This gives us some benefits over built in package manager. For instance we can be picky about which versions of package to use, we can have our own package as git repos in a simple manner letting package manager install those for us. We can also freeze used packages using lock-file so that we can reproduce setting across multiple machines without having to think about which version of packages are use on which machine. 
+
+Straight is a third party thing that needs to be downloaded and installed using following script. This will only download straight the first time it 's evaluated.
+
+
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+
+Has integrated support for packages from built in package manager. Normally we don't need to specify any  additional repositories as Elpa or Melpa. Straight also has integration for use-package so lets install it.
+
+ #+begin_src emacs-lisp
+   (straight-use-package 'use-package)
+   (setq straight-use-package-by-default t)
+   (require 'straight-x)
+#+end_src
+
+now we can use use-package setting  just by changing =:ensure t= to  =:straight t=. The last line set =:straight t= as default behavior. This will install packages with default straight behavior so :config sections won't have any effect.
 
 * Some basic behaviours configs
 
@@ -91,15 +154,16 @@ Documentation pages suggests to setting scroll conservatively to high value rath
    #+end_src  
 
 Add some of my own editing commands like duplicate line.
-#+begin_src emacs-lisp
-      (use-package jv-basic-edit
-        :config (jv-basic-edit-mode 1))
+#+begin_src emacs-lisp'
+(use-package jv-basic-edit
+ :straight ( :host github
+                                   :repo "janva/jv-basic-edit"
+                                   :branch "main")
+ :config (jv-basic-edit-mode 1))
 #+end_src
+
 * Global  keybindings
 Just a few global keybindings
-
-** 
-
    #+begin_src emacs-lisp
      ;; get to agen faster
      (global-set-key (kbd "C-c a") 'org-agenda)
@@ -175,25 +239,32 @@ If you start your emacs from shell you can simple set an environment variable  f
    #+end_src
    
 ** Themes
-   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines. I used =package-install all-the-icons= followed by  =M-x all-the-icons-install-fonts=  To pull down and install needed fonts manually for this to work.
+   Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines.
+   I used =package-install all-the-icons= followed by
 
+   =M-x all-the-icons-install-fonts=  To pull down and install needed fonts manually for this to work.
+  
    ~:init~ keyword will make code run before package is loaded. We use thall-the-icons to get some nice icons and the tweak the mode-line. ~:ensure t~ isn't stricly needed as we set this as default for all packages. The ~:custom~  keyword is used here to set custom variables of doom-modeline packages.
 
    [[https://github.com/doomemacs/themes][Doom-themes github page]]
+
    
    #+begin_src emacs-lisp
-(require 'all-the-icons)
-             (use-package doom-themes
-               :init (load-theme 'doom-horizon t))
-             ;;use refresh-pakcages to get this working
+     
+     
+     (use-package all-the-icons
+       :straight t
+       :if (display-graphic-p))
+
+
+     (use-package doom-themes
+       :init (load-theme 'doom-horizon t))
+     ;;use refresh-pakcages to get this working
      ;; M-x all-the-icons-install-fonts
-             (use-package all-the-icons
-               :if (display-graphic-p)
-               )
-             (use-package doom-modeline
-               :ensure t
-               :init (doom-modeline-mode 1)
-               :custom ((doom-modeline-height 15)))
+     (use-package doom-modeline
+       :straight t
+       :init (doom-modeline-mode 1)
+       :custom ((doom-modeline-height 15)))
    #+end_src
 
 ** Line numbers
@@ -237,7 +308,7 @@ Shell in Emacs sometimes appears to behave differently from your native shell. T
   
 #+begin_src emacs-lisp
 (use-package exec-path-from-shell
-  :ensure t
+  :straight t
   :config
   (when (or (daemonp) (memq window-system '(ns x)))
     (exec-path-from-shell-initialize)))
@@ -258,7 +329,7 @@ An UI on top of ISearch (Incremental Search). Swiper gives an overview of the cu
 
 #+begin_src emacs-lisp
   (use-package swiper
-       :ensure t)
+       :straight t)
 #+end_src
 
 ** Ivy
@@ -350,7 +421,7 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
 #+begin_src emacs-lisp  
 
   (use-package  tex
-      :ensure auctex
+      :straight auctex
       :hook (LaTeX-mode .  (lambda ()
 			     (setq TeX-auto-save t)
 			     (set TeX-parse-self t)
@@ -368,7 +439,7 @@ Enabling counsel-mode remaps built-in Emacs functions that have counsel replacem
   (setq pdf-view-resize-factor 1.1))
     ;; keybindings   
     (use-package latex
-      :ensure auctex
+      :straight auctex
       :bind (:map LaTeX-mode-map
 		  ("C-c C-c". TeX-command-run-all)))
 
@@ -678,12 +749,13 @@ rainbow delimiters helps you keep track of matching parentesis  etc.
      (use-package rainbow-delimiters
        :hook (prog-mode . rainbow-delimiters-mode))
    #+end_src   
-   
+  
 Auto match pairs of things such as parentecis with =electric-pair-mode= and light up matching parentices with =show-paren-mode=.
 
   #+begin_src emacs-lisp
     (use-package prog-mode
-      :ensure nil
+      :straight nil
+      ;; :hook (prog-mode . lsp-deferred)
       :init (show-paren-mode  t)
       (electric-pair-mode 1  ))
   #+end_src
@@ -735,7 +807,8 @@ There exist a =lsp-format-buffer= command but might be a better idea to us seper
     #+begin_src emacs-lisp
       (use-package lsp-mode
       :commands (lsp lsp-deferred)
-      :hook (lsp-mode . efs/lsp-mode-setup)
+      :hook ((lsp-mode . efs/lsp-mode-setup)
+             (c++-mode.lsp-defferd))
       :init
       (setq lsp-keymap-prefix "C-c l")  
       :config
@@ -767,22 +840,53 @@ There exist a =lsp-format-buffer= command but might be a better idea to us seper
 Tree-sitter is  a dynamic source code parser for editors. This provides the means for more accurate syntax highlighting and more complex functions like refactoring support and more. Emacs 29 comes with lib but we need grammar definitions for each language we want to use it for.  
 
 #+begin_src emacs-lisp
-  (setq treesit-language-source-alist
-      '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
-      (c  "https://github.com/tree-sitter/tree-sitter-c")))
-  
-  (dolist (lang treesit-language-source-alist)
-    (unless (treesit-language-available-p (car lang))
-    (treesit-install-language-grammar (car lang))))
+    (use-package treesit
+      :straight (:type built-in)
+      :if  (featurep 'treesit)
+      :config
+      (setq treesit-language-source-alist
+            '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
+              (c  "https://github.com/tree-sitter/tree-sitter-c")
+    	    (bash "https://github.com/tree-sitter/tree-sitter-bash")
+      	    (cmake "https://github.com/uyha/tree-sitter-cmake")
+      	    (css "https://github.com/tree-sitter/tree-sitter-css")
+      	    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+      	    (go "https://github.com/tree-sitter/tree-sitter-go")
+      	    (html "https://github.com/tree-sitter/tree-sitter-html")
+      	    (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+      	    (json "https://github.com/tree-sitter/tree-sitter-json")
+      	    (make "https://github.com/alemuller/tree-sitter-make")
+      	    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+      	    (python "https://github.com/tree-sitter/tree-sitter-python")
+      	    (toml "https://github.com/tree-sitter/tree-sitter-toml")
+      	    (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+      	    (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+      	    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-  ;;treesitter mode for c++ is the c++-ts-mode lets remap c++ to this name
-  (setq treesit-load-name-override-list
-        '((c++ "libtree-sitter-cpp")))
+      (setq treesit-font-lock-level 4)
 
-  ;; Lets use tree-sitter  as default mode for c++
-  (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode))
+      (dolist (lang treesit-language-source-alist)
+        (unless (treesit-language-available-p (car lang))
+          (treesit-install-language-grammar (car lang))))
+
+      ;;treesitter mode for c++ is the c++-ts-mode lets remap c++ to this name
+      
+      (setq treesit-load-name-override-list
+            '((c "libtree-sitter-c")
+  	    (c++ "libtree-sitter-cpp")))
+
+
+    ;; Lets use tree-sitter  as default mode for c++
+  (setq major-mode-remap-alist
+  	'( (typescript-mode . typescript-ts-mode)
+  	  (js-mode . javascript-ts-mode)
+  	  (python-mode . python-ts-mode)
+  	  (json-mode . json-ts-mode)))
+   
+    (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode)))
+
 #+end_src
 
 *** Cmake
@@ -792,12 +896,12 @@ Cmake lsp
 #+begin_src emacs-lisp
 
 (use-package cmake-mode
-  :ensure t
+  :straight t
   :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'")
   :hook (cmake-mode . lsp-deferred))
 
 (use-package cmake-font-lock
-  :ensure t
+  :straight t
   :after cmake-mode
   :config (cmake-font-lock-activate))
 #+end_src
@@ -806,11 +910,25 @@ Cmake lsp
 
 #+begin_src emacs-lisp
   (use-package c++-mode 
-  :ensure nil
-  :mode ("\\.cpp\\'" "\\.cc\\'" "\\.h\\'")
-  :hook(c++-mode .lsp))
+  :straight nil
+  :mode "\\.cpp\\'"
+  :mode "\\.cc\\'"
+  :mode "\\.h\\'")
+  ;; :hook (c++-mode . lsp-deferred))
 #+end_src
+*** Java
+#+begin_src emacs-lisp
+(use-package lsp-java
+  :straight t
+  :after (lsp)
+  :config
+  (setq lsp-java-jdt-download-url "https://download.eclipse.org/jdtls/milestones/0.57.0/jdt-language-server-0.57.0-202006172108.tar.gz"))
 
+(add-hook 'java-mode-hook #'smartparens-mode)
+;; (add-hook 'java-mode-hook #'hs-minor-mode)
+;; (my/set-smartparens-indent 'java-mode)
+
+#+end_src
 *** TypeSript
 
 TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
@@ -852,7 +970,7 @@ npm i -g typescript-language-server; npm i -g typescript
 
 #+begin_src emacs-lisp
   (use-package python-mode
-    :ensure t
+    :straight t 
     :hook (python-mode . lsp-deferred)
     :custom
     ;; NOTE: Set these if Python 3 is called "python3" on your system!
@@ -876,32 +994,50 @@ Use =npm i -g bash-language-server= to install bash language server.
 #+begin_src emacs-lisp
       (use-package sh-mode
         :mode "\\.sh\\'"
-        :ensure nil
+        :straight nil
         :hook (sh-mode . lsp-deferred))
     #+end_src
    
 ***  Emacs Lisp mode
 
-(setq company-global-modes nil)
+#+begin_src emacs-lisp
+     (defun   jv/setup-emacs-lisp-mode()
+     (message "running my hook")
+  ;;     (push '(company-elisp :with company-yasnippet)  company-backends)
+     
+       (setq-local  company-backends '((company-elisp :with company-yasnippet))))
+
+#+end_src
 
 #+begin_src emacs-lisp
-   (defun   jv/setup-emacs-lisp-mode()
-   (message "running my hook")
-;;     (push '(company-elisp :with company-yasnippet)  company-backends)
-     (setq-local  company-backends '((company-elisp :with company-yasnippet))))
+  (setq company-global-modes nil)
+
+  (use-package lisp
+    :hook after-save . check-parens)
+
+  (use-package elisp-mode
+    :straight (:type built-in)
+    :hook (elisp-mode .company-mode
+  		    'emacs-lisp-mode-hook .'jv/setup-emacs-lisp-mode))
+
 #+end_src
 
 
+
 #+begin_src emacs-lisp
-  ;; TODO hmm would like to make a seperation as well that is use :separate
-  (use-package emacs-lisp-mode
-    :ensure nil
-    :mode  "\\.el\\'"
-    :hook (emacs-lisp-mode . company-mode)
-    ;;company-elisp is obsolete?
-    ;; could just use push instead?
-    :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
-                                            ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
+      ;; TODO hmm would like to make a seperation as well that is use :separate
+
+   ;;  (use-package emacs-lisp
+   ;;   :straight (:type built-in) 
+   ;;   :commands emacs-lisp-mode
+   ;;   :mode  "\\.el\\'"
+   ;;   :hook (emacs-lisp-mode . company-mode)
+   ;;   ;;company-elisp is obsolete?
+   ;;   ;; could just use push instead?
+   ;;   :custom  (company-backends    '(( company-yasnippet :separate company-capf company-dabbrev-code ))))
+                                             ;;  ( emacs-lisp-mode . jv/setup-emacs-lisp-mode) )
+;;  (add-hook 'emacs-lisp-mode-hook #'jv/setup-emacs-lisp-mode)
+;;  (add-hook 'emacs-lisp-mode-hook 'company-mode)
 #+end_src
 
 ** Company mode
@@ -985,55 +1121,4 @@ Is a built in mode hence ensure nil.
   #+end_src
 
 
-* Set by emacs customization
-  
-  #+begin_src emacs-lisp
-        (custom-set-variables
-         ;; custom-set-variables was added by Custom.
-         ;; If you edit it by hand, you could mess it up, so be careful.
-         ;; Your init file should contain only one such instance.
-         ;; If there is more than one, they won't work right.
-         '(custom-safe-themes
-           '("23c806e34594a583ea5bbf5adf9a964afe4f28b4467d28777bcba0d35aa0872e" default))
-         '(exwm-floating-border-color "#16161c")
-         '(fci-rule-color "#f9cec3")
-         '(highlight-tail-colors ((("#203a3b") . 0) (("#283841") . 20)))
-         '(jdee-db-active-breakpoint-face-colors (cons "#16161c" "#e95678"))
-         '(jdee-db-requested-breakpoint-face-colors (cons "#16161c" "#09f7a0"))
-         '(jdee-db-spec-breakpoint-face-colors (cons "#16161c" "#6a6a6a"))
-         '(objed-cursor-color "#e95678")
-         '(package-selected-packages
-           '(visual-fill-column org-bullets magit counsel-projetile hydra helpful which-key doom-themes swiper doom-modeline ivy command-log-mode use-package))
-         '(pdf-view-midnight-colors (cons "#c7c9cb" "#232530"))
-         '(rustic-ansi-faces
-           ["#232530" "#e95678" "#09f7a0" "#fab795" "#21bfc2" "#6c6f93" "#59e3e3" "#c7c9cb"])
-         '(vc-annotate-background "#232530")
-         '(vc-annotate-color-map
-           (list
-            (cons 20 "#09f7a0")
-            (cons 40 "#59e19c")
-            (cons 60 "#a9cc98")
-            (cons 80 "#fab795")
-            (cons 100 "#f6ab8f")
-            (cons 120 "#f39f89")
-            (cons 140 "#f09383")
-            (cons 160 "#c48788")
-            (cons 180 "#987a8d")
-            (cons 200 "#6c6f93")
-            (cons 220 "#95668a")
-            (cons 240 "#bf5e81")
-            (cons 260 "#e95678")
-            (cons 280 "#c95b74")
-            (cons 300 "#a96071")
-            (cons 320 "#89656d")
-            (cons 340 "#f9cec3")
-            (cons 360 "#f9cec3")))
-         '(vc-annotate-very-old-color nil))
-        (custom-set-faces
-         ;; custom-set-faces was added by Custom.
-         ;; If you edit it by hand, you could mess it up, so be careful.
-         ;; Your init file should contain only one such instance.
-         ;; If there is more than one, they won't work right.
-         )
-  #+end_src
 
