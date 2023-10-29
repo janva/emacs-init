@@ -436,7 +436,7 @@
 
 (use-package prog-mode
   :straight nil
-  ;; :hook (prog-mode . lsp-deferred)
+  ;; :hook (prog-mode . lsp-deffere)
   :init (show-paren-mode  t)
   (electric-pair-mode 1  ))
 
@@ -455,8 +455,7 @@
 
 (use-package lsp-mode
 :commands (lsp lsp-deferred)
-:hook ((lsp-mode . efs/lsp-mode-setup)
-       (c++-mode.lsp-defferd))
+:hook (lsp-mode . efs/lsp-mode-setup)
 :init
 (setq lsp-keymap-prefix "C-c l")  
 :config
@@ -476,51 +475,62 @@
 (use-package lsp-ivy)
 
 (use-package treesit
-    :straight (:type built-in)
-    :if  (featurep 'treesit)
-    :config
-    (setq treesit-language-source-alist
-          '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
-            (c  "https://github.com/tree-sitter/tree-sitter-c")
-  	    (bash "https://github.com/tree-sitter/tree-sitter-bash")
-    	    (cmake "https://github.com/uyha/tree-sitter-cmake")
-    	    (css "https://github.com/tree-sitter/tree-sitter-css")
-    	    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-    	    (go "https://github.com/tree-sitter/tree-sitter-go")
-    	    (html "https://github.com/tree-sitter/tree-sitter-html")
-    	    (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-    	    (json "https://github.com/tree-sitter/tree-sitter-json")
-    	    (make "https://github.com/alemuller/tree-sitter-make")
-    	    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-    	    (python "https://github.com/tree-sitter/tree-sitter-python")
-    	    (toml "https://github.com/tree-sitter/tree-sitter-toml")
-    	    (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-    	    (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-    	    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+      :straight (:type built-in)
+      :if  (featurep 'treesit)
+      :config
+      (setq treesit-language-source-alist      
+     '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
+      ;; (c  "https://github.com/tree-sitter/tree-sitter-c")
+       (java "https://github.com/tree-sitter/tree-sitter-java")
+       (bash "https://github.com/tree-sitter/tree-sitter-bash")
+       (cmake "https://github.com/uyha/tree-sitter-cmake")
+       (css "https://github.com/tree-sitter/tree-sitter-css")
+       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+       (go "https://github.com/tree-sitter/tree-sitter-go")
+       (html "https://github.com/tree-sitter/tree-sitter-html")
+       (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+       (json "https://github.com/tree-sitter/tree-sitter-json")
+       (make "https://github.com/alemuller/tree-sitter-make")
+       (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+       (python "https://github.com/tree-sitter/tree-sitter-python")
+       (toml "https://github.com/tree-sitter/tree-sitter-toml")
+       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-    (setq treesit-font-lock-level 4)
+      (setq treesit-font-lock-level 4)
 
-    (dolist (lang treesit-language-source-alist)
-      (unless (treesit-language-available-p (car lang))
-        (treesit-install-language-grammar (car lang))))
+;;(setq languages (mapcar #'car treesit-language-source-alist))
+;;
+;;(setq not-yet-installed (seq-filter(lambda (lang)
+;;    (not (treesit-language-available-p lang)))languages))
+;;
+;;(setq not-yet-installed (mapcar (lambda (lang)
+;;   (if  (not (treesit-language-available-p lang))
+;;         lang))languages))
+      
+      (mapc (lambda (lang)
+  	      (if (not (treesit-language-available-p lang))
+  		  (treesit-install-language-grammar lang)))
+  	    (mapcar #'car treesit-language-source-alist))
 
-    ;;treesitter mode for c++ is the c++-ts-mode lets remap c++ to this name
-    
-    (setq treesit-load-name-override-list
-          '((c "libtree-sitter-c")
-	    (c++ "libtree-sitter-cpp")))
-
-
-  ;; Lets use tree-sitter  as default mode for c++
-(setq major-mode-remap-alist
-	'( (typescript-mode . typescript-ts-mode)
-	  (js-mode . javascript-ts-mode)
-	  (python-mode . python-ts-mode)
-	  (json-mode . json-ts-mode)))
- 
-  (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
-    (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
-    (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode)))
+      ;; worst cas scenario just run below line
+      ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+            ;; currently only c c++ add to list maybe iterate over list again
+      ;; note should be list of three elements each
+	;;(setq treesit-load-name-override-list 
+       ;;     '((c "libtree-sitter-c")
+	;;      (c++ "libtree-sitter-cpp")))
+    ;; Lets use tree-sitter  as default mode for c++
+  (setq major-mode-remap-alist
+  	'( (typescript-mode . typescript-ts-mode)
+  	  (js-mode . javascript-ts-mode)
+  	  (python-mode . python-ts-mode)
+  	  (json-mode . json-ts-mode)))
+   
+     (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode)))
 
 (use-package cmake-mode
   :straight t
@@ -534,10 +544,8 @@
 
 (use-package c++-mode 
 :straight nil
-:mode "\\.cpp\\'"
-:mode "\\.cc\\'"
-:mode "\\.h\\'")
-;; :hook (c++-mode . lsp-deferred))
+:mode "\\.cpp\\'" "\\.cc\\'" "\\.h\\'"
+:hook (c++-mode . lsp-deferred))
 
 (use-package lsp-java
   :straight t
@@ -597,18 +605,19 @@
 (defun   jv/setup-emacs-lisp-mode()
    (message "running my hook")
 ;;     (push '(company-elisp :with company-yasnippet)  company-backends)
-   
-     (setq-local  company-backends '((company-elisp :with company-yasnippet))))
+          (setq-local  company-backends '((company-elisp :with company-yasnippet))))
 
 (setq company-global-modes nil)
+    
+ (use-package lisp
+     :straight (:type built-in)
+     :hook (after-save . check-parens))
 
-(use-package lisp
-  :hook after-save . check-parens)
-
-(use-package elisp-mode
-  :straight (:type built-in)
-  :hook (elisp-mode .company-mode
-		    'emacs-lisp-mode-hook .'jv/setup-emacs-lisp-mode))
+;;  (add-hook 'after-save #'check-parens)
+      (use-package elisp-mode
+        :straight (:type built-in)
+        :hook (elisp-mode .company-mode
+      		    'emacs-lisp-mode-hook .'jv/setup-emacs-lisp-mode))
 
 ;; TODO hmm would like to make a seperation as well that is use :separate
 
@@ -626,7 +635,7 @@
 
 (use-package company
   :after lsp-mode
-  :hook (lsp-mode . company-mode)
+  :hook (prog-mode . company-mode)
   ;;:init
   ;;(setq company-format-margin-function  #'company-vscode-dark-icons-margin) 
   :bind (:map company-active-map
