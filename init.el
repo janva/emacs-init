@@ -48,6 +48,7 @@
 (setq scroll-conservatively 99)
 
 ;; get to agen faster
+
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
      ;; Make ESC quit prompts
@@ -459,7 +460,7 @@
 :init
 (setq lsp-keymap-prefix "C-c l")  
 :config
-(lsp-enable-which-key-integration t))
+  (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui
   :hook (lsp-ui . lsp-ui-mode)
@@ -497,9 +498,8 @@
        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-
       (setq treesit-font-lock-level 4)
-
+     ;;  (setq treesit-extra-load-path '("/home/janne/.emacs.d/tree-sitter"))
 ;;(setq languages (mapcar #'car treesit-language-source-alist))
 ;;
 ;;(setq not-yet-installed (seq-filter(lambda (lang)
@@ -522,15 +522,16 @@
        ;;     '((c "libtree-sitter-c")
 	;;      (c++ "libtree-sitter-cpp")))
     ;; Lets use tree-sitter  as default mode for c++
-  (setq major-mode-remap-alist
-  	'( (typescript-mode . typescript-ts-mode)
-  	  (js-mode . javascript-ts-mode)
-  	  (python-mode . python-ts-mode)
-  	  (json-mode . json-ts-mode)))
+      (setq major-mode-remap-alist
+  	    '( (typescript-mode . typescript-ts-mode)
+  	       (js-mode . javascript-ts-mode)
+  	       (python-mode . python-ts-mode)
+  	       (json-mode . json-ts-mode)))
    
-     (add-to-list 'major-mode-remap-alist '(c-mode. c-ts-mode))
-      (add-to-list 'major-mode-remap-alist '(c++-mode. c++-ts-mode))
-      (add-to-list 'major-mode-remap-alist '(c-or-c++-mode. c-or-c++-ts-mode)))
+
+      (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+      (add-to-list 'major-mode-remap-alist '(c-or-c++-mode . c-or-c++-ts-mode)))
 
 (use-package cmake-mode
   :straight t
