@@ -437,7 +437,7 @@
 
 (use-package prog-mode
   :straight nil
-  ;; :hook (prog-mode . lsp-deffere)
+  ;; :hook (prog-mode . lsp-deffered)
   :init (show-paren-mode  t)
   (electric-pair-mode 1  ))
 
@@ -518,9 +518,10 @@
       ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
             ;; currently only c c++ add to list maybe iterate over list again
       ;; note should be list of three elements each
-	;;(setq treesit-load-name-override-list 
-       ;;     '((c "libtree-sitter-c")
-	;;      (c++ "libtree-sitter-cpp")))
+      (setq treesit-load-name-override-list 
+            '(;;(c "libtree-sitter-c")
+	      (c++ "libtree-sitter-cpp")))
+	
     ;; Lets use tree-sitter  as default mode for c++
       (setq major-mode-remap-alist
   	    '( (typescript-mode . typescript-ts-mode)
@@ -530,7 +531,7 @@
    
 
       (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-      (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+       (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
       (add-to-list 'major-mode-remap-alist '(c-or-c++-mode . c-or-c++-ts-mode)))
 
 (use-package cmake-mode
@@ -580,7 +581,7 @@
   ;; general-define-key
   ;;  :keymaps 'lsp-mode-map
   ;;  :prefix lsp-keymap-prefix
-  ;;  "d" '(dap-hydra t :wk "debugger")))
+  ;;  "d" '(dap-hydra t :wk "debugger")
 
 (use-package python-mode
   :straight t 
@@ -610,10 +611,10 @@
 
 (setq company-global-modes nil)
     
- (use-package lisp
-     :straight (:type built-in)
-     :hook (after-save . check-parens))
-
+ ;;(use-package lisp
+ ;;    :straight (:type built-in))
+;;     :hook (after-save . check-parens))
+;; annoying checks inside comments as well
 ;;  (add-hook 'after-save #'check-parens)
       (use-package elisp-mode
         :straight (:type built-in)

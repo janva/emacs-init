@@ -755,7 +755,7 @@ Auto match pairs of things such as parentecis with =electric-pair-mode= and ligh
   #+begin_src emacs-lisp
     (use-package prog-mode
       :straight nil
-      ;; :hook (prog-mode . lsp-deffere)
+      ;; :hook (prog-mode . lsp-deffered)
       :init (show-paren-mode  t)
       (electric-pair-mode 1  ))
   #+end_src
@@ -884,9 +884,10 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
         ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
               ;; currently only c c++ add to list maybe iterate over list again
         ;; note should be list of three elements each
-  	;;(setq treesit-load-name-override-list 
-         ;;     '((c "libtree-sitter-c")
-  	;;      (c++ "libtree-sitter-cpp")))
+        (setq treesit-load-name-override-list 
+              '(;;(c "libtree-sitter-c")
+  	      (c++ "libtree-sitter-cpp")))
+  	
       ;; Lets use tree-sitter  as default mode for c++
         (setq major-mode-remap-alist
     	    '( (typescript-mode . typescript-ts-mode)
@@ -896,7 +897,7 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
      
 
         (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-        (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+         (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
         (add-to-list 'major-mode-remap-alist '(c-or-c++-mode . c-or-c++-ts-mode)))
 
 
@@ -927,6 +928,7 @@ Cmake lsp
   :mode "\\.cpp\\'" "\\.cc\\'" "\\.h\\'"
   :hook (c++-mode . lsp-deferred))
 #+end_src
+
 *** Java
 #+begin_src emacs-lisp
 (use-package lsp-java
@@ -974,7 +976,7 @@ npm i -g typescript-language-server; npm i -g typescript
   ;; general-define-key
   ;;  :keymaps 'lsp-mode-map
   ;;  :prefix lsp-keymap-prefix
-  ;;  "d" '(dap-hydra t :wk "debugger")))
+  ;;  "d" '(dap-hydra t :wk "debugger")
 #+end_src
 
 =pip install --user "python-language-server[all]"=
@@ -1021,12 +1023,12 @@ Use =npm i -g bash-language-server= to install bash language server.
 
 #+begin_src emacs-lisp
 
-    (setq company-global-modes nil)
+  (setq company-global-modes nil)
     
- (use-package lisp
-     :straight (:type built-in)
-     :hook (after-save . check-parens))
-
+ ;;(use-package lisp
+ ;;    :straight (:type built-in))
+;;     :hook (after-save . check-parens))
+;; annoying checks inside comments as well
 ;;  (add-hook 'after-save #'check-parens)
       (use-package elisp-mode
         :straight (:type built-in)
