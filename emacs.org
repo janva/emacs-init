@@ -251,21 +251,24 @@ If you start your emacs from shell you can simple set an environment variable  f
 
    
    #+begin_src emacs-lisp
-     
-     
-     (use-package all-the-icons
-       :straight t
-       :if (display-graphic-p))
+           
+           
+          ;; (use-package all-the-icons
+          ;;   :straight t
+          ;;   :if (display-graphic-p))
+
+          (use-package nerd-icons
+            :straight t)
 
 
-     (use-package doom-themes
-       :init (load-theme 'doom-horizon t))
-     ;;use refresh-pakcages to get this working
-     ;; M-x all-the-icons-install-fonts
-     (use-package doom-modeline
-       :straight t
-       :init (doom-modeline-mode 1)
-       :custom ((doom-modeline-height 15)))
+           (use-package doom-themes
+             :init (load-theme 'doom-horizon t))
+           ;;use refresh-pakcages to get this working
+           ;; M-x all-the-icons-install-fonts
+           (use-package doom-modeline
+             :straight t
+             :init (doom-modeline-mode 1)
+             :custom ((doom-modeline-height 15)))
    #+end_src
 
 ** Line numbers
@@ -942,41 +945,73 @@ Cmake lsp
 ;; (my/set-smartparens-indent 'java-mode)
 
 #+end_src
+
+***  emmet-mode
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :straight t)
+#+end_src
+*** Web-mode
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :straight t)
+  (add-to-list 'auto-mode-alist  ' ("\\.html\\ $'" . web-mode ))
+  (add-to-list 'auto-mode-alist  ' ("\\.css?\\ $'" . web-mode ))
+  (add-to-list 'auto-mode-alist  ' ("\\.js\\ $'" . web-mode ))
+  (add-hook 'web-mode-hook 'emmet-mode)
+#+end_src
+*** Javascript
+
+#+begin_src emacs-lisp
+ (use-package js-mode
+    :mode "\\.js\\'"
+    :hook (js-mode . lsp-deferred)
+    :config
+    (setq js-indent-level 2))
+#+end_src>
+  
 *** TypeSript
 
 TypeScript mode to get lsp-server functioning the [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeSecript theia-ide]] from lsp documentation pages. You can install it using npm with following command. 
 
 npm i -g typescript-language-server; npm i -g typescript
 
-    #+begin_src emacs-lisp
-    (use-package typescript-mode
-    :mode "\\.ts\\'"
-    :hook (typescript-mode . lsp-deferred)
-    :config
-    (setq typescript-indent-level 2))
+ #+begin_src emacs-lisp
+   (use-package typescript-mode
+   :mode "\\.ts\\'"
+   :hook (typescript-mode . lsp-deferred)
+   :config
+   (setq typescript-indent-level 2))
     #+end_src
 
     
 *** python
 (require 'cl)
 #+begin_src emacs-lisp
-(use-package dap-mode
-  ;; Uncomment the config below if you want all UI panes to be hidden by default!
-  ;; :custom
-  ;; (lsp-enable-dap-auto-configure nil)
-  ;; :config
-  ;; (dap-ui-mode 1)
-  :commands dap-debug
-  :config
-  ;; Set up Node debugging
-  (require 'dap-node)
-  (dap-node-setup)) ;; Automatically installs Node debug adapter if needed
+    (use-package dap-mode
+      ;; Uncomment the config below if you want all UI panes to be hidden by default!
+      ;; :custom
+      ;; (lsp-enable-dap-auto-configure nil)
+      ;; :config
+      ;; (dap-ui-mode 1)
+      ;;:commands dap-debug
+      :config (dap-auto-configure-mode)
+      :bind(("<f7>" .  dap-step-in)
+    	("<f8>" . dap-next)
+    	("<f9>" . dap-continue)))
 
-  ;; Bind `C-c l d` to `dap-hydra` for easy access
-  ;; general-define-key
-  ;;  :keymaps 'lsp-mode-map
-  ;;  :prefix lsp-keymap-prefix
-  ;;  "d" '(dap-hydra t :wk "debugger")
+  (require 'dap-firefox)
+  (setq dap-firefox-debug-program '("node" "/home/janva/.emacs.d/.extension/vscode/firefox-devtools.vscode-firefox-debug-2.9.10/extension/dist/adapter.bundle.js"))
+      
+      ;; Set up Node debugging
+      ;;(require 'dap-node)
+      ;;(dap-node-setup)) ;; utomatically installs Node debug adapter if needed
+
+      ;; Bind `C-c l d` to `dap-hydra` for easy access
+      ;; general-define-key
+      ;;  :keymaps 'lsp-mode-map
+      ;;  :prefix lsp-keymap-prefix
+      ;;  "d" '(dap-hydra t :wk "debugger")
 #+end_src
 
 =pip install --user "python-language-server[all]"=
