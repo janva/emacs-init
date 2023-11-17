@@ -219,7 +219,7 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
 
 (defun efs/org-font-setup ()
-;; Replace list hyphen with dot
+      ;; Replace list hyphen with dot
 	(font-lock-add-keywords 'org-mode
 				'(("^ *\\([-]\\) "
 				   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
@@ -235,12 +235,12 @@
 			(org-level-8 . 1.1)))
 	  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
 	(set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
 	(set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
 	(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
 	(set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+;;	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
 	(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
 	(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
 	(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
@@ -481,7 +481,7 @@
       :config
       (setq treesit-language-source-alist      
      '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
-      ;; (c  "https://github.com/tree-sitter/tree-sitter-c")
+       (c  "https://github.com/tree-sitter/tree-sitter-c")
        (java "https://github.com/tree-sitter/tree-sitter-java")
        (bash "https://github.com/tree-sitter/tree-sitter-bash")
        (cmake "https://github.com/uyha/tree-sitter-cmake")

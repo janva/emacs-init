@@ -23,7 +23,7 @@ You can make emacs jump into debugger on any error by doing =m-x toggle-debug-on
 
 * A couple of Emacs concepts
 ** Buffers & windows
-
+font
 Buffers are objects containing content of file we are *visiting*, usually the text we want to edit. Buffers are visible through *windows*. You can have several windows open at any time but not all all buffers have to be associated  with a window and hence all buffers might not be visible at current time. The  *current buffer*  is the buffer where your editing commands will have effect, it's the active buffer so to speak. This is not entirely true as there are commands that have effect on other buffers than current buffer,  but  for the main part its true .
 
 So when we want to edit a file  stored on our hardrive an  associated buffer is created for the content of that file.  The buffer is an in memory object  which represents or is  a model of the underlying file. Visually  it is  presented to us on screen through a window.
@@ -478,7 +478,7 @@ it's a realy versatile mode that does a lot of things. For instance this init-fi
 	(set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
 	(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
 	(set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+;;	(set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
 	(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
 	(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
 	(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
@@ -847,7 +847,7 @@ Tree-sitter is  a dynamic source code parser for editors. This provides the mean
         :config
         (setq treesit-language-source-alist      
        '((cpp  "https://github.com/tree-sitter/tree-sitter-cpp")
-        ;; (c  "https://github.com/tree-sitter/tree-sitter-c")
+         (c  "https://github.com/tree-sitter/tree-sitter-c")
          (java "https://github.com/tree-sitter/tree-sitter-java")
          (bash "https://github.com/tree-sitter/tree-sitter-bash")
          (cmake "https://github.com/uyha/tree-sitter-cmake")
