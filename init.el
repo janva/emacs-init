@@ -100,19 +100,22 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(use-package all-the-icons
-  :straight t
-  :if (display-graphic-p))
+;; (use-package all-the-icons
+;;   :straight t
+;;   :if (display-graphic-p))
+
+(use-package nerd-icons
+  :straight t)
 
 
-(use-package doom-themes
-  :init (load-theme 'doom-horizon t))
-;;use refresh-pakcages to get this working
-;; M-x all-the-icons-install-fonts
-(use-package doom-modeline
-  :straight t
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+ (use-package doom-themes
+   :init (load-theme 'doom-horizon t))
+ ;;use refresh-pakcages to get this working
+ ;; M-x all-the-icons-install-fonts
+ (use-package doom-modeline
+   :straight t
+   :init (doom-modeline-mode 1)
+   :custom ((doom-modeline-height 15)))
 
 (column-number-mode)
 
@@ -559,6 +562,16 @@
 ;; (add-hook 'java-mode-hook #'hs-minor-mode)
 ;; (my/set-smartparens-indent 'java-mode)
 
+(use-package emmet-mode
+  :straight t)
+
+(use-package web-mode
+  :straight t)
+(add-to-list 'auto-mode-alist  ' ("\\.html\\ $'" . web-mode ))
+(add-to-list 'auto-mode-alist  ' ("\\.css?\\ $'" . web-mode ))
+(add-to-list 'auto-mode-alist  ' ("\\.js\\ $'" . web-mode ))
+(add-hook 'web-mode-hook 'emmet-mode)
+
 (use-package typescript-mode
 :mode "\\.ts\\'"
 :hook (typescript-mode . lsp-deferred)
@@ -566,22 +579,29 @@
 (setq typescript-indent-level 2))
 
 (use-package dap-mode
-  ;; Uncomment the config below if you want all UI panes to be hidden by default!
-  ;; :custom
-  ;; (lsp-enable-dap-auto-configure nil)
-  ;; :config
-  ;; (dap-ui-mode 1)
-  :commands dap-debug
-  :config
-  ;; Set up Node debugging
-  (require 'dap-node)
-  (dap-node-setup)) ;; Automatically installs Node debug adapter if needed
+    ;; Uncomment the config below if you want all UI panes to be hidden by default!
+    ;; :custom
+    ;; (lsp-enable-dap-auto-configure nil)
+    ;; :config
+    ;; (dap-ui-mode 1)
+    ;;:commands dap-debug
+    :config (dap-auto-configure-mode)
+    :bind(("<f7>" .  dap-step-in)
+  	("<f8>" . dap-next)
+  	("<f9>" . dap-continue)))
 
-  ;; Bind `C-c l d` to `dap-hydra` for easy access
-  ;; general-define-key
-  ;;  :keymaps 'lsp-mode-map
-  ;;  :prefix lsp-keymap-prefix
-  ;;  "d" '(dap-hydra t :wk "debugger")
+(require 'dap-firefox)
+(setq dap-firefox-debug-program '("node" "/home/janva/.emacs.d/.extension/vscode/firefox-devtools.vscode-firefox-debug-2.9.10/extension/dist/adapter.bundle.js"))
+    
+    ;; Set up Node debugging
+    ;;(require 'dap-node)
+    ;;(dap-node-setup)) ;; utomatically installs Node debug adapter if needed
+
+    ;; Bind `C-c l d` to `dap-hydra` for easy access
+    ;; general-define-key
+    ;;  :keymaps 'lsp-mode-map
+    ;;  :prefix lsp-keymap-prefix
+    ;;  "d" '(dap-hydra t :wk "debugger")
 
 (use-package python-mode
   :straight t 
