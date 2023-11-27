@@ -411,9 +411,10 @@
 	(plist-put org-format-latex-options :scale 2.0)))
 
 (org-babel-do-load-languages
-'org-babel-do-load-languages '(
+'org-babel-load-languages '(
 (emacs-lisp . t)
 (java . t)
+(shell . t)
 (javascript. t)
 (python . t)))
 

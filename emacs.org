@@ -9,14 +9,17 @@ This is just a setup for Emacs.  It's based on David Wilson work done in this  [
 This setup depends on a fonts *Cantarell* and *Fira code retina fonts*. I simply installed the by issuing  following in bash
 
 #+begin_src shell
-    sudo apt install fonts-cantarell
-    sudo apt install fonts-firacode
-#+end_src
+  sudo apt install fonts-cantarell
+  sudo apt install fonts-firacode
+ #+end_src
 
 I'm also using icons to make things look a bit nicer.  These through Emacs using
 
   M-x package-install all-the-icons
   M-x all-the-icons-install-fonts
+
+  Following icons seems to work better in emacs 29.1
+  M-x nerd-icons-install-fonts
   
 * Debugging
 You can make emacs jump into debugger on any error by doing =m-x toggle-debug-on-error= or run emacs with =--debug-init=
@@ -212,6 +215,7 @@ If you start your emacs from shell you can simple set an environment variable  f
 
 
 * GLobal variables
+
 #+begin_src emacs-lisp
 (defcustom jv-agenda-directory "~/Documents/tasks" 
 "Base directory of my agenda files"
@@ -220,6 +224,7 @@ If you start your emacs from shell you can simple set an environment variable  f
 
 
 #+end_src
+
 * UI
 **  Basic UI config
    
@@ -240,6 +245,9 @@ If you start your emacs from shell you can simple set an environment variable  f
    #+end_src
    
 ** Themes
+
+*** TODO using nerd-icons instead
+
    Doom are comunity inspired themes for emacs. It contains a large varietty of themes. This setup also uses icons in for instance modelines.
    I used =package-install all-the-icons= followed by
 
@@ -710,11 +718,13 @@ Renders LaTex math expressions in my org files. This  depends on *dvisvgm* packa
   
   #+begin_src emacs-lisp :results value 
     (org-babel-do-load-languages
-    'org-babel-do-load-languages '(
+    'org-babel-load-languages '(
     (emacs-lisp . t)
     (java . t)
-    (javascript. t)
+    (shell . t)
+    (js . t)
     (python . t)))
+
     #+end_src
 
 *** Org-structure templates  configs [[https://orgmode.org/worg/org-contrib/babel/languages/][structured templates]]
@@ -738,6 +748,7 @@ Renders LaTex math expressions in my org files. This  depends on *dvisvgm* packa
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
+      
 
       (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
     #+end_src
@@ -951,6 +962,7 @@ Cmake lsp
   (use-package emmet-mode
     :straight t)
 #+end_src
+
 *** Web-mode
 #+begin_src emacs-lisp
   (use-package web-mode
@@ -960,6 +972,7 @@ Cmake lsp
   (add-to-list 'auto-mode-alist  ' ("\\.js\\ $'" . web-mode ))
   (add-hook 'web-mode-hook 'emmet-mode)
 #+end_src
+
 *** Javascript
 
 #+begin_src emacs-lisp
