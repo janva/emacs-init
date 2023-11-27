@@ -436,6 +436,18 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
+(define-skeleton org-skeleton
+  "Header info for a emacs-org file."
+  "Title: "
+  "#+TITLE:" str " \n"
+  "#+AUTHOR: Your Name\n"
+  "#+email: your-email@server.com\n"
+  "#+INFOJS_OPT: \n"
+  "#+BABEL: :session *Javascript* :cache yes :results output graphics :exports both :tangle yes \n"
+  "-----"
+ )
+(global-set-key [C-S-f4] 'org-skeleton)
+
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 

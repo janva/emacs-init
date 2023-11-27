@@ -752,7 +752,21 @@ Renders LaTex math expressions in my org files. This  depends on *dvisvgm* packa
 
       (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
     #+end_src
-  
+    
+*** Literate skeleton
+#+begin_src emacs-lisp
+(define-skeleton org-skeleton
+  "Header info for a emacs-org file."
+  "Title: "
+  "#+TITLE:" str " \n"
+  "#+AUTHOR: Your Name\n"
+  "#+email: your-email@server.com\n"
+  "#+INFOJS_OPT: \n"
+  "#+BABEL: :session *Javascript* :cache yes :results output graphics :exports both :tangle yes \n"
+  "-----"
+ )
+(global-set-key [C-S-f4] 'org-skeleton)
+#+end_src
 * Development
   This is separate  section on development modes and tools.
 **  Common settings for all dev modes
