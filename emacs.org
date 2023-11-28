@@ -716,18 +716,21 @@ Renders LaTex math expressions in my org files. This  depends on *dvisvgm* packa
 
 *** Babel languages config
   
-  #+begin_src emacs-lisp :results value 
-    (org-babel-do-load-languages
-    'org-babel-load-languages '(
-    (emacs-lisp . t)
-    (java . t)
-    (shell . t)
-    (js . t)
-    (python . t)))
+  #+begin_src emacs-lisp :results value
+        (require 'ob-js)
 
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (java . t)
+       (shell . t)
+       (js . t)
+       (python . t)))
+    (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
     #+end_src
 
 *** Org-structure templates  configs [[https://orgmode.org/worg/org-contrib/babel/languages/][structured templates]]
+
     #+begin_src emacs-lisp 
       (require 'org-tempo)
       (add-to-list 'org-structure-template-alist '("sh" . "src shell"))

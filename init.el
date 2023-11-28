@@ -410,13 +410,16 @@
   (setq org-format-latex-options
 	(plist-put org-format-latex-options :scale 2.0)))
 
+(require 'ob-js)
+
 (org-babel-do-load-languages
-'org-babel-load-languages '(
-(emacs-lisp . t)
-(java . t)
-(shell . t)
-(javascript. t)
-(python . t)))
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (java . t)
+   (shell . t)
+   (js . t)
+   (python . t)))
+(add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
 
 (require 'org-tempo)
       (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
@@ -433,6 +436,7 @@
 ;; Dynamic scoping to the rescue
 (let ((org-confirm-babel-evaluate nil))
   (org-babel-tangle))))
+
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
